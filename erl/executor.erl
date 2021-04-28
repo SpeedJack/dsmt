@@ -3,13 +3,6 @@
 
 -export([init/1, handle_info/2, handle_cast/2, handle_call/3]).
 
--record(auction, {id,name,image,end_date,min_price,min_raise, sale_quantity}).
-
--record(bid, {user_id,auction_id,timestamp,bid_value, quantity}).
-
--record(state, {cluster, bully_state, leader}).
-
-
 %------ CALLBACK EXECUTOR ------------------------------------------------------------------------------------------
 
 init(Cluster) ->
@@ -43,8 +36,8 @@ handle_call({Command,Id,Payload},_From, {Data, State}) ->
         create_auction -> NewData = auctions_core:create_auction({Command,Id,Payload}, {Data,State}), {reply, ok, {NewData, State}};
         delete_auction -> NewData = auctions_core:delete_auction({Command,Id,Payload}, {Data,State}), {reply, ok, {NewData, State}};
         select_auction -> Result = auctions_core:select_auction(Id,Data), {reply,{ok,Result}, {Data,State}};
-        auctions_list -> ok;
-        auctions_agent_list -> ok;
+        auctions_list -> Result = auctions_core:auctions_list(Data), {reply,{ok,Result}, {Data,State}};
+        auctions_agent_list -> Result = auctions_core:auctions_agent_list(Data, Payload), {reply,{ok,Result}, {Data,State}};
         make_bid -> {NewData, Result} = auctions_core:make_bid({Command,Id,Payload}, {Data,State}), {reply, {ok,Result}, {NewData, State}};
-        delete_bid -> ok
+        delete_bid -> {NewData, Result} = auctions_core:delete_bid({Command,Id,Payload}, {Data,State}), {reply, {ok,Result}, {NewData, State}}
     end.
