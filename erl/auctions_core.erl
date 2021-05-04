@@ -13,7 +13,7 @@
 %   AuctionData = {id_auction, id_agent, name, image, end_date, min_price, min_raise, sale_quantity} auction data
 %   BidList = [Bid1,...,BidM] list of all bids done for this auction
 %   AuctionState = [Bidx,...,Bidy] list of the actual winning bids
-%   Bid = {id_bid, id_auction,id_user, timestamp,bid_value, quantity} a bid
+%   Bid = {id_bid, id_user, timestamp,bid_value, quantity} a bid
 %---------------------------------------------------------------------------------------
 
 
@@ -46,12 +46,14 @@ compute_auction_state(AuctionData, BidList) ->
 create_auction(Message, {State,Data}) ->
     {_, Id, NewAuction} = Message,
     NewData = Data ++ [{Id, {NewAuction,[],[]} }],
+    store:insert_auction(NewAuction),
     send_to_slaves(State#state.cluster,State#state.leader, Message),
     NewData.
 
 delete_auction(Message, {State,Data}) ->
     {_, Id, _} = Message,
     NewData = lists:keydelete(Id, 1, Data),
+    store:delete_auction(Id),
     send_to_slaves(State#state.cluster,State#state.leader, Message),
     NewData.
 
@@ -63,6 +65,7 @@ select_auction(Id, Data) ->
 
 make_bid(Message, {State,Data}) ->
     {_, Id, NewBid} = Message,
+    store:insert_bid(NewBid, Id),
     Auction = utility:extract_value_from_key(Data, Id),
     {AuctionData,BidList,_} = Auction,
     NewBidList = BidList ++ [NewBid],
@@ -75,6 +78,7 @@ make_bid(Message, {State,Data}) ->
 
 delete_bid(Message, {State,Data}) ->
     {_, Id, IdBid} = Message,
+    store:delete_bid(IdBid),
     Auction = utility:extract_value_from_key(Data, Id),
     {AuctionData,BidList,_} = Auction,
     NewBidList = lists:keydelete(IdBid, 1, BidList),

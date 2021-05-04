@@ -1,43 +1,43 @@
 -module(dispatcher).
 -behaviour(gen_server).
 
--export([start_dispatchers/2, stop_dispatchers/2]).
-
+-export([forward_message/2, broadcast_message/2]).
 -export([init/1, handle_call/3, handle_cast/2]).
 
+-define(NUM_CLUSTER, 3).
 
 
-%----- INITIALIZATION DISPATCHER --------------------------------------------------------------------
-start_dispatchers(_, 0) -> ok;
-start_dispatchers(Start, Num) ->
-  Name = "d_" ++ integer_to_list(Start+Num-1) ++ "_" ++   atom_to_list(node()),
-  gen_server:start({global, Name}, ?MODULE, [], []),
-  start_dispatchers(Start, Num - 1).
+forward_message({Command,Id,Data}, State) ->
+  Leader = utility:extract_value_from_key(State, Id rem ?NUM_CLUSTER),
+  Result = utility:handle_call({Command,Id,Data}, Leader),
+  Result.
 
-stop_dispatchers(_ , 0) -> ok;
-stop_dispatchers(Start, Num)->
-    Name = "d_" ++ integer_to_list(Start+Num-1) ++ "_" ++   atom_to_list(node()),
-    gen_server:stop({global, Name}),
-    stop_dispatchers(Start, Num - 1).
-%-------------------------------------------------------------------------------------------------------
-%------ CALLBACK DISPATCHER ----------------------------------------------------------------------------
+broadcast_message(_, []) -> [];
+broadcast_message(Message, [HeadState|T]) ->
+  Leader = element(2,HeadState),
+  {TypeMsg, Result} = utility:handle_call(Message, Leader),
+  if 
+    TypeMsg ==  ok -> Result ++ broadcast_message(Message, T);
+    true -> [] ++ broadcast_message(Message, T)
+  end.
 
+%---------------------------------------------------------------------------
 init([]) ->
   {ok, []}.
 
-
 handle_call({Command,Id,Data}, _From, State) ->
-  Leader = utility:extract_value_from_key(State, Id rem 3),
-  Result = utility:handle_call({Command,Id,Data}, Leader),
-  if
-    Result == noproc -> {reply,error};
-    Result == ok -> {reply,ok}
-  end.
+  case Command of
+    auction_list -> List = broadcast_message({Command,Id,Data}, State), Result = {ok,List};
+    auctions_agent_list -> List = broadcast_message({Command,Id,Data}, State), Result = {ok,List};
+    true -> Result = forward_message({Command,Id,Data}, State)
+  end,
+  {reply, Result}.
+
 
 
 handle_cast({leader_message,Cluster, Leader}, State) ->
   NewState = utility:modify_key_value_list(State, {Cluster, Leader}),
-  {reply, ok, NewState}.
+  {noreply, NewState}.
 
 
 

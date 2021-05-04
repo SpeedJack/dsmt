@@ -49,7 +49,7 @@ extract_by_index([H|T], Index)->
 handle_call(Dest,Msg, Timeout) ->
     try gen_server:call(Dest, Msg, Timeout)
     catch
-        exit:{Error,_} -> Error
+        exit:{Error,_} -> {error,Error}
     end.
 handle_call(Dest, Msg) ->
     handle_call(Dest, Msg, 0).
