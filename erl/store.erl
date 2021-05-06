@@ -2,7 +2,7 @@
 
 -export([print_table/1]).
 -export([record_to_tuple/2, tuple_to_record/2]).
--export([initialization/0, insert_auction/1, insert_bid/2, delete_auction/1, delete_bid/1, get_auction/1, get_auction_data/1, get_bid_list/1]).
+-export([initialization/1, insert_auction/1, insert_bid/2, delete_auction/1, delete_bid/1, get_auction/1, get_auction_data/1, get_bid_list/1]).
 
 -record(auction, {id_auction, id_agent, name, image, end_date, min_price, min_raise, sale_quantity}).
 -record(bid, {id_bid, id_auction, id_user, timestamp,bid_value, quantity}).
@@ -44,11 +44,11 @@ tuple_to_record(auction, Tuple) ->
 
 %--------------------------------------------------------------------------------------------------------------
 
-initialization() ->
-    mnesia:create_schema([node()]),
+initialization(Nodes) ->
+    mnesia:create_schema(Nodes),
     mnesia:start(),
-    mnesia:create_table(auction,[{attributes, record_info(fields, auction)}]),
-    mnesia:create_table(bid, [{attributes, record_info(fields, bid)}]).
+    mnesia:create_table(auction,[{disc_copies, Nodes},{attributes, record_info(fields, auction)}]),
+    mnesia:create_table(bid, [{disc_copies, Nodes},{attributes, record_info(fields, bid)}]).
 
 
 %--- INSERT --------------------------------------------------------------------------------------------------------

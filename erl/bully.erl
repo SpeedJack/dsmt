@@ -32,7 +32,7 @@ initialization(Cluster) ->
     State.
 
 start_election(Cluster, State) ->
-    io:format("~p : start election\n", [self()]),
+    %io:format("~p : start election\n", [self()]),
     Pids = higher_ids(utility:pids_from_global_registry("e_" ++ integer_to_list(Cluster))),
     if 
         length(Pids) == 0 -> send_leader_message(Cluster), NewState = State#state{bully_state = leader, leader=self()}, NewState;
@@ -40,31 +40,31 @@ start_election(Cluster, State) ->
     end.
 
 send_hello_message(Cluster) ->
-    io:format("~p : send hello message\n", [self()]),
+    %io:format("~p : send hello message\n", [self()]),
     Pids = utility:pids_from_global_registry("e_" ++ integer_to_list(Cluster)),
-    utility:send_message(Pids, {hello_message, self()}).
+    utility:cast(Pids, {hello_message, self()}).
 
 send_election_message(Pids) ->
-    io:format("~p : send election messages\n", [self()]),
-    utility:send_message(Pids, {election_message, self()}).
+    %io:format("~p : send election messages\n", [self()]),
+    utility:cast(Pids, {election_message, self()}).
 
 send_ok_message(Dest) ->
-    gen_server:cast(Dest, ok_message).
+    utility:cast(Dest, ok_message).
 
 send_leader_message(Cluster) ->
-    io:format("~p : Auto-elected as leader\n", [self()]),
+    %io:format("~p : Auto-elected as leader\n", [self()]),
     Pids = utility:pids_from_global_registry("e_" ++ integer_to_list(Cluster)) ++ utility:pids_from_global_registry("d_"),
-    utility:send_message(Pids, {leader_message,Cluster, self()}).
+    utility:cast(Pids, {leader_message,Cluster, self()}).
 
 
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 handle_leader_timeout(State) ->
-    io:format("~p : leader_timeout expired, my state is ~p\n", [self(), State]),
+    %io:format("~p : leader_timeout expired, my state is ~p\n", [self(), State]),
     erlang:send_after(random_leader_timeout(), self(), leader_timeout),
     if 
         State#state.bully_state == slave -> NewState = State#state{bully_state = hello},
-                                            utility:send_message([State#state.leader], {hello_message, self()});
+                                            utility:cast([State#state.leader], {hello_message, self()});
         State#state.bully_state == hello -> NewState = start_election(State#state.cluster, State);
         true -> NewState = State
 
@@ -81,9 +81,9 @@ handle_ok_timeout(State) ->
     end.
 
 handle_hello_message(From, State) ->
-    io:format("~p : received hello message, my state is ~p\n", [self(), State]),
+    %io:format("~p : received hello message, my state is ~p\n", [self(), State]),
     if 
-        State#state.leader == self() -> io:format("~p : i'm leader\n", [self()]), utility:send_message([From],{leader_message,State#state.cluster, self()});
+        State#state.leader == self() -> io:format("~p : i'm leader\n", [self()]), utility:cast([From],{leader_message,State#state.cluster, self()});
         true -> ok
     end,
     State.
@@ -100,6 +100,6 @@ handle_ok_message(State) ->
     NewState.
 
 handle_leader_message(Leader, State) ->
-    io:format("~p : received leader message\n", [self()]),
+    %io:format("~p : received leader message\n", [self()]),
     NewState = State#state{bully_state = slave, leader = Leader},
     NewState.

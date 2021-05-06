@@ -20,7 +20,7 @@
 send_to_slaves(Cluster,Leader, Message) ->
     if 
         Leader == self() -> Pids = utility:pids_from_global_registry("e_" ++ integer_to_list(Cluster)), 
-                            utility:send_message(Pids, Message);
+                            utility:cast(Pids, Message);
         true -> ok
     end.
 
@@ -59,14 +59,14 @@ delete_auction(Message, {State,Data}) ->
 
 
 select_auction(Id, Data) ->
-    Auction = utility:extract_value_from_key(Data, Id),
+    {_, Auction} = lists:keyfind(Id, 1, Data),
     {AuctionData,_,_} = Auction,
     AuctionData.
 
 make_bid(Message, {State,Data}) ->
     {_, Id, NewBid} = Message,
     store:insert_bid(NewBid, Id),
-    Auction = utility:extract_value_from_key(Data, Id),
+    {_, Auction} = lists:keyfind(Id, 1, Data),
     {AuctionData,BidList,_} = Auction,
     NewBidList = BidList ++ [NewBid],
     NewAuctionState = compute_auction_state(AuctionData, NewBidList),
@@ -79,7 +79,7 @@ make_bid(Message, {State,Data}) ->
 delete_bid(Message, {State,Data}) ->
     {_, Id, IdBid} = Message,
     store:delete_bid(IdBid),
-    Auction = utility:extract_value_from_key(Data, Id),
+    {_, Auction} = lists:keyfind(Id, 1, Data),
     {AuctionData,BidList,_} = Auction,
     NewBidList = lists:keydelete(IdBid, 1, BidList),
     NewAuctionState = compute_auction_state(AuctionData, NewBidList),

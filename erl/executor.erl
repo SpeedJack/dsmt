@@ -33,8 +33,8 @@ handle_cast(Command, {Data, State}) ->
 
 handle_call({Command,Id,Payload},_From, {Data, State}) ->
     case Command of
-        create_auction -> NewData = auctions_core:create_auction({Command,Id,Payload}, {Data,State}), {reply, ok, {NewData, State}};
-        delete_auction -> NewData = auctions_core:delete_auction({Command,Id,Payload}, {Data,State}), {reply, ok, {NewData, State}};
+        create_auction -> NewData = auctions_core:create_auction({Command,Id,Payload}, {Data,State}), {reply, {ok, ok}, {NewData, State}};
+        delete_auction -> NewData = auctions_core:delete_auction({Command,Id,Payload}, {Data,State}), {reply, {ok, ok}, {NewData, State}};
         select_auction -> Result = auctions_core:select_auction(Id,Data), {reply,{ok,Result}, {Data,State}};
         auctions_list -> Result = auctions_core:auctions_list(Data), {reply,{ok,Result}, {Data,State}};
         auctions_agent_list -> Result = auctions_core:auctions_agent_list(Data, Payload), {reply,{ok,Result}, {Data,State}};
