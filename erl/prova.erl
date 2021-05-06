@@ -3,7 +3,7 @@
 -export([start_d/2, stop_d/2, start_e/3, stop_e/3, start_cluster/1, start_system/0]).
 
 -define(NUM_DISPATCHERS, 3).
--define(NUM_CLUSTER, 3).
+-define(NUM_CLUSTER, 1).
 -define(NUM_REPLICA_PER_CLUSTER,3).
 
 %----- INITIALIZATION DISPATCHER --------------------------------------------------------------------

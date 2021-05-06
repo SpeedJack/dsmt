@@ -22,7 +22,7 @@ starts_with(String, Start) ->
 modify_key_value_list(List,{Key,Value}) ->
     Result = lists:keysearch(Key,1,List),
     if 
-        Result == false -> NewList = List ++ {Key,Value};
+        Result == false -> NewList = List ++ [{Key,Value}];
         true -> NewList = lists:keyreplace(Key,1,List,{Key,Value})
     end,
     NewList.
