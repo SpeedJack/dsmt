@@ -4,7 +4,7 @@
 -export([dispatcher_initialization/0,forward_message/2, broadcast_message/2]).
 -export([init/1, handle_call/3, handle_cast/2]).
 
--define(NUM_CLUSTER, 3).
+-define(NUM_CLUSTER, 1).
 -define(INIT_TIMEOUT, 5000).
 
 %---------------------Structure of messages to send to dispatcher -----------------------------------
@@ -38,7 +38,7 @@ dispatcher_initialization() ->
   end.
 
 forward_message({Command,Id,Data}, State) ->
-  {_,Leader} = lists:keyfind(Id rem ?NUM_CLUSTER, 1, State),
+  {_,Leader} = lists:keyfind((Id rem ?NUM_CLUSTER)+1, 1, State),
   Result = utility:call(Leader, {Command,Id,Data}),
   Result.
 
@@ -65,9 +65,10 @@ handle_call({Command,Id,Data}, _From, State) ->
   {reply, Result, State};
 
 handle_call(dispatcher_state, _From, State) ->
-  {reply, State, State}.
+  {reply, {ok,State}, State}.
 
 handle_cast({leader_message,Cluster, Leader}, State) ->
   NewState = utility:modify_key_value_list(State, {Cluster, Leader}),
+  io:format("~p Nuovo Stato: ~p\n", [self(), NewState]),
   {noreply, NewState}.
 

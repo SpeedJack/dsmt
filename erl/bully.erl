@@ -49,7 +49,7 @@ send_election_message(Pids) ->
     utility:cast(Pids, {election_message, self()}).
 
 send_ok_message(Dest) ->
-    utility:cast(Dest, ok_message).
+    utility:cast([Dest], ok_message).
 
 send_leader_message(Cluster) ->
     %io:format("~p : Auto-elected as leader\n", [self()]),
@@ -83,7 +83,8 @@ handle_ok_timeout(State) ->
 handle_hello_message(From, State) ->
     %io:format("~p : received hello message, my state is ~p\n", [self(), State]),
     if 
-        State#state.leader == self() -> io:format("~p : i'm leader\n", [self()]), utility:cast([From],{leader_message,State#state.cluster, self()});
+        State#state.leader == self() -> %io:format("~p : i'm leader\n", [self()]), 
+                                        utility:cast([From],{leader_message,State#state.cluster, self()});
         true -> ok
     end,
     State.

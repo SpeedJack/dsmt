@@ -3,6 +3,8 @@
 
 -export([init/1, handle_info/2, handle_cast/2, handle_call/3]).
 
+-record(state, {cluster, bully_state, leader}).
+
 %------ CALLBACK EXECUTOR ------------------------------------------------------------------------------------------
 
 init(Cluster) ->
@@ -33,11 +35,15 @@ handle_cast(Command, {Data, State}) ->
 
 handle_call({Command,Id,Payload},_From, {Data, State}) ->
     case Command of
-        create_auction -> NewData = auctions_core:create_auction({Command,Id,Payload}, {Data,State}), {reply, {ok, ok}, {NewData, State}};
-        delete_auction -> NewData = auctions_core:delete_auction({Command,Id,Payload}, {Data,State}), {reply, {ok, ok}, {NewData, State}};
-        select_auction -> Result = auctions_core:select_auction(Id,Data), {reply,{ok,Result}, {Data,State}};
-        auctions_list -> Result = auctions_core:auctions_list(Data), {reply,{ok,Result}, {Data,State}};
-        auctions_agent_list -> Result = auctions_core:auctions_agent_list(Data, Payload), {reply,{ok,Result}, {Data,State}};
-        make_bid -> {NewData, Result} = auctions_core:make_bid({Command,Id,Payload}, {Data,State}), {reply, {ok,Result}, {NewData, State}};
-        delete_bid -> {NewData, Result} = auctions_core:delete_bid({Command,Id,Payload}, {Data,State}), {reply, {ok,Result}, {NewData, State}}
+        create_auction -> NewData = auctions_core:create_auction({Command,Id,Payload}, {Data,State}), Result= ok;
+        delete_auction -> NewData = auctions_core:delete_auction({Command,Id,Payload}, {Data,State}), Result= ok;
+        select_auction -> NewData = Data, Result = auctions_core:select_auction(Id,Data);
+        auctions_list -> NewData = Data, Result = auctions_core:auctions_list(Data);
+        auctions_agent_list -> NewData = Data, Result = auctions_core:auctions_agent_list(Data, Payload);
+        make_bid -> {NewData, Result} = auctions_core:make_bid({Command,Id,Payload}, {Data,State});
+        delete_bid -> {NewData, Result} = auctions_core:delete_bid({Command,Id,Payload}, {Data,State})
+    end,
+    if 
+        State#state.leader == self() -> {reply,{ok,Result}, {Data,State}};
+        true -> {reply, {ok, ok}, NewData, State}
     end.
