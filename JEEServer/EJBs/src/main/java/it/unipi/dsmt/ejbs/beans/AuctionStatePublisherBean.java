@@ -3,20 +3,25 @@ package it.unipi.dsmt.ejbs.beans;
 import it.unipi.dsmt.ejbs.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.model.AuctionState;
 
+import javax.ejb.Init;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 @Singleton(name = "AuctionStatePublisherEJB")
 public class AuctionStatePublisherBean implements AuctionStatePublisher {
   Map<Integer, AuctionState> states;
-  Map<Integer, Set<Integer>> subscriptions;
 
   public AuctionStatePublisherBean() {
+    this.initialize();
+  }
+
+  private void initialize(){
     this.states = new HashMap<>();
-    this.subscriptions = new HashMap<>();
   }
 
   @Override
@@ -30,14 +35,6 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
 
   }
 
-  @Override
-  public void subscribe(int auction, int user) {
-    this.subscriptions.get(auction).add(user);
-  }
 
-  @Override
-  public void unsubscribe(int auction, int user) {
-    this.subscriptions.get(auction).remove(user);
-  }
 
 }

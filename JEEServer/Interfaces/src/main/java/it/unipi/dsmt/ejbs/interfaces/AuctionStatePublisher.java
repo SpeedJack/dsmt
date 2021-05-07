@@ -8,6 +8,4 @@ import javax.ejb.Remote;
 public interface AuctionStatePublisher {
     public AuctionState getState(int id);
     public void publishState(int id, AuctionState state);
-    public void subscribe(int auction, int user);
-    public void unsubscribe(int auction, int user);
 }
