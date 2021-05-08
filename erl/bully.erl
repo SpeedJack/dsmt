@@ -52,7 +52,7 @@ send_ok_message(Dest) ->
     utility:cast([Dest], ok_message).
 
 send_leader_message(Cluster) ->
-    %io:format("~p : Auto-elected as leader\n", [self()]),
+    io:format("~p : Auto-elected as leader\n", [self()]),
     Pids = utility:pids_from_global_registry("e_" ++ integer_to_list(Cluster)) ++ utility:pids_from_global_registry("d_"),
     utility:cast(Pids, {leader_message,Cluster, self()}).
 

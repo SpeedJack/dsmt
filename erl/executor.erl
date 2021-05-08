@@ -44,6 +44,6 @@ handle_call({Command,Id,Payload},_From, {Data, State}) ->
         delete_bid -> {NewData, Result} = auctions_core:delete_bid({Command,Id,Payload}, {Data,State})
     end,
     if 
-        State#state.leader == self() -> {reply,{ok,Result}, {Data,State}};
+        State#state.leader == self() -> {reply,{ok,Result}, {NewData,State}};
         true -> {reply, {ok, ok}, NewData, State}
     end.
