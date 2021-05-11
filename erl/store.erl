@@ -2,9 +2,12 @@
 
 -export([print_table/1]).
 -export([record_to_tuple/2, tuple_to_record/2]).
--export([initialization/1, insert_auction/1, insert_bid/2, delete_auction/1, delete_bid/1, get_auction/1, get_auction_data/1, get_bid_list/1]).
+-export([initialization/1, get_auction/1, get_auction_list/1, get_bid_list/1, get_bid_list/2, get_agent_auctions/1]).
+-export([insert_auction/1, insert_bid/2]).
+-export([delete_auction/1, delete_bid/1]).
+-export([get_bidder_auctions/1]).
 
--record(auction, {id_auction, id_agent, name, image, end_date, min_price, min_raise, sale_quantity}).
+-record(auction, {id_auction, id_agent, name, image, description, end_date, min_price, min_raise, sale_quantity}).
 -record(bid, {id_bid, id_auction, id_user, timestamp,bid_value, quantity}).
 
 record_to_tuple(bid, Record) ->
@@ -18,6 +21,7 @@ record_to_tuple(auction, Record)->
     Record#auction.id_agent,
     Record#auction.name,
     Record#auction.image,
+    Record#auction.description,
     Record#auction.end_date,
     Record#auction.min_price,
     Record#auction.min_raise,
@@ -36,10 +40,11 @@ tuple_to_record(auction, Tuple) ->
                     id_agent = element(2,Tuple),
                     name= element(3,Tuple),
                     image= element(4,Tuple),
-                    end_date= element(5,Tuple),
-                    min_price= element(6,Tuple),
-                    min_raise= element(7,Tuple),
-                    sale_quantity= element(8,Tuple)},
+                    description = element(5,Tuple),
+                    end_date= element(6,Tuple),
+                    min_price= element(7,Tuple),
+                    min_raise= element(8,Tuple),
+                    sale_quantity= element(9,Tuple)},
     Record.
 
 %--------------------------------------------------------------------------------------------------------------
@@ -82,7 +87,7 @@ delete_bid(BidId) ->
     mnesia:transaction(Fun).
 
 %--- GET -----------------------------------------------------------------------------------------------------------------
-get_auction_data(AuctionId) ->
+get_auction(AuctionId) ->
     Fun =   fun() ->
                 mnesia:read(auction,AuctionId)
             end,
@@ -91,7 +96,6 @@ get_auction_data(AuctionId) ->
         AuctionRecord == [] -> [];
         true -> [H|_] = AuctionRecord, record_to_tuple(auction, H)
     end.
-
 
 get_bid_list(AuctionId) ->
     Fun =   fun() ->
@@ -103,10 +107,56 @@ get_bid_list(AuctionId) ->
         true -> [record_to_tuple(bid,BidRecord) || BidRecord <- BidRecords]
     end.
 
-get_auction(AuctionId) ->
-    AuctionData = get_auction_data(AuctionId),
-    BidList = get_bid_list(AuctionId),
-    {AuctionId,{AuctionData, BidList, []}}.
+get_bid_list(AuctionId, UserId) ->
+    Fun =   fun() ->
+                mnesia:match_object(bid, {bid, '_', AuctionId, UserId, '_', '_', '_'}, read)
+            end,
+    {atomic, BidRecords} = mnesia:transaction(Fun),
+    if 
+        BidRecords == [] -> [];
+        true -> [record_to_tuple(bid,BidRecord) || BidRecord <- BidRecords]
+    end.
+
+
+get_auction_list(Page) ->
+    {MegaSecs, Secs, _} = os:timestamp(),
+    UnixTime = MegaSecs * 1000000 + Secs,
+    MatchHead = #auction{id_auction='$1', 
+                        id_agent='$2', 
+                        name='$3', 
+                        image='$4', 
+                        description='$5', 
+                        end_date='$6', 
+                        min_price='$7', 
+                        min_raise='$8', 
+                        sale_quantity='$9'},
+    Guard = [],
+    %Guard = [{'>','$6', UnixTime}],
+    Result = ['$1','$2','$3','$4','$5','$6','$7','$8','$9'],
+    mnesia:select(bid,[{MatchHead, Guard, Result}], Page, read).
+
+
+get_bidder_auctions(IdBidder)->
+    Fun =   fun() ->
+                MatchHead = #bid{id_auction='$1', id_user= IdBidder, _='_'},
+                Guard = [],
+                Result = ['$1'],
+                IdAuctions = mnesia:select(bid,[{MatchHead, Guard, Result}]),
+                [record_to_tuple(auction, lists:nth(1,mnesia:read(auction,IdAuction)))|| IdAuction <- IdAuctions]
+            end,
+    {atomic, Result} = mnesia:transaction(Fun),
+    Result.
+
+get_agent_auctions(IdAgent) ->
+    Fun =   fun() ->
+                mnesia:match_object(auction, {auction, '_', IdAgent, '_', '_', '_', '_', '_', '_'}, read)
+            end,
+    {atomic, AuctionList} = mnesia:transaction(Fun),
+    if 
+        AuctionList == [] -> [];
+        true -> [record_to_tuple(bid,Auction) || Auction <- AuctionList]
+    end.
+
 
 %--- PRINT TABLE -------------------------------------------------------------------------------------------------
 print_table(Table_name)->

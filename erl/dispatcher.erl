@@ -1,7 +1,7 @@
 -module(dispatcher).
 -behaviour(gen_server).
 
--export([dispatcher_initialization/0,forward_message/2, broadcast_message/2]).
+-export([dispatcher_initialization/0,forward_message/2, random_message/2]).
 -export([init/1, handle_call/3, handle_cast/2]).
 
 -define(NUM_CLUSTER, 1).
@@ -12,13 +12,13 @@
 %   List of possible messages:
 %     {create_auction,IdAuction,AuctionData};
 %     {delete_auction,IdAuction,_};
-%     {select_auction,IdAuction,_};
+%     {select_auction,IdAuction, IdUser};
 %     {auction_list,IdAuction,_};
 %     {auction_agent_list,IdAuction,_};
 %     {make_bid,IdAuction,BidData};
 %     {delete_bid,IdAuction,IdBid};
 %
-%     AuctionData = {id_auction, id_agent, name, image, end_date, min_price, min_raise, sale_quantity} auction data
+%     AuctionData = {id_auction, id_agent, name, image, description, end_date, min_price, min_raise, sale_quantity} auction data
 %     BidData = {id_bid, id_user, timestamp,bid_value, quantity} a bid
 %---------------------------------------------------------------------------------------
 
@@ -42,14 +42,10 @@ forward_message({Command,Id,Data}, State) ->
   Result = utility:call(Leader, {Command,Id,Data}),
   Result.
 
-broadcast_message(_, []) -> [];
-broadcast_message(Message, [HeadState|T]) ->
-  Leader = element(2,HeadState),
-  {TypeMsg, Result} = utility:call(Leader, Message),
-  if 
-    TypeMsg ==  ok -> Result ++ broadcast_message(Message, T);
-    true -> [] ++ broadcast_message(Message, T)
-  end.
+random_message({Command,Id,Data}, State) ->
+  {_,Leader} = lists:keyfind(rand:uniform(length(State)), 1, State),
+  Result = utility:call(Leader, {Command,Id,Data}),
+  Result.
 
 %---------------------------------------------------------------------------
 init([]) ->
@@ -58,8 +54,8 @@ init([]) ->
 
 handle_call({Command,Id,Data}, _From, State) ->
   case Command of
-    auction_list -> List = broadcast_message({Command,Id,Data}, State), Result = {ok,List};
-    auctions_agent_list -> List = broadcast_message({Command,Id,Data}, State), Result = {ok,List};
+    auction_list -> List = random_message({Command,Id,Data}, State), Result = {ok,List};
+    auctions_agent_list -> List = random_message({Command,Id,Data}, State), Result = {ok,List};
     _ -> Result = forward_message({Command,Id,Data}, State)
   end,
   {reply, Result, State};
