@@ -2,13 +2,14 @@
 
 -export([print_table/1]).
 -export([record_to_tuple/2, tuple_to_record/2]).
--export([initialization/1, get_auction/1, get_auction_list/1, get_bid_list/1, get_bid_list/2, get_agent_auctions/1]).
+-export([initialization/1]).
 -export([insert_auction/1, insert_bid/2]).
 -export([delete_auction/1, delete_bid/1]).
--export([get_bidder_auctions/1]).
+-export([get_auction/1, get_auction_list/0, get_bid_list/1, get_bid_list/2, get_agent_auctions/1, get_bidder_auctions/1]).
 
 -record(auction, {id_auction, id_agent, name, image, description, end_date, min_price, min_raise, sale_quantity}).
 -record(bid, {id_bid, id_auction, id_user, timestamp,bid_value, quantity}).
+
 
 record_to_tuple(bid, Record) ->
     {Record#bid.id_bid,
@@ -54,7 +55,6 @@ initialization(Nodes) ->
     mnesia:start(),
     mnesia:create_table(auction,[{disc_copies, Nodes},{attributes, record_info(fields, auction)}]),
     mnesia:create_table(bid, [{disc_copies, Nodes},{attributes, record_info(fields, bid)}]).
-
 
 %--- INSERT --------------------------------------------------------------------------------------------------------
 insert_auction(Auction) ->
@@ -118,22 +118,25 @@ get_bid_list(AuctionId, UserId) ->
     end.
 
 
-get_auction_list(Page) ->
-    {MegaSecs, Secs, _} = os:timestamp(),
-    UnixTime = MegaSecs * 1000000 + Secs,
-    MatchHead = #auction{id_auction='$1', 
-                        id_agent='$2', 
-                        name='$3', 
-                        image='$4', 
-                        description='$5', 
-                        end_date='$6', 
-                        min_price='$7', 
-                        min_raise='$8', 
-                        sale_quantity='$9'},
-    Guard = [],
-    %Guard = [{'>','$6', UnixTime}],
-    Result = ['$1','$2','$3','$4','$5','$6','$7','$8','$9'],
-    mnesia:select(bid,[{MatchHead, Guard, Result}], Page, read).
+get_auction_list() ->
+    Fun =   fun() ->
+                {MegaSecs, Secs, _} = os:timestamp(),
+                UnixTime = MegaSecs * 1000000 + Secs,
+                MatchHead = #auction{id_auction='$1', 
+                                    id_agent='$2', 
+                                    name='$3', 
+                                    image='$4', 
+                                    description='$5', 
+                                    end_date='$6', 
+                                    min_price='$7', 
+                                    min_raise='$8', 
+                                    sale_quantity='$9'},
+                Guard = [{'>','$6', UnixTime}],
+                Result = ['$1','$2','$3','$4','$5','$6','$7','$8','$9'],
+                mnesia:select(bid,[{MatchHead, Guard, Result}])
+            end,
+    {atomic, Result} = mnesia:transaction(Fun),
+    Result.
 
 
 get_bidder_auctions(IdBidder)->

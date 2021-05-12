@@ -4,9 +4,9 @@
 -export([start_e/2, stop_e/2, start_cluster/4, stop_cluster/4, start_executors/2, stop_executors/2]).
 -export([start_system/0, stop_system/0]).
 
--define(NUM_DISPATCHERS_PER_NODE, 1).
+-define(NUM_DISPATCHERS_PER_NODE, 3).
 -define(NUM_CLUSTER, 1).
--define(NUM_PROCESSOR_PER_CLUSTER,1).
+-define(NUM_PROCESSOR_PER_CLUSTER,3).
 
 %----- INITIALIZATION DISPATCHER --------------------------------------------------------------------
 start_d(_, 0) -> ok;

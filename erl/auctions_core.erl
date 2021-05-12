@@ -75,7 +75,7 @@ delete_auction(Message, {Data, State}) ->
 
 select_auction(AuctionId, UserId) ->
     Auction = store:get_auction(AuctionId),
-    BidList = store:get_auction(AuctionId, UserId),
+    BidList = store:get_bid_list(AuctionId, UserId),
     {Auction, BidList}.
 
 make_bid(Message, {_, State}) ->
