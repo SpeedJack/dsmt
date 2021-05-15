@@ -2,7 +2,7 @@
 
 -export([send_to_slaves/2]).
 -export([compute_auction_state/2, select_winning_bids/3, compare_bids/2]).
--export([create_auction/2, delete_auction/2, select_auction/2, auctions_list/0, auctions_agent_list/1, auctions_bidder_list/1, make_bid/2, delete_bid/2]).
+-export([create_auction/2, delete_auction/2, select_auction/2, auctions_list/1, auctions_agent_list/1, auctions_bidder_list/1, make_bid/2, delete_bid/2]).
 
 -record(state, {cluster, bully_state, leader}).
 
@@ -112,8 +112,8 @@ delete_bid(Message, {_, State}) ->
     NewData.
 
 %Returns the auction list
-auctions_list() ->
-    AuctionList = store:get_auction_list(),
+auctions_list(Page) ->
+    AuctionList = store:get_auction_list(Page),
     AuctionList.
 
 %returns the list of auctions in which the user has made at least 1 bid

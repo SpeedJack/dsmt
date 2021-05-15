@@ -5,7 +5,9 @@
 -export([initialization/1]).
 -export([insert_auction/1, insert_bid/2]).
 -export([delete_auction/1, delete_bid/1]).
--export([get_auction/1, get_auction_list/0, get_bid_list/1, get_bid_list/2, get_agent_auctions/1, get_bidder_auctions/1]).
+-export([get_auction/1, get_auction_list/1, get_bid_list/1, get_bid_list/2, get_agent_auctions/1, get_bidder_auctions/1]).
+
+-define(PAGE_SIZE, 50).
 
 -record(auction, {id_auction, id_agent, name, image, description, end_date, min_price, min_raise, sale_quantity}).
 -record(bid, {id_bid, id_auction, id_user, timestamp,bid_value, quantity}).
@@ -122,7 +124,7 @@ get_bid_list(AuctionId, UserId) ->
     end.
 
 
-get_auction_list() ->
+get_auction_list(Page) ->
     Fun =   fun() ->
                 {MegaSecs, Secs, _} = os:timestamp(),
                 UnixTime = MegaSecs * 1000000 + Secs,
@@ -137,7 +139,11 @@ get_auction_list() ->
                                     sale_quantity='$9'},
                 Guard = [{'>','$6', UnixTime}],
                 Result = ['$1','$2','$3','$4','$5','$6','$7','$8','$9'],
-                mnesia:select(bid,[{MatchHead, Guard, Result}])
+                List = mnesia:select(bid,[{MatchHead, Guard, Result}],Page*?PAGE_SIZE, read),
+                if 
+                    Page == 1 -> lists:reverse(List);
+                    true -> lists:sublist(lists:reverse(List),(Page-1)*?PAGE_SIZE + 1, length(List))
+                end
             end,
     {atomic, Result} = mnesia:transaction(Fun),
     Result.
