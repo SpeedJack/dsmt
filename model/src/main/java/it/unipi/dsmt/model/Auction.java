@@ -2,7 +2,6 @@ package it.unipi.dsmt.model;
 
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import it.unipi.dsmt.model.behaviour.Erlangizable;
-import it.unipi.dsmt.model.behaviour.JSONIzable;
 
 import java.io.Serializable;
 

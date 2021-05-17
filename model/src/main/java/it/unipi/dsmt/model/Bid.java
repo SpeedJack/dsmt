@@ -1,8 +1,10 @@
 package it.unipi.dsmt.model;
 
+import it.unipi.dsmt.model.behaviour.Erlangizable;
+
 import java.io.Serializable;
 
-public class Bid implements Serializable {
+public class Bid implements Serializable, Erlangizable {
     int id;
     int user;
     long timestamp;

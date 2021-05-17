@@ -7,8 +7,8 @@ import it.unipi.dsmt.model.BidList;
 
 @Remote
 public interface AuctionManager {
-    AuctionState makeBid(Bid bid);
-    AuctionState removeBid(Bid bid);
+    void makeBid(Bid bid);
+    void removeBid(Bid bid);
     BidList listBids(int auctionId);
     BidList listBids(int auctionId, int agentId);
     BidList listBids(int auctionId, int agentId, int page);

@@ -4,23 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>it.unipi.dsmt</groupId>
-    <artifactId>EJBs</artifactId>
+    <groupId>it.unipi.dsmt.persistence</groupId>
+    <artifactId>Persistence</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>EJBs</name>
+    <name>Persistence</name>
 
     <properties>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
         <junit.version>5.7.1</junit.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>javax.ejb</groupId>
-            <artifactId>javax.ejb-api</artifactId>
-            <version>3.2.2</version>
-            <scope>provided</scope>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.4.30.Final</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -34,16 +33,26 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
         <dependency>
-            <groupId>it.unipi.dsmt</groupId>
-            <artifactId>Interfaces</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.14.2.0</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.derby/derbyclient -->
         <dependency>
-            <groupId>it.unipi.dsmt.endpoints</groupId>
-            <artifactId>Endpoints</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>10.14.2.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>8.0.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

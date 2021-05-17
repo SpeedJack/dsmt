@@ -5,6 +5,6 @@ import javax.ejb.Remote;
 @Remote
 public interface AuctionSubscriber {
 
-    public void subscribe(int auction, int user);
-    public void unsubscribe(int auction, int user);
+    void subscribe(int auction, int user);
+    void unsubscribe(int auction, int user);
 }
