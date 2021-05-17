@@ -6,7 +6,7 @@
 
 -define(NUM_DISPATCHERS_PER_NODE, 1).
 -define(NUM_CLUSTER, 1).
--define(NUM_PROCESSOR_PER_CLUSTER,1).
+-define(NUM_PROCESSOR_PER_CLUSTER,10).
 
 %----- INITIALIZATION DISPATCHER --------------------------------------------------------------------
 start_d(_, 0) -> ok;

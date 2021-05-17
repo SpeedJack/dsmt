@@ -22,9 +22,8 @@
 %     BidData = {id_bid, id_user, timestamp,bid_value, quantity} a bid
 %---------------------------------------------------------------------------------------
 
-
-%--------------------------------------------------------------------------
-
+%Initialization phase: when a dispatcher starts, it requests the current state from a currently active dispatcher (if any) 
+%and once received it sets it as the initial state
 dispatcher_initialization() ->
   List = utility:pids_from_global_registry("d_"),
   if 
@@ -37,17 +36,22 @@ dispatcher_initialization() ->
             end
   end.
 
+%Dispatcher forwards an "auction request" to the cluster that deals with it.
 forward_message({Command,Id,Data}, State) ->
   {_,Leader} = lists:keyfind((Id rem ?NUM_CLUSTER)+1, 1, State),
   Result = utility:call(Leader, {Command,Id,Data}),
   Result.
 
+%Dispatcher forwards a "auction list" request to a cluster randomly. 
+%This choice is due to the fact that "auction list" requests are read-only operations
+%and Mnesia allows the data to be accessible from all nodes
 random_message({Command,Id,Data}, State) ->
   {_,Leader} = lists:keyfind(rand:uniform(length(State)), 1, State),
   Result = utility:call(Leader, {Command,Id,Data}),
   Result.
 
-%---------------------------------------------------------------------------
+%------ CALLBACK DISPATCHER ------------------------------------------------------------------------------------------
+
 init([]) ->
   State = dispatcher_initialization(),
   {ok, State}.
