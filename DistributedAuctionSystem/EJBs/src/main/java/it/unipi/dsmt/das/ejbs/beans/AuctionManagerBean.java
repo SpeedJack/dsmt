@@ -1,7 +1,6 @@
 package it.unipi.dsmt.das.ejbs.beans;
 
-import com.ericsson.otp.erlang.OtpMbox;
-import com.ericsson.otp.erlang.OtpNode;
+import com.ericsson.otp.erlang.*;
 import it.unipi.dsmt.das.ejbs.interfaces.AuctionManager;
 import it.unipi.dsmt.das.ejbs.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.endpoints.AuctionEndpoint;
@@ -10,19 +9,20 @@ import it.unipi.dsmt.das.model.Bid;
 import it.unipi.dsmt.das.model.BidList;
 
 import javax.ejb.EJB;
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import java.io.IOException;
 
-@Singleton(name = "AuctionManagerEJB")
+@Stateless(name = "AuctionManagerEJB")
 public class AuctionManagerBean implements AuctionManager {
     @EJB
+    private final String dispatcherRegisteredName = "d_1_disp@localhost";
+    private final String dispatcherNodeName = "disp@localhost";
+    private final String mboxName = "auction_manager_mbox";
+    private final String nodeName = "auction_manager@localhost";
+
     AuctionStatePublisher publisher;
     OtpNode node;
     OtpMbox mbox;
-    private final String dispatcher_registered_name = "d_%d";
-    private final String dispatcher = "d_%d@localhost";
-    private final String mboxName = "auction_manager_mbox";
-    private final String nodeName = "auction_manager@localhost";
 
     public AuctionManagerBean() throws IOException {
         this.node = new OtpNode(nodeName);
@@ -35,15 +35,27 @@ public class AuctionManagerBean implements AuctionManager {
 
     @Override
     public void makeBid(Bid bid) {
-        int dispatcherId = 1;
-        mbox.send(String.format(dispatcher_registered_name, dispatcherId),
-                String.format(dispatcher, dispatcherId),
-                bid.erlangize());
-        //mbox.receive();
+        OtpErlangAtom cmd = new OtpErlangAtom("make_bid");
+        OtpErlangInt id = new OtpErlangInt(bid.getAuction());
+        OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,bid.erlangize()});
+        mbox.send(dispatcherRegisteredName, dispatcherNodeName, bid.erlangize());
+        try {
+            OtpErlangObject msg = mbox.receive();
+            OtpErlangTuple response = (OtpErlangTuple) msg;
+            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
+            if (msgResponse.atomValue().equals("ok")){
+                OtpErlangList newAuctionState = (OtpErlangList) response.elementAt(2);
+                //converti la lista in un ogetto Java e inviala al singleton che gestisce lo stato delle aste
+            }
+        } catch (OtpErlangExit otpErlangExit) {
+            otpErlangExit.printStackTrace();
+        } catch (OtpErlangDecodeException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void removeBid(Bid bid) {
+    public void removeBid(int bidId) {
 
     }
 

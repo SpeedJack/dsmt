@@ -6,12 +6,22 @@ import java.io.Serializable;
 
 public class Bid implements Serializable, Erlangizable {
     int id;
+    int auction;
     int user;
     long timestamp;
     float value;
     int quantity;
 
     public Bid() {
+    }
+
+    public Bid(int id, int auction, int user, long timestamp, float value, int quantity) {
+        this.id = id;
+        this.auction = auction;
+        this.user = user;
+        this.timestamp = timestamp;
+        this.value = value;
+        this.quantity = quantity;
     }
 
     public int getId() {
@@ -21,6 +31,10 @@ public class Bid implements Serializable, Erlangizable {
     public void setId(int id) {
         this.id = id;
     }
+
+    public int getAuction() { return auction;}
+
+    public void setAuction(int auction) { this.auction = auction;}
 
     public int getUser() {
         return user;
@@ -51,14 +65,6 @@ public class Bid implements Serializable, Erlangizable {
     }
 
     public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Bid(int id, int user, long timestamp, float value, int quantity) {
-        this.id = id;
-        this.user = user;
-        this.timestamp = timestamp;
-        this.value = value;
         this.quantity = quantity;
     }
 }

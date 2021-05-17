@@ -1,8 +1,8 @@
 package it.unipi.dsmt.das.ejbs.beans;
 
-import it.unipi.dsmt.ejbs.interfaces.AuctionStatePublisher;
-import it.unipi.dsmt.endpoints.AuctionEndpoint;
-import it.unipi.dsmt.model.AuctionState;
+import it.unipi.dsmt.das.ejbs.interfaces.AuctionStatePublisher;
+import it.unipi.dsmt.das.endpoints.AuctionEndpoint;
+import it.unipi.dsmt.das.model.AuctionState;
 
 import javax.ejb.Singleton;
 

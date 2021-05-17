@@ -1,6 +1,6 @@
 package it.unipi.dsmt.das.model;
 
-import it.unipi.dsmt.model.behaviour.Erlangizable;
+import it.unipi.dsmt.das.model.behaviour.Erlangizable;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -10,16 +10,18 @@ public class AuctionData implements Serializable, Erlangizable {
     int agent;
     String name;
     String image;
+    String description;
     Instant endDate;
     float minPrice;
     float minRaise;
     int saleQuantity;
 
-    public AuctionData(int id, int agent, String name, String image, Instant endDate, float minPrice, float minRaise, int saleQuantity) {
+    public AuctionData(int id, int agent, String name, String image, String description, Instant endDate, float minPrice, float minRaise, int saleQuantity) {
         this.id = id;
         this.agent = agent;
         this.name = name;
         this.image = image;
+        this.description = description;
         this.endDate = endDate;
         this.minPrice = minPrice;
         this.minRaise = minRaise;
@@ -57,6 +59,10 @@ public class AuctionData implements Serializable, Erlangizable {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public String getDescription() { return description; }
+
+    public void setDescription(String description) { this.description = description; }
 
     public Instant getEndDate() {
         return endDate;
