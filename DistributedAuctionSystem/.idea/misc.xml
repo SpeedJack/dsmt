@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/Web/pom.xml" />
         <option value="$PROJECT_DIR$/EJBs/pom.xml" />
         <option value="$PROJECT_DIR$/Endpoints/pom.xml" />
+        <option value="$PROJECT_DIR$/Persistence/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

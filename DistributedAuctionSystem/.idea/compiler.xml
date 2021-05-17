@@ -9,6 +9,7 @@
         <module name="Model" />
         <module name="Interfaces" />
         <module name="Endpoints" />
+        <module name="Persistence" />
         <module name="Web" />
         <module name="EJBs" />
       </profile>
@@ -19,6 +20,7 @@
       <module name="Endpoints" target="1.8" />
       <module name="Interfaces" target="1.8" />
       <module name="Model" target="1.8" />
+      <module name="Persistence" target="1.8" />
       <module name="Prova" target="1.8" />
       <module name="Web" target="1.8" />
     </bytecodeTargetLevel>
