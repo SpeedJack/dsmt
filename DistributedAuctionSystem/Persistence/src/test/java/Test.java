@@ -6,7 +6,7 @@ import javax.persistence.Persistence;
 
 public class Test {
 
-    public static void main(String args[]) {
+    public void newUser(){
         EntityManagerFactory emfactory = Persistence.createEntityManagerFactory( "default" );
         EntityManager entitymanager = emfactory.createEntityManager( );
         entitymanager.getTransaction( ).begin( );
