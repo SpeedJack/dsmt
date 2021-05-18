@@ -7,29 +7,29 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BidList implements Serializable, Erlangizable<OtpErlangList> {
-    List<Bid> list;
+public class AuctionList implements Serializable, Erlangizable<OtpErlangList> {
+    List<Auction> list;
 
-    public BidList(List<Bid> list) {
+    public AuctionList(List<Auction> list) {
         this.list = list;
     }
 
-    public BidList() {
+    public AuctionList() {
     }
 
-    public List<Bid> getList() {
+    public List<Auction> getList() {
         return list;
     }
 
-    public void setList(List<Bid> list) {
+    public void setList(List<Auction> list) {
         this.list = list;
     }
 
 
     public OtpErlangList erlangize(){
         ArrayList<OtpErlangObject> tempList = new ArrayList<OtpErlangObject>();
-        for (Bid bid: list){
-            tempList.add(bid.erlangize());
+        for (Auction auction: list){
+            tempList.add(auction.erlangize());
         }
         OtpErlangObject tempArray[] = new OtpErlangObject[tempList.size()];
         return new OtpErlangList(tempList.toArray(tempArray));
@@ -37,9 +37,9 @@ public class BidList implements Serializable, Erlangizable<OtpErlangList> {
 
     public void derlangize(OtpErlangList tempList){
         for(OtpErlangObject element : tempList.elements()){
-            Bid bid = new Bid();
-            bid.derlangize((OtpErlangTuple) element);
-            list.add(bid);
+            Auction auction = new Auction();
+            auction.derlangize((OtpErlangTuple) element);
+            list.add(auction);
         }
 
     }

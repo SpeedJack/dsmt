@@ -10,12 +10,12 @@ import java.util.List;
 public interface AuctionManager {
 
 
-    String createAuction(AuctionData auction);
+    String createAuction(Auction auction);
     String deleteAuction(int auctionId);
-    Auction selectAuction(int auctionId, int userId);
-    List<AuctionData> auctionsList(int page);
-    List<AuctionData> auctionAgentList(int agentId);
-    List<AuctionData> auctionBidderList(int bidderId);
+    AuctionData selectAuction(int auctionId, int userId);
+    List<Auction> auctionsList(int page);
+    List<Auction> auctionAgentList(int agentId);
+    List<Auction> auctionBidderList(int bidderId);
 
     void makeBid(Bid bid);
     void deleteBid(int auctionId, int bidId);

@@ -34,7 +34,7 @@ public class AuctionManagerBean implements AuctionManager {
 
 
     @Override
-    public String createAuction(AuctionData auction) {
+    public String createAuction(Auction auction) {
         OtpErlangAtom cmd = new OtpErlangAtom("create_auction");
         OtpErlangInt id = new OtpErlangInt(auction.getId());
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,auction.erlangize()});
@@ -81,7 +81,7 @@ public class AuctionManagerBean implements AuctionManager {
     }
 
     @Override
-    public Auction selectAuction(int auctionId, int userId) {
+    public AuctionData selectAuction(int auctionId, int userId) {
         OtpErlangAtom cmd = new OtpErlangAtom("select_auction");
         OtpErlangInt id = new OtpErlangInt(auctionId);
         OtpErlangInt uId = new OtpErlangInt(userId);
@@ -104,7 +104,7 @@ public class AuctionManagerBean implements AuctionManager {
     }
 
     @Override
-    public List<AuctionData> auctionsList(int page) {
+    public List<Auction> auctionsList(int page) {
         OtpErlangAtom cmd = new OtpErlangAtom("auctions_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangInt p = new OtpErlangInt(page);
@@ -127,7 +127,7 @@ public class AuctionManagerBean implements AuctionManager {
     }
 
     @Override
-    public List<AuctionData> auctionAgentList(int agentId) {
+    public List<Auction> auctionAgentList(int agentId) {
         OtpErlangAtom cmd = new OtpErlangAtom("auctions_agent_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangInt a = new OtpErlangInt(agentId);
@@ -150,7 +150,7 @@ public class AuctionManagerBean implements AuctionManager {
     }
 
     @Override
-    public List<AuctionData> auctionBidderList(int bidderId) {
+    public List<Auction> auctionBidderList(int bidderId) {
         OtpErlangAtom cmd = new OtpErlangAtom("auctions_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangInt b = new OtpErlangInt(bidderId);
