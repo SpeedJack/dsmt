@@ -4,7 +4,6 @@
     <facet type="jpa" name="JPA">
       <configuration>
         <setting name="validation-enabled" value="true" />
-        <setting name="provider-name" value="EclipseLink" />
         <datasource-mapping>
           <factory-entry name="default" value="04054d77-4cab-4424-bd7f-83cdeee4d773" />
         </datasource-mapping>
