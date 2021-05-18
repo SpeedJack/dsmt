@@ -10,14 +10,18 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
     BidList list;
     AuctionState state;
 
-    public AuctionData getData() {
-        return data;
-    }
-
     public Auction(AuctionData data, BidList list, AuctionState state) {
         this.data = data;
         this.list = list;
         this.state = state;
+    }
+
+    public Auction(AuctionData data, BidList list) {
+        this(data, list, null);
+    }
+
+    public AuctionData getData() {
+        return data;
     }
 
     public void setData(AuctionData data) {

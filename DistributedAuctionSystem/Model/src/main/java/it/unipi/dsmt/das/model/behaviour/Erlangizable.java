@@ -11,7 +11,7 @@ public interface Erlangizable <E extends OtpErlangObject> {
         throw new UnsupportedOperationException();
     }
 
-    public default HashMap<String,Object> derlangize(E erlangdata) throws UnsupportedOperationException{
+    public default void derlangize(E erlangdata) throws UnsupportedOperationException{
         throw new UnsupportedOperationException();
     }
 }

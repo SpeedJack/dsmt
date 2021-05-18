@@ -9,7 +9,14 @@ import javax.ejb.Singleton;
 @Singleton(name = "AuctionStatePublisherEJB")
 public class AuctionStatePublisherBean implements AuctionStatePublisher {
 
+  /**
+   * Gestione Interesse per le aste
+   * Viene chiamato dagli auction manager quando qualcuno fa un offerta / la cancella
+   * Chiama la funzione dell'endpoint
+   */
+
   public AuctionStatePublisherBean() {
+
   }
 
   @Override

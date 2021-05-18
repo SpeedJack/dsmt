@@ -1,22 +1,23 @@
 package it.unipi.dsmt.das.model;
 
+import com.ericsson.otp.erlang.*;
 import it.unipi.dsmt.das.model.behaviour.Erlangizable;
 
 import java.io.Serializable;
 import java.time.Instant;
 
-public class AuctionData implements Serializable, Erlangizable {
+public class AuctionData implements Serializable, Erlangizable<OtpErlangTuple> {
     int id;
     int agent;
     String name;
     String image;
     String description;
-    Instant endDate;
+    String endDate;
     float minPrice;
     float minRaise;
     int saleQuantity;
 
-    public AuctionData(int id, int agent, String name, String image, String description, Instant endDate, float minPrice, float minRaise, int saleQuantity) {
+    public AuctionData(int id, int agent, String name, String image, String description, String endDate, float minPrice, float minRaise, int saleQuantity) {
         this.id = id;
         this.agent = agent;
         this.name = name;
@@ -26,6 +27,39 @@ public class AuctionData implements Serializable, Erlangizable {
         this.minPrice = minPrice;
         this.minRaise = minRaise;
         this.saleQuantity = saleQuantity;
+    }
+
+    public OtpErlangTuple erlangize(){
+        return new OtpErlangTuple(
+                new OtpErlangObject[] {
+                        new OtpErlangInt(id),
+                        new OtpErlangInt(agent),
+                        new OtpErlangString(name),
+                        new OtpErlangString(image),
+                        new OtpErlangString(description),
+                        new OtpErlangString(endDate),
+                        new OtpErlangFloat(minPrice),
+                        new OtpErlangFloat(minRaise),
+                        new OtpErlangInt(saleQuantity)
+                });
+    }
+
+    public void derlangize(OtpErlangTuple tuple){
+        try{
+            setId(((OtpErlangInt)tuple.elementAt(1)).intValue());
+            setAgent(((OtpErlangInt)tuple.elementAt(2)).intValue());
+            setName(((OtpErlangString)tuple.elementAt(3)).stringValue());
+            setImage(((OtpErlangString)tuple.elementAt(4)).stringValue());
+            setDescription(((OtpErlangString)tuple.elementAt(5)).stringValue());
+            setEndDate(((OtpErlangString)tuple.elementAt(6)).stringValue());
+            setMinPrice(((OtpErlangFloat)tuple.elementAt(7)).floatValue());
+            setMinRaise(((OtpErlangFloat)tuple.elementAt(8)).floatValue());
+            setSaleQuantity(((OtpErlangInt)tuple.elementAt(9)).intValue());
+
+        } catch (OtpErlangRangeException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     public int getId() {
@@ -64,11 +98,11 @@ public class AuctionData implements Serializable, Erlangizable {
 
     public void setDescription(String description) { this.description = description; }
 
-    public Instant getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Instant endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 

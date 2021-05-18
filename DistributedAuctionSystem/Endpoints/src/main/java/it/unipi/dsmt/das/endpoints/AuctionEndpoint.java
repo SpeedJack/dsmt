@@ -1,6 +1,7 @@
 package it.unipi.dsmt.das.endpoints;
 
 import it.unipi.dsmt.das.ejbs.interfaces.AuctionManager;
+import it.unipi.dsmt.das.ejbs.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.endpoints.messages.BidMessage;
 import it.unipi.dsmt.das.endpoints.messages.Message;
 import it.unipi.dsmt.das.endpoints.messages.SubscriptionMessage;
@@ -27,9 +28,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AuctionEndpoint {
     public static Map<Integer, Queue<Session>> subscribers = new ConcurrentHashMap<>();
-    public static Map<Integer, AuctionState> ongoingAuctions = new ConcurrentHashMap<>();
-    @EJB
-    public static AuctionManager manager;
+   @EJB
+    public static AuctionStatePublisher publisher;
 
     @OnOpen
     public void open(Session session, @PathParam("auction_id") int auctionId){
@@ -42,6 +42,7 @@ public class AuctionEndpoint {
 
         if(message instanceof BidMessage);
         //TODO handle bid message
+        //sendToAll(id, subscribers[Id])
         else if(message instanceof SubscriptionMessage);
         //TODO handle subscription message
 
@@ -62,7 +63,6 @@ public class AuctionEndpoint {
     public void handleError(){};
 
     public static void closeAuction(int id){
-        ongoingAuctions.remove(id);
         subscribers.get(id).forEach(session -> {
             try {
                 session.getBasicRemote().sendText("END");
@@ -73,7 +73,6 @@ public class AuctionEndpoint {
     };
 
     public static void updateAuction(int id, AuctionState state){
-        ongoingAuctions.put(id, state);
         subscribers.get(id).forEach( session -> {
             try {
                 session.getBasicRemote().sendObject(state);
