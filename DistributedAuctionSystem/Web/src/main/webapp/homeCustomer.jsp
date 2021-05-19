@@ -74,7 +74,7 @@
 							<img src= "style/img/image1.jpg">
 						</a></div>
 						<div class="detail_auction_item">
-							<p class = "bid"> 5 available </p> 
+							<p class = "bid"> 5 available </p>
 							<p class = "bid"> Lowest bid: 30$ </p>
 							<form name = "bid" method="post">
 								<table class = "bid_table">
@@ -139,3 +139,30 @@
 		</div>
 	</body>
 </html>
+
+<%-- Dynamic add of elements
+<c:forEach items="${auctionList}" var="auction">
+	<li class="poster_auction_item_wrapper">
+	<p class = "bid"> <b> ${auction.name} </b> </p>
+	<div class="poster_auction_item"> <a href="detailed_object.jsp">
+		<img src= ${auction.image}>
+	</a></div>
+	<div class="detail_auction_item">
+		<p class = "bid"> ${auction.saleQauntity} available </p>
+		<p class = "bid"> Lowest bid: ${lowestBid} </p>
+		<form name = "bid" method="post">
+			<table class = "bid_table">
+				<tr>
+					<td> <label> Offer </label>
+					<td> <input type="text" placeholder="0" class = "bid" required>
+				<tr>
+					<td> <label> N.Objects </label>
+					<td> <input type="text" placeholder="1" class = "bid" required>
+				<tr>
+					<td> <input type="button" value="Follow" class = "bid_button">
+					<td> <input type="submit" value="Bid" class = "bid_button">
+			</table>
+		</form>
+	</div>
+</c:forEach>
+--%>
