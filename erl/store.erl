@@ -75,6 +75,7 @@ insert_bid(Bid, AuctionId) ->
                 mnesia:write(BidRecord2)
             end,
     mnesia:transaction(Fun).
+    
 
 %--- DELETE ----------------------------------------------------------------------------------------------------------
 
@@ -95,10 +96,11 @@ get_auction(AuctionId) ->
     Fun =   fun() ->
                 mnesia:read(auction,AuctionId)
             end,
-    {atomic,AuctionRecord} = mnesia:transaction(Fun),
+    {Code ,AuctionRecord} = mnesia:transaction(Fun),
     if 
-        AuctionRecord == [] -> [];
-        true -> [H|_] = AuctionRecord, record_to_tuple(auction, H)
+        (Code == atomic) and (AuctionRecord =/= []) ->  [H|_] = AuctionRecord, 
+                                                        {Code, record_to_tuple(auction, H)};
+        true -> {Code, AuctionRecord}
     end.
 
 %returns the list of bids for an auction
@@ -106,10 +108,10 @@ get_bid_list(AuctionId) ->
     Fun =   fun() ->
                 mnesia:match_object(bid, {bid, '_', AuctionId, '_', '_', '_', '_'}, read)
             end,
-    {atomic, BidRecords} = mnesia:transaction(Fun),
+    {Code, BidRecords} = mnesia:transaction(Fun),
     if 
-        BidRecords == [] -> [];
-        true -> [record_to_tuple(bid,BidRecord) || BidRecord <- BidRecords]
+        (Code == atomic) and (BidRecords =/= []) -> {Code ,[record_to_tuple(bid,BidRecord) || BidRecord <- BidRecords]};
+        true -> {Code, BidRecords}
     end.
 
 %returns the list of bids for an auction of a given user
@@ -117,10 +119,10 @@ get_bid_list(AuctionId, UserId) ->
     Fun =   fun() ->
                 mnesia:match_object(bid, {bid, '_', AuctionId, UserId, '_', '_', '_'}, read)
             end,
-    {atomic, BidRecords} = mnesia:transaction(Fun),
+    {Code , BidRecords} = mnesia:transaction(Fun),
     if 
-        BidRecords == [] -> [];
-        true -> [record_to_tuple(bid,BidRecord) || BidRecord <- BidRecords]
+        (Code == atomic) and (BidRecords =/= []) -> {Code, [record_to_tuple(bid,BidRecord) || BidRecord <- BidRecords]};
+        true -> {Code, BidRecords}
     end.
 
 
@@ -145,8 +147,7 @@ get_auction_list(Page) ->
                     true -> lists:sublist(lists:reverse(List),(Page-1)*?PAGE_SIZE + 1, length(List))
                 end
             end,
-    {atomic, Result} = mnesia:transaction(Fun),
-    Result.
+    mnesia:transaction(Fun).
 
 %returns the list of auctions in which the user has made at least 1 bid
 get_bidder_auctions(IdBidder)->
@@ -157,18 +158,17 @@ get_bidder_auctions(IdBidder)->
                 IdAuctions = mnesia:select(bid,[{MatchHead, Guard, Result}]),
                 [record_to_tuple(auction, lists:usort(lists:nth(1,mnesia:read(auction,IdAuction))))|| IdAuction <- IdAuctions]
             end,
-    {atomic, Result} = mnesia:transaction(Fun),
-    Result.
+    mnesia:transaction(Fun).
 
 %returns the list of auctions created by an agent
 get_agent_auctions(IdAgent) ->
     Fun =   fun() ->
                 mnesia:match_object(auction, {auction, '_', IdAgent, '_', '_', '_', '_', '_', '_'}, read)
             end,
-    {atomic, AuctionList} = mnesia:transaction(Fun),
+    {Code, AuctionList} = mnesia:transaction(Fun),
     if 
-        AuctionList == [] -> [];
-        true -> [record_to_tuple(bid,Auction) || Auction <- AuctionList]
+        (Code == atomic) and (AuctionList =/= []) -> {Code, [record_to_tuple(bid,Auction) || Auction <- AuctionList]};
+        true -> {Code, AuctionList}
     end.
 
 

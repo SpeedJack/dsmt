@@ -58,70 +58,97 @@ compute_auction_state(AuctionData, BidList) ->
 %If the process is the leader, it forwards the new AuctionState to the slaves.
 create_auction(Message, {Data, State}) ->
     {_, Id, NewAuction} = Message,
-    NewData = Data ++ [{Id, []}],
-    store:insert_auction(NewAuction),
+    {Code, Res} = store:insert_auction(NewAuction),
     if
-        self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
-        true -> null
-    end,
-    NewData.
-
+        (Code == atomic) and (self() == State#state.leader) ->  NewData = Data ++ [{Id, []}],
+                                                            send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData),
+                                                            {{ok,ok}, NewData};
+        (Code == atomic) and (self() =/= State#state.leader) -> NewData = Data ++ [{Id, []}], 
+                                                            {{ok,ok}, NewData};
+        true -> {{err,Res}, Data}
+    end.
 %Deletes an auction from Mnesia and remove it from the auctions that the cluster manages. 
 %If the process is the leader, it forwards the new AuctionState to the slaves.
 delete_auction(Message, {Data, State}) ->
     {_, Id, _} = Message,
-    NewData = lists:keydelete(Id, 1, Data),
-    store:delete_auction(Id),
+    {Code,Res} = store:delete_auction(Id),
     if
-        self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
-        true -> null
-    end,
-    NewData.
+        (Code == atomic) and (self() == State#state.leader) ->  NewData = lists:keydelete(Id, 1, Data), 
+                                                            send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData),
+                                                            {{ok,ok}, NewData};
+        (Code == atomic) and (self() =/= State#state.leader) -> NewData = lists:keydelete(Id, 1, Data),
+                                                            {{ok,ok}, NewData};
+        true -> {{err,Res}, Data}
+    end.
 
 %Obtains from Mnesia the data of an auction and the list of bids made by the user who requested the auction
 select_auction(AuctionId, UserId) ->
-    Auction = store:get_auction(AuctionId),
-    BidList = store:get_bid_list(AuctionId, UserId),
-    {Auction, BidList}.
+    {Code1, Auction} = store:get_auction(AuctionId),
+    {Code2, BidList} = store:get_bid_list(AuctionId, UserId),
+    if 
+        (Code1 == atomic) and (Code2 == atomic) -> {ok,{Auction, BidList}};
+        Code1 =/= atomic -> {err, Auction};
+        true -> {err, BidList}
+    end.
 
 %Inserts a new bid in Mnesia and calculates the auction's new AuctionState
-make_bid(Message, {_, State}) ->
+make_bid(Message, {Data, State}) ->
     {_, Id, NewBid} = Message,
-    store:insert_bid(NewBid, Id),
-    Auction = store:get_auction(Id),
-    BidList = store:get_bid_list(Id),
+    {Code1, Res} = store:insert_bid(NewBid, Id),
+    {Code2,Auction} = store:get_auction(Id),
+    {Code3, BidList} = store:get_bid_list(Id),
     NewData = compute_auction_state(Auction, BidList),
     %io:format("NEW ACTION STATE ~p\n", [NewData]),
-    if
-        self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
-        true -> null
-    end,
-    NewData.
+    if 
+        (Code1 == atomic) and (Code2 == atomic) and (Code3 == atomic) ->    NewData = compute_auction_state(Auction, BidList), 
+                                                                            if
+                                                                                self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
+                                                                                true -> null
+                                                                            end,
+                                                                            {{ok,ok}, NewData};
+        Code1 =/= atomic -> {{err, Res}, Data};
+        Code2 =/= atomic -> {{err,Auction}, Data};
+        Code3 =/= atomic -> {{err,BidList}, Data}
+    end.
 
 %Delets a bid from Mnesia and calculates the auction's new AuctionState
-delete_bid(Message, {_, State}) ->
+delete_bid(Message, {Data, State}) ->
     {_, Id, IdBid} = Message,
-    store:delete_bid(IdBid),
-    Auction = store:get_auction(Id),
-    BidList = store:get_bid_list(Id),
-    NewData = compute_auction_state(Auction, BidList),
-    if
-        self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
-        true -> null
-    end,
-    NewData.
+    {Code1, Res} = store:delete_bid(IdBid),
+    {Code2,Auction} = store:get_auction(Id),
+    {Code3, BidList} = store:get_bid_list(Id),
+    if 
+        (Code1 == atomic) and (Code2 == atomic) and (Code3 == atomic) ->    NewData = compute_auction_state(Auction, BidList), 
+                                                                            if
+                                                                                self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
+                                                                                true -> null
+                                                                            end,
+                                                                            {{ok,NewData}, NewData};
+        Code1 =/= atomic -> {{err, Res}, Data};
+        Code2 =/= atomic -> {{err,Auction}, Data};
+        Code3 =/= atomic -> {{err,BidList}, Data}
+    end.
 
 %Returns the auction list
 auctions_list(Page) ->
-    AuctionList = store:get_auction_list(Page),
-    AuctionList.
+    {Code,AuctionList} = store:get_auction_list(Page),
+    if
+        Code == atomic -> {ok, AuctionList};
+        true -> {err, AuctionList}
+    end.
 
 %returns the list of auctions in which the user has made at least 1 bid
 auctions_bidder_list(BidderList) ->
-    AuctionList = store:get_bidder_auctions(BidderList),
-    AuctionList.
+    {Code, AuctionList} = store:get_bidder_auctions(BidderList),
+    if
+        Code == atomic -> {ok, AuctionList};
+        true -> {err, AuctionList}
+    end.
 
 %returns the list of auctions created by an agent
 auctions_agent_list(AgentId) ->
-    AuctionList = store:get_agent_auctions(AgentId),
-    AuctionList.
+    {Code, AuctionList} = store:get_agent_auctions(AgentId),
+    if
+        Code == atomic -> {ok, AuctionList};
+        true -> {err, AuctionList}
+    end.
