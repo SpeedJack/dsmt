@@ -11,6 +11,10 @@
     <modules>
         <module>Model</module>
         <module>Interfaces</module>
+        <module>EJBs</module>
+        <module>Endpoints</module>
+        <module>Persistence</module>
+        <module>Web</module>
     </modules>
     <name>DistributedAuctionSystem</name>
 
