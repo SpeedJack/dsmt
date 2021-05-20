@@ -13,6 +13,9 @@
         <option value="$PROJECT_DIR$/EJBs/pom.xml" />
         <option value="$PROJECT_DIR$/Endpoints/pom.xml" />
         <option value="$PROJECT_DIR$/Persistence/pom.xml" />
+        <option value="$PROJECT_DIR$/wsclient/pom.xml" />
+        <option value="$PROJECT_DIR$/WebSocketClient/pom.xml" />
+        <option value="$PROJECT_DIR$/WebSocket/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

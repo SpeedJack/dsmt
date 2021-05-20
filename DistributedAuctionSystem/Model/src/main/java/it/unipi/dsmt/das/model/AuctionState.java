@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class AuctionState implements Serializable, Erlangizable<OtpErlangList> {
     Set<Bid> winningBids;
-    AuctionState(){
+    public AuctionState() {
         winningBids = new HashSet<Bid>();
     }
 

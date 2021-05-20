@@ -6,23 +6,29 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Model" />
         <module name="Interfaces" />
-        <module name="Endpoints" />
         <module name="Persistence" />
         <module name="Web" />
         <module name="EJBs" />
+        <module name="Model" />
+        <module name="WebSocketClient" />
+        <module name="WebSocket" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="DistributedAuctionSystem" target="1.8" />
       <module name="EJBs" target="1.8" />
-      <module name="Endpoints" target="1.8" />
+      <module name="endpoints" target="1.8" />
       <module name="Interfaces" target="1.8" />
       <module name="Model" target="1.8" />
       <module name="Persistence" target="1.8" />
       <module name="Prova" target="1.8" />
       <module name="Web" target="1.8" />
+      <module name="WebSocket" target="1.8" />
+      <module name="WebSocketClient" target="1.8" />
+      <module name="WebSocketServer" target="1.8" />
+      <module name="ws" target="1.8" />
+      <module name="wsclient" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

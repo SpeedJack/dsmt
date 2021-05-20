@@ -22,6 +22,9 @@
           <element id="archive" name="interfaces-1.0-SNAPSHOT.jar">
             <element id="module-output" name="Interfaces" />
           </element>
+          <element id="library" level="project" name="Maven: javax:javaee-api:8.0.1" />
+          <element id="library" level="project" name="Maven: com.sun.mail:javax.mail:1.6.2" />
+          <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
         </element>
       </element>
       <element id="directory" name="META-INF">

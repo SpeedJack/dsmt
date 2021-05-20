@@ -13,10 +13,10 @@ public interface AuctionManager {
     String createAuction(Auction auction);
     String deleteAuction(int auctionId);
     AuctionData selectAuction(int auctionId, int userId);
-    List<Auction> auctionsList(int page);
-    List<Auction> auctionAgentList(int agentId);
-    List<Auction> auctionBidderList(int bidderId);
+    AuctionList auctionsList(int page);
+    AuctionList auctionAgentList(int agentId);
+    AuctionList auctionBidderList(int bidderId);
 
-    void makeBid(Bid bid);
-    void deleteBid(int auctionId, int bidId);
+    AuctionState makeBid(Bid bid);
+    AuctionState deleteBid(int auctionId, int bidId);
 }
