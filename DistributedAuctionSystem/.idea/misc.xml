@@ -16,6 +16,7 @@
         <option value="$PROJECT_DIR$/wsclient/pom.xml" />
         <option value="$PROJECT_DIR$/WebSocketClient/pom.xml" />
         <option value="$PROJECT_DIR$/WebSocket/pom.xml" />
+        <option value="$PROJECT_DIR$/WebSocketServer/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

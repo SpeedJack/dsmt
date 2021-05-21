@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/Web/Web.iml" filepath="$PROJECT_DIR$/Web/Web.iml" />
       <module fileurl="file://$PROJECT_DIR$/WebSocket/WebSocket.iml" filepath="$PROJECT_DIR$/WebSocket/WebSocket.iml" />
       <module fileurl="file://$PROJECT_DIR$/WebSocketClient/WebSocketClient.iml" filepath="$PROJECT_DIR$/WebSocketClient/WebSocketClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebSocketServer/WebSocketServer.iml" filepath="$PROJECT_DIR$/WebSocketServer/WebSocketServer.iml" />
     </modules>
   </component>
 </project>

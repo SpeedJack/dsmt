@@ -12,8 +12,9 @@
         <module>Model</module>
         <module>Interfaces</module>
         <module>EJBs</module>
-        <module>Endpoints</module>
-        <module>Persistence</module>
+        <module>WebSocketClient</module>
+        <module>WebSocketServer</module>
+        <module>WebSocket</module>
         <module>Web</module>
     </modules>
     <name>DistributedAuctionSystem</name>

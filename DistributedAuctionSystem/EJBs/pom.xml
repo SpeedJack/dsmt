@@ -42,13 +42,19 @@
         </dependency>
         <dependency>
             <groupId>it.unipi.dsmt.das</groupId>
-            <artifactId>endpoints</artifactId>
+            <artifactId>WebSocketServer</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>it.unipi.dsmt.das</groupId>
-            <artifactId>wsclient</artifactId>
+            <artifactId>WebSocketClient</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>it.unipi.dsmt.das</groupId>
+            <artifactId>model</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
