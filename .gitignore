@@ -1,1 +1,4 @@
-/DistributedAuctionSystem/out/
+DistributedAuctionSystem/out/
+**/target/
+**/.idea/*
+DistributedAuctionSystem/.idea/*
