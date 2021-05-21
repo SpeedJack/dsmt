@@ -2,8 +2,12 @@
   <artifact type="exploded-ejb" name="EJBs:ejb exploded">
     <output-path>$PROJECT_DIR$/out/artifacts/EJBs_ejb_exploded</output-path>
     <root id="root">
+      <element id="module-output" name="EJBs" />
       <element id="javaee-facet-resources" facet="EJBs/ejb/EJB" />
-      <element id="javaee-facet-classes" facet="EJBs/ejb/EJB" />
+      <element id="module-output" name="Interfaces" />
+      <element id="module-output" name="Model" />
+      <element id="library" level="project" name="Maven: org.erlang.otp:jinterface:1.6.1" />
+      <element id="library" level="project" name="Maven: clojang:erlang-jinterface:1.10-1" />
     </root>
   </artifact>
 </component>

@@ -6,5 +6,5 @@ import javax.ejb.Remote;
 
 @Remote
 public interface AuctionStatePublisher {
-    public void publishState(int id, AuctionState state);
+    void publishState(int id, AuctionState state);
 }
