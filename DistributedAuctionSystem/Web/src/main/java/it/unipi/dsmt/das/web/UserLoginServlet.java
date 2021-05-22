@@ -1,6 +1,6 @@
 package it.unipi.dsmt.das.web;
 
-import it.unipi.dsmt.das.ejbs.interfaces.UserManager;
+import it.unipi.dsmt.das.ejbs.beans.interfaces.UserManager;
 import it.unipi.dsmt.das.model.User;
 
 import java.io.*;

@@ -1,14 +1,12 @@
 package it.unipi.dsmt.das.ws.endpoints;
 
-import it.unipi.dsmt.das.ejbs.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.AuctionState;
 import it.unipi.dsmt.das.ws.decode.AuctionStateDecoder;
 import it.unipi.dsmt.das.ws.encode.AuctionStateEncoder;
-import javax.ejb.EJB;
+
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;

@@ -1,10 +1,12 @@
-package it.unipi.dsmt.das.ejbs.interfaces;
+package it.unipi.dsmt.das.ejbs.beans.interfaces;
 
+import javax.ejb.Local;
 import javax.ejb.Remote;
 
 import it.unipi.dsmt.das.model.*;
 
 import java.util.List;
+
 
 @Remote
 public interface AuctionManager {

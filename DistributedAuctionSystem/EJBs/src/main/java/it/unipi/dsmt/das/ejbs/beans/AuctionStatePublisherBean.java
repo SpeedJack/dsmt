@@ -1,6 +1,6 @@
-package it.unipi.dsmt.das.ejbs;
+package it.unipi.dsmt.das.ejbs.beans;
 
-import it.unipi.dsmt.das.ejbs.interfaces.AuctionStatePublisher;
+import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.AuctionState;
 import it.unipi.dsmt.das.ws.client.WSClient;
 

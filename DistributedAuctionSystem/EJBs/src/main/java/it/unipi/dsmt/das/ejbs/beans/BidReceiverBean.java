@@ -1,6 +1,7 @@
-package it.unipi.dsmt.das.ejbs;
+package it.unipi.dsmt.das.ejbs.beans;
 
-import it.unipi.dsmt.das.ejbs.interfaces.AuctionManager;
+import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
+import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.AuctionState;
 import it.unipi.dsmt.das.model.Bid;
 
@@ -24,7 +25,7 @@ public class BidReceiverBean implements MessageListener {
     @EJB
     AuctionManager manager;
     @EJB
-    AuctionStatePublisherBean publisher;
+    AuctionStatePublisher publisher;
     public BidReceiverBean() {
 
     }

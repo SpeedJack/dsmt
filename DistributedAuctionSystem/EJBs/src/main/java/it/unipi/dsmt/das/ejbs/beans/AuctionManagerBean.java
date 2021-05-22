@@ -1,7 +1,7 @@
-package it.unipi.dsmt.das.ejbs;
+package it.unipi.dsmt.das.ejbs.beans;
 
 import com.ericsson.otp.erlang.*;
-import it.unipi.dsmt.das.ejbs.interfaces.AuctionManager;
+import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.*;
 import javax.ejb.Stateless;
 import java.io.IOException;
