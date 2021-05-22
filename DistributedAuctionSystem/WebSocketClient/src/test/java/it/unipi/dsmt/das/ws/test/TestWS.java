@@ -15,10 +15,10 @@ import java.util.concurrent.CountDownLatch;
 public class TestWS {
 
     public static void main(String[] args) throws DeploymentException, IOException, InterruptedException {
-        WebSocketContainer cc = ContainerProvider.getWebSocketContainer();
-        Session connectToServer = cc.connectToServer(WSClient.class, URI.create("ws://hp:8080/DAS/auctions/0/"));
+        //WebSocketContainer cc = ContainerProvider.getWebSocketContainer();
+        //Session connectToServer = cc.connectToServer(WSClient.class, URI.create("ws://hp:8080/ws/auctions/0/"));
         new CountDownLatch(1).await();
-       /** WSClient client = new WSClient();
+        WSClient client = new WSClient();
         WSClient backend = new WSClient("ws://hp:8080/DAS/auctions/", 0);
 
         AuctionState state = new AuctionState();
@@ -34,6 +34,6 @@ public class TestWS {
         }
 
         client.addMessageHandler(System.out::println);
-        backend.sendMessage(state);**/
+        backend.sendMessage(state);
     }
 }

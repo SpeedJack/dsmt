@@ -1,0 +1,32 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="WebSocketServer:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/WebSocketServer_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="WebSocketServer" />
+          <element id="module-output" name="Model" />
+          <element id="module-output" name="Interfaces" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: com.sun.mail:javax.mail:1.6.2" />
+          <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
+          <element id="library" level="project" name="Maven: javax.websocket:javax.websocket-api:1.1" />
+          <element id="library" level="project" name="Maven: org.glassfish.tyrus:tyrus-server:1.12" />
+          <element id="library" level="project" name="Maven: org.glassfish.tyrus:tyrus-client:1.12" />
+          <element id="library" level="project" name="Maven: org.glassfish.tyrus:tyrus-core:1.12" />
+          <element id="library" level="project" name="Maven: org.glassfish.tyrus:tyrus-spi:1.12" />
+          <element id="library" level="project" name="Maven: org.glassfish.tyrus:tyrus-container-grizzly-client:1.12" />
+          <element id="library" level="project" name="Maven: org.glassfish.tyrus:tyrus-container-grizzly-server:1.12" />
+          <element id="library" level="project" name="Maven: org.glassfish.grizzly:grizzly-framework:2.3.22" />
+          <element id="library" level="project" name="Maven: org.glassfish.grizzly:grizzly-http-server:2.3.22" />
+          <element id="library" level="project" name="Maven: org.glassfish.grizzly:grizzly-http:2.3.22" />
+          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.0" />
+          <element id="library" level="project" name="Maven: it.unipi.dsmt.das:ws:1.0-SNAPSHOT" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="WebSocketServer/web/Web" />
+      <element id="javaee-facet-resources" facet="Interfaces/ejb/EJB" />
+    </root>
+  </artifact>
+</component>

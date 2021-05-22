@@ -22,6 +22,7 @@ public class AuctionEndpoint {
 
     @OnOpen
     public void open(Session session, @PathParam("auction_id") int auctionId){
+        System.out.println("AUCTION ID = " + auctionId);
         subscribers.putIfAbsent(auctionId, new ConcurrentLinkedQueue<>());
         subscribers.get(auctionId).add(session);
     }
@@ -49,7 +50,9 @@ public class AuctionEndpoint {
     }
 
     @OnError
-    public void handleError(){};
+    public void handleError(Throwable error){
+        error.printStackTrace();
+    };
 
     public static void closeAuction(int id){
         subscribers.get(id).forEach(session -> {
@@ -58,6 +61,7 @@ public class AuctionEndpoint {
     };
 
     public static void updateAuction(int id, AuctionState state){
+        System.out.println(state);
         subscribers.get(id).forEach( session -> {
                 session.getAsyncRemote().sendObject(state);
         });

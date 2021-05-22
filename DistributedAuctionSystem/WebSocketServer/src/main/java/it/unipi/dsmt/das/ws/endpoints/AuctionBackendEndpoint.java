@@ -30,5 +30,7 @@ public class AuctionBackendEndpoint {
     }
 
     @OnError
-    public void handleError(){};
+    public void handleError(Throwable error){
+        error.printStackTrace();
+    };
 }
