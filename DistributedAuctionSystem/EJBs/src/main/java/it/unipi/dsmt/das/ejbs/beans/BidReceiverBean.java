@@ -4,6 +4,7 @@ import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.AuctionState;
 import it.unipi.dsmt.das.model.Bid;
+import it.unipi.dsmt.das.ws.client.WSClient;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
@@ -11,6 +12,7 @@ import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 
 @MessageDriven(name = "BidReceiverEJB",
         activationConfig = {
@@ -33,44 +35,32 @@ public class BidReceiverBean implements MessageListener {
     @Override
     public void onMessage(Message message) {
         try {
-            switch (message.getStringProperty("TYPE")) {
-                case "MAKE":
-                    handleMakeBidMessage(message);
-                    break;
-                case "DELETE":
-                    handleDeleteBidMessage(message);
-                    break;
-                default:
+            AuctionState state = message.getBody(AuctionState.class);
+            int auction = message.getIntProperty("auction");
+            boolean close = message.getBooleanProperty("closed");
+            if (close)
+                handleCloseMessage(auction, state);
+            else
+                handleStateMessage(auction, state);
 
-                    return;
-            }
         } catch (JMSException ex) {
             ex.printStackTrace();
-            return;
         }
     }
 
-    public void handleMakeBidMessage(Message message) {
-        Bid bid = null;
-        try {
-            bid = (Bid) message.getObjectProperty("bid");
-        } catch (JMSException e) {
-            e.printStackTrace();
-            return;
-        }
-        AuctionState state = manager.makeBid(bid);
-        publisher.publishState(bid.getAuction(), state);
+    public void handleStateMessage(int auction, AuctionState state) {
+
+        WSClient clientEndPoint = new WSClient(auction); //add listener
+        clientEndPoint.addMessageHandler(System.out::println);
+        // send message to websocket
+        clientEndPoint.sendMessage(state);
     }
 
-    public void handleDeleteBidMessage(Message message) {
-        Bid bid = null;
-        try {
-            bid = (Bid) message.getObjectProperty("bid");
-        } catch (JMSException e) {
-            e.printStackTrace();
-            return;
-        }
-        manager.deleteBid(bid.getAuction(), bid.getId());
-    }
+    public void handleCloseMessage(int auction, AuctionState state) {
 
+        WSClient clientEndPoint = new WSClient(auction); //add listener
+        clientEndPoint.addMessageHandler(System.out::println);
+        // send message to websocket
+        clientEndPoint.sendMessage(state);
+    }
 }

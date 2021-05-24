@@ -2,7 +2,10 @@ package it.unipi.dsmt.das.ejbs.beans;
 
 import com.ericsson.otp.erlang.*;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
+import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.*;
+
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,7 +17,8 @@ public class AuctionManagerBean implements AuctionManager {
     private final String dispatcherNodeName = "disp@localhost";
     private final String mboxName = "auction_manager_mbox";
     private final String nodeName = "auction_manager@localhost";
-
+    @EJB
+    AuctionStatePublisher publisher;
     OtpNode node;
     OtpMbox mbox;
 
@@ -183,11 +187,14 @@ public class AuctionManagerBean implements AuctionManager {
                 OtpErlangList newAuctionState = (OtpErlangList) response.elementAt(2);
                 state = new AuctionState();
                 state.derlangize(newAuctionState);
+                publisher.publishState(bid.getAuction(), state);
             }
         } catch (OtpErlangExit | OtpErlangDecodeException otpErlangExit) {
             otpErlangExit.printStackTrace();
         }
+
         return state;
+
     }
 
     @Override
@@ -204,8 +211,8 @@ public class AuctionManagerBean implements AuctionManager {
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")){
                 OtpErlangList newAuctionState = (OtpErlangList) response.elementAt(2);
+                state = new AuctionState();
                 state.derlangize(newAuctionState);
-                //converti la lista in un ogetto Java e inviala al singleton che gestisce lo stato delle aste
             }
         } catch (OtpErlangExit | OtpErlangDecodeException otpErlangExit) {
             otpErlangExit.printStackTrace();
