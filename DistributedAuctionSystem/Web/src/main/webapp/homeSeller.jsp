@@ -45,9 +45,9 @@
 							<span>Auctions List</span>
 						</a>
 					<li>
-						<a href="followed">
+						<a href="offers">
 							<span class="menu_item_img profile_img"></span>
-							<span>Followed Auctions</span>	
+							<span>My Offers</span>	
 						</a>
 				</ul>
 			</div>

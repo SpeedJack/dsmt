@@ -47,9 +47,9 @@
 							<span>Auctions List</span>
 						</a>
 					<li>
-						<a href="followed">
+						<a href="offers">
 							<span class="menu_item_img profile_img"></span>
-							<span>Followed Auctions</span>	
+							<span>My Offers</span>	
 						</a>
 				</ul>
 			</div>
@@ -75,6 +75,8 @@
 		  			<input class = "form" name="name" type="text" size = "40" required><br>
     			<label class = "little">Minimum Bid:</label>  				 
 		  			<input class = "form" name="minimum_bid" type="text" size = "5" required><br>
+				<label class = "little">Minimum Raise:</label>
+					<input class = "form" name="minimum_raise" type="text" size = "5" required><br>
 				<label class = "little">Number of Objects:</label>		  			 
 		  			<input class = "form" name="object" type="text" size = "5" required><br>
 				<label class = "little">End Day: </label>     				

@@ -5,6 +5,8 @@ import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.*;
 import javax.ejb.Stateless;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Stateless(name = "AuctionManagerEJB")
 public class AuctionManagerBean implements AuctionManager {
@@ -17,8 +19,8 @@ public class AuctionManagerBean implements AuctionManager {
     OtpMbox mbox;
 
     public AuctionManagerBean() throws IOException {
-        this.node = new OtpNode(nodeName);
-        this.mbox = node.createMbox(mboxName);
+       // this.node = new OtpNode(nodeName);
+       // this.mbox = node.createMbox(mboxName);
     }
 
 
@@ -94,7 +96,7 @@ public class AuctionManagerBean implements AuctionManager {
 
     @Override
     public AuctionList auctionsList(int page) {
-        AuctionList list = null;
+        /*AuctionList list = null;
         OtpErlangAtom cmd = new OtpErlangAtom("auctions_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangInt p = new OtpErlangInt(page);
@@ -111,7 +113,15 @@ public class AuctionManagerBean implements AuctionManager {
         } catch (OtpErlangExit | OtpErlangDecodeException e) {
             e.printStackTrace();
         }
-        return list;
+        return list;*/
+        Auction a1 = new Auction(1,1,"Nintendo DS", "style/img/image1.jpg", "Nintendo DS", "2021/05/27 21:00", 30, 1, 5);
+        Auction a2 = new Auction(2,1,"Xiaomi Mi 11", "style/img/image2.jpg", "Xiaomi Mi 11", "2021/05/25 10:00", 300, 5, 2);
+        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", "2021/05/30 21:00", 1, (float) 0.1, 50);
+        List<Auction> list = new ArrayList<>();
+        list.add(a1);
+        list.add(a2);
+        list.add(a3);
+        return new AuctionList(list);
     }
 
     @Override

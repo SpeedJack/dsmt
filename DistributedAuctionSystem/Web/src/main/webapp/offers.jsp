@@ -46,14 +46,14 @@
 						</a>	
 					<li>
 						<span class="menu_item_img profile_img"></span>
-						<span>Followed Auctions</span>	
+						<span>My Offers</span>
 				</ul>
 			</div>
 			<div id="auction_menu" class="menu_single_section">
-				<ul>	
+				<ul>
 					<li>
 						<a href="seller">
-							<div id="toMyObjectsImgLink" class="menu_item_img to_my_objects_img_0"></div>	
+							<div id="toMyObjectsImgLink" class="menu_item_img to_my_objects_img_0"></div>
 							<span id="toMyObjectsLabelLink" class="normal_label">My Auctions</span>
 						</a>
 					<li>

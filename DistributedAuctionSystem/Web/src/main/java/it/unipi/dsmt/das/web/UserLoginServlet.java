@@ -25,19 +25,18 @@ public class UserLoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         User user = userManager.login(username, password);
-        String destPage = "index.jsp";
-
+        RequestDispatcher dispatcher;
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             request.setAttribute("username", username);
-            destPage = "homeCustomer.jsp";
+            dispatcher = request.getServletContext().getRequestDispatcher("/customer");
         } else {
             String message = "Credentials not valid. Please retry";
             request.setAttribute("message", message);
+            dispatcher = request.getRequestDispatcher("index.jsp");
         }
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
         dispatcher.forward(request, response);
 
     }

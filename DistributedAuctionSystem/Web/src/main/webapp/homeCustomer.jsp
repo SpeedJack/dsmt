@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="it">
@@ -43,9 +44,9 @@
 						<span class="menu_item_img profile_img"></span>
 						<span>Auctions List</span>	
 					<li>
-						<a href="followed">
+						<a href="offers">
 							<span class="menu_item_img profile_img"></span>
-							<span>Followed Auctions</span>	
+							<span>My Offers</span>	
 						</a>
 				</ul>
 			</div>
@@ -68,88 +69,41 @@
 		<div id="content">	
 			<section class="auction_dashboard">	
 				<ul class="poster_auctions_list">
+					<c:forEach items="${auctionList}" var="auction">
 					<li class="poster_auction_item_wrapper">
-						<p class = "bid"> <b> Nintendo DS </b> </p>
+						<p class = "bid"> <b> ${auction.name} </b> </p>
 						<div class="poster_auction_item"> <a href="detailed_object.jsp">
-							<img src= "style/img/image1.jpg">
+							<img src= ${auction.image}>
 						</a></div>
 						<div class="detail_auction_item">
-							<p class = "bid"> 5 available </p>
-							<p class = "bid"> Lowest bid: 30$ </p>
-							<form name = "bid" method="post">
-								<table class = "bid_table">
-									<tr>
-										<td> <label> Offer </label>
-										<td> <input type="text" placeholder="0" class = "bid" required>
-									<tr>
-										<td> <label> N.Objects </label>
-										<td> <input type="text" placeholder="1" class = "bid" required>
-									<tr>
-										<td> <input type="button" value="Follow" class = "bid_button">
-										<td> <input type="submit" value="Bid" class = "bid_button">
-								</table>
-							</form>
+							<p class = "bid"> ${auction.saleQuantity} available </p>
+							<p class = "bid"> Starting bid: ${auction.minPrice}$ </p>
 						</div>
-					<li class="poster_auction_item_wrapper">
-						<p class = "bid"> <b> Xiaomi Mi 11 </b> </p>
-						<div class="poster_auction_item"> <a href="pages/detailed_object.jsp">
-							<img src= "style/img/image2.jpg">
-						</a></div>
-						<div class="detail_auction_item">
-							<p class = "bid"> 2 available </p> 
-							<p class = "bid"> Lowest bid: 300$ </p>
-							<form name = "bid" method="post">
-								<table class = "bid_table">
-									<tr>
-										<td> <label> Offer </label>
-										<td> <input type="text" placeholder="0" class = "bid" required>
-									<tr>
-										<td> <label> N.Objects </label>
-										<td> <input type="text" placeholder="1" class = "bid" required>
-									<tr>
-										<td> <input type="button" value="Follow" class = "bid_button">
-										<td> <input type="submit" value="Bid" class = "bid_button">
-								</table>
-							</form>
-						</div>
-					<li class="poster_auction_item_wrapper">
-						<p class = "bid"> <b> Nutella </b> </p>
-						<div class="poster_auction_item"> <a href="pages/detailed_object.jsp">
-							<img src= "style/img/image3.jpg">
-						</a></div>
-						<div class="detail_auction_item">
-							<p class = "bid"> 50 available </p> 
-							<p class = "bid"> Lowest bid: 1$ </p>
-							<form name = "bid" method="post">
-								<table class = "bid_table">
-									<tr>
-										<td> <label> Offer </label>
-										<td> <input type="text" placeholder="0" class = "bid" required>
-									<tr>
-										<td> <label> N.Objects </label>
-										<td> <input type="text" placeholder="1" class = "bid" required>
-									<tr>
-										<td> <input type="button" value="Unfollow" class = "bid_button">
-										<td> <input type="submit" value="Bid" class = "bid_button">
-								</table>
-							</form>
-						</div>
+						</c:forEach>
 				</ul>
 			</section>	
 		</div>
 	</body>
 </html>
 
-<%-- Dynamic add of elements
-<c:forEach items="${auctionList}" var="auction">
-	<li class="poster_auction_item_wrapper">
-	<p class = "bid"> <b> ${auction.name} </b> </p>
+<!--
+<li class="poster_auction_item_wrapper">
+	<p class = "bid"> <b> Nintendo DS </b> </p>
 	<div class="poster_auction_item"> <a href="detailed_object.jsp">
-		<img src= ${auction.image}>
+		<img src= "style/img/image1.jpg">
 	</a></div>
 	<div class="detail_auction_item">
-		<p class = "bid"> ${auction.saleQauntity} available </p>
-		<p class = "bid"> Lowest bid: ${lowestBid} </p>
+		<p class = "bid"> 5 available </p>
+		<p class = "bid"> Starting bid: 30$ </p>
+	</div>
+<li class="poster_auction_item_wrapper">
+	<p class = "bid"> <b> Xiaomi Mi 11 </b> </p>
+	<div class="poster_auction_item"> <a href="pages/detailed_object.jsp">
+		<img src= "style/img/image2.jpg">
+	</a></div>
+	<div class="detail_auction_item">
+		<p class = "bid"> 2 available </p>
+		<p class = "bid"> Lowest bid: 300$ </p>
 		<form name = "bid" method="post">
 			<table class = "bid_table">
 				<tr>
@@ -164,5 +118,26 @@
 			</table>
 		</form>
 	</div>
-</c:forEach>
---%>
+<li class="poster_auction_item_wrapper">
+	<p class = "bid"> <b> Nutella </b> </p>
+	<div class="poster_auction_item"> <a href="pages/detailed_object.jsp">
+		<img src= "style/img/image3.jpg">
+	</a></div>
+	<div class="detail_auction_item">
+		<p class = "bid"> 50 available </p>
+		<p class = "bid"> Lowest bid: 1$ </p>
+		<form name = "bid" method="post">
+			<table class = "bid_table">
+				<tr>
+					<td> <label> Offer </label>
+					<td> <input type="text" placeholder="0" class = "bid" required>
+				<tr>
+					<td> <label> N.Objects </label>
+					<td> <input type="text" placeholder="1" class = "bid" required>
+				<tr>
+					<td> <input type="button" value="Unfollow" class = "bid_button">
+					<td> <input type="submit" value="Bid" class = "bid_button">
+			</table>
+		</form>
+	</div>
+-->

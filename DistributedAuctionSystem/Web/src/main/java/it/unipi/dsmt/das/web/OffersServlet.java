@@ -8,11 +8,11 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
-@WebServlet("/followed")
-public class FollowedServlet extends HttpServlet {
+@WebServlet("/offers")
+public class OffersServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public FollowedServlet() {
+    public OffersServlet() {
         super();
     }
 
@@ -21,7 +21,7 @@ public class FollowedServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String destPage;
         if (session != null) {
-            destPage = "followed.jsp";
+            destPage = "offers.jsp";
             User sessionUser = (User)session.getAttribute("user");
             String username = sessionUser.getUsername();
             request.setAttribute("username", username);
