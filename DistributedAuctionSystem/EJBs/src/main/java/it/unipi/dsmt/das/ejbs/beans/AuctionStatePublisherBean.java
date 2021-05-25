@@ -23,9 +23,9 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
 
   private static final ConcurrentHashMap<Integer, AuctionState> states =
           new ConcurrentHashMap<>();
-  @Resource(lookup = "jms/ConnectionFactory")
+  @Resource(lookup = "jms/bidsQueueCF")
   private ConnectionFactory connectionFactory;
-  @Resource(lookup = "jms/Queue")
+  @Resource(lookup = "jms/bidsQueue")
   private Queue queue;
 
 

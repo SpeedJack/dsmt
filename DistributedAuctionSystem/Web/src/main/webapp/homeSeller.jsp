@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="it">
@@ -68,26 +69,38 @@
 		<div id="content">	
 			<section class="auction_dashboard">	
 				<ul class="poster_auctions_list">
+					<c:forEach items="${auctionList}" var="auction">
 					<li class="poster_auction_item_wrapper">
-						<p class = "bid"> <b> Nintendo DS </b> </p>
+						<p class = "bid"> <b> ${auction.name} </b> </p>
 						<div class="poster_auction_item"> <a href="detailed_object.jsp">
-							<img src= "style/img/image1.jpg">
+							<img src= ${auction.image}>
 						</a></div>
 						<div class="detail_auction_item">
-							<p class = "auction_state"> Auction finished </p> 
-							<p class = "bid"> Total Object: 5 </p>
-							<p class = "bid"> Total Gain: 500$ </p>
+							<p class = "bid"> Starting Bid: ${auction.minPrice} $ </p>
+							<p class = "bid"> End: ${auction.endDate} </p>
 						</div>
-					<li class="poster_auction_item_wrapper">
-						<p class = "bid"> <b> Nutella </b> </p>
-						<div class="poster_auction_item"> <a href="detailed_object.jsp">
-							<img src= "style/img/image3.jpg">
-						</a></div>
-						<div class="detail_auction_item">
-							<p class = "auction_state"> Auction in Progress </p> 
-						</div>
+						</c:forEach>
 				</ul>
 			</section>	
 		</div>
 	</body>
 </html>
+
+<!-- <li class="poster_auction_item_wrapper">
+<p class = "bid"> <b> Nintendo DS </b> </p>
+<div class="poster_auction_item"> <a href="detailed_object.jsp">
+<img src= "style/img/image1.jpg">
+</a></div>
+<div class="detail_auction_item">
+<p class = "auction_state"> Auction finished </p>
+<p class = "bid"> Total Object: 5 </p>
+<p class = "bid"> Total Gain: 500$ </p>
+</div>
+<li class="poster_auction_item_wrapper">
+<p class = "bid"> <b> Nutella </b> </p>
+<div class="poster_auction_item"> <a href="detailed_object.jsp">
+<img src= "style/img/image3.jpg">
+</a></div>
+<div class="detail_auction_item">
+<p class = "auction_state"> Auction in Progress </p>
+</div> -->

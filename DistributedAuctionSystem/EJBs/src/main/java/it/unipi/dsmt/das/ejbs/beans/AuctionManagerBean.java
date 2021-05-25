@@ -130,7 +130,7 @@ public class AuctionManagerBean implements AuctionManager {
 
     @Override
     public AuctionList auctionAgentList(int agentId) {
-        AuctionList list = null;
+        /*AuctionList list = null;
         OtpErlangAtom cmd = new OtpErlangAtom("auctions_agent_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangInt a = new OtpErlangInt(agentId);
@@ -147,12 +147,18 @@ public class AuctionManagerBean implements AuctionManager {
         } catch (OtpErlangExit | OtpErlangDecodeException e) {
             e.printStackTrace();
         }
-        return list;
+        return list;*/
+        Auction a1 = new Auction(1,1,"Nintendo DS", "style/img/image1.jpg", "Nintendo DS", "2021/05/27 21:00", 30, 1, 5);
+        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", "2021/05/30 21:00", 1, (float) 0.1, 50);
+        List<Auction> list = new ArrayList<>();
+        list.add(a1);
+        list.add(a3);
+        return new AuctionList(list);
     }
 
     @Override
     public AuctionList auctionBidderList(int bidderId) {
-        AuctionList list = null;
+        /*AuctionList list = null;
         OtpErlangAtom cmd = new OtpErlangAtom("auctions_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangInt b = new OtpErlangInt(bidderId);
@@ -169,10 +175,17 @@ public class AuctionManagerBean implements AuctionManager {
         } catch (OtpErlangExit | OtpErlangDecodeException e) {
             e.printStackTrace();
         }
-        return list;
+        return list;*/
+
+        Auction a1 = new Auction(1,1,"Nintendo DS", "style/img/image1.jpg", "Nintendo DS", "2021/05/27 21:00", 30, 1, 5);
+        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", "2021/05/30 21:00", 1, (float) 0.1, 50);
+        List<Auction> list = new ArrayList<>();
+        list.add(a1);
+        list.add(a3);
+        return new AuctionList(list);
     }
 
-    @Override
+   @Override
     public AuctionState makeBid(Bid bid) {
         AuctionState state = null;
         OtpErlangAtom cmd = new OtpErlangAtom("make_bid");

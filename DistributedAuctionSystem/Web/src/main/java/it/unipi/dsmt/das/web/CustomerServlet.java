@@ -1,6 +1,7 @@
 package it.unipi.dsmt.das.web;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.Auction;
+import it.unipi.dsmt.das.model.AuctionList;
 import it.unipi.dsmt.das.model.User;
 
 import java.io.IOException;
@@ -27,16 +28,18 @@ public class CustomerServlet extends HttpServlet {
         String destPage;
 
         if (session != null) {
+            List<Auction> list;
             destPage = "homeCustomer.jsp";
             User sessionUser = (User)session.getAttribute("user");
             String username = sessionUser.getUsername();
             request.setAttribute("username", username);
-            List<Auction> list = auctionManager.auctionsList(0).getList();
-            if(list != null) ;
-            else {
+            AuctionList auctionList = auctionManager.auctionsList(0);
+            if(auctionList == null) {
                 list = new ArrayList<>();
-                list.add(new Auction(0, 0, "Empty list", "style/img/image3.jpg", "", "", 0, 0, 0));
+                list.add(new Auction(0, 0, "Empty list", "style/img/auction.jpg", "", "", 0, 0, 0));
             }
+            else
+                list = auctionList.getList();
             request.setAttribute("auctionList", list);
         }
         else
