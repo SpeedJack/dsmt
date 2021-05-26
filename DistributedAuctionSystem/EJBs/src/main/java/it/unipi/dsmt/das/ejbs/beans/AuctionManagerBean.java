@@ -23,8 +23,8 @@ public class AuctionManagerBean implements AuctionManager {
     OtpMbox mbox;
 
     public AuctionManagerBean() throws IOException {
-       // this.node = new OtpNode(nodeName);
-       // this.mbox = node.createMbox(mboxName);
+       //this.node = new OtpNode(nodeName);
+       //this.mbox = node.createMbox(mboxName);
     }
 
 
@@ -77,7 +77,7 @@ public class AuctionManagerBean implements AuctionManager {
 
     @Override
     public AuctionData selectAuction(int auctionId, int userId) {
-        AuctionData data = null;
+        /*AuctionData data = null;
         OtpErlangAtom cmd = new OtpErlangAtom("select_auction");
         OtpErlangInt id = new OtpErlangInt(auctionId);
         OtpErlangInt uId = new OtpErlangInt(userId);
@@ -95,7 +95,10 @@ public class AuctionManagerBean implements AuctionManager {
         } catch (OtpErlangExit | OtpErlangDecodeException e) {
             e.printStackTrace();
         }
-        return data;
+        return data;*/
+
+        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", "2021/05/30 21:00", 1, (float) 0.1, 50);
+        return new AuctionData(a3, null);
     }
 
     @Override

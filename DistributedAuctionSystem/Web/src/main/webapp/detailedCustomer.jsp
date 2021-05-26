@@ -72,13 +72,13 @@
 			<div id="detailed_auction_tab">
 				<div id="left">
 					<div id="detailed_poster">
-						<h1> Nutella </h1>
-						<img src="style/img/image3.jpg">
+						<h1> ${auction.name} </h1>
+						<img src=${auction.image}>
 						<div class="content_movie_wrapper">
-							<span class="title_stats">Vendor</span>: Lorenzo21 <br>
+							<span class="title_stats">Vendor ID</span>: ${auction.agent} <br>
 							<span class="title_stats">Lowest bid</span>: 1$ <br>
-							<span class="title_stats">Available Objects</span>: 50<br>
-							<span class="title_stats">End time</span>: 2021-05-08 21:00<br>	
+							<span class="title_stats">Available Objects</span>: ${auction.saleQuantity}<br>
+							<span class="title_stats">End time</span>: ${auction.endDate}<br>
 							<form name = "bid" method="post">
 								<table class = "single_bid_table">
 									<tr>
@@ -88,7 +88,7 @@
 										<td> <span class="title_stats">N.Objects</span>
 										<td> <input type="text" placeholder="1" class = "single_bid" required>
 									<tr>
-										<td> <input type="button" value="Unfollow" class = "single_follow_button">
+										<td>
 										<td> <input type="submit" value="Bid" class = "single_bid_button">
 								</table>
 							</form>	
@@ -98,7 +98,7 @@
 					</div>
 					<div id="main">
 						<h2>Description:</h2>
-						<p> Che mondo sarebbe senza Nutella</p>
+						<p> ${auction.description}</p>
 					</div>
 				</div>
 			</div>
