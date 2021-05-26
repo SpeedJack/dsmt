@@ -1,0 +1,12 @@
+ISTRUZIONI PER AVVIARE ERLANG
+
+1)Aprire due terminali ed eseguire rispettivamente
+	erl -snam a@localhost
+	erl -sname auction_manager@localhost
+2)Sulla shell di a@localhost eseguire
+	net_kernel:connect_node(auction_manager@localhost).
+	cd("...percorso assoluto cartella dove c'e' il codice erlang....").
+3)per ogni file .erl presente su quella cartella esguire sulla shell di a@localhost
+	c("NomeFile.erl").
+4)eseguire infine
+	prova:start_system().
