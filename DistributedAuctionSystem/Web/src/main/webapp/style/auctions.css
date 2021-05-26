@@ -326,3 +326,10 @@ input.single_bid {
 	top: 30px;
 	text-align: center;
 }
+
+#offers_bid_table {
+	position: relative;
+	left: 35%;
+	top: 21px;
+	border: medium solid #00f;
+}
