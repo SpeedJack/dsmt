@@ -1,12 +1,18 @@
--module(prova).
+-module(das).
 
 -export([start_d/2, stop_d/2,start_dispatchers/2, stop_dispatchers/2]).
 -export([start_e/2, stop_e/2, start_cluster/4, stop_cluster/4, start_executors/2, stop_executors/2]).
 -export([start_system/0, stop_system/0]).
 
+-define(NAME_DISP_NODE, "disp").
+-define(NAME_EXEC_NODE, "exec").
+
 -define(NUM_DISPATCHERS_PER_NODE, 1).
 -define(NUM_CLUSTER, 1).
--define(NUM_PROCESSOR_PER_CLUSTER,10).
+-define(NUM_PROCESSOR_PER_CLUSTER,3).
+
+
+
 
 %----- INITIALIZATION DISPATCHER --------------------------------------------------------------------
 start_d(_, 0) -> ok;
@@ -73,8 +79,8 @@ stop_executors(Nodes,Num) ->
 start_system() ->
   Nodes = nodes(connected) ++ [node()],
   store:initialization(Nodes),
-  start_dispatchers(Nodes, 1),
-  start_executors(Nodes,?NUM_CLUSTER).
+  start_dispatchers(lists:filter(fun(N) -> utility:starts_with(atom_to_list(N),?NAME_DISP_NODE)end,Nodes), 1),
+  start_executors(lists:filter(fun(N) -> utility:starts_with(atom_to_list(N),?NAME_EXEC_NODE) end,Nodes),?NUM_CLUSTER).
 
 stop_system() ->
   Nodes = nodes(connected) ++ [node()],

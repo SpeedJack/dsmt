@@ -1,12 +1,28 @@
-ISTRUZIONI PER AVVIARE ERLANG
+ISTRUZIONI PER AVVIARE ERLANG:
 
-1)Aprire due terminali ed eseguire rispettivamente
-	erl -snam a@localhost
-	erl -sname auction_manager@localhost
-2)Sulla shell di a@localhost eseguire
-	net_kernel:connect_node(auction_manager@localhost).
+1)Aprire tanti terminali quanti i nodi ed eseguire rispettivamente
+	erl -sname NomeNodoDispather1
+	...
+	erl -sname NomeNodoDispatcherN
+	erl -sname NomeNodoExecutor1
+	...
+	erl -sname NomeNodoExecutorM
+
+	Pattern NomeNodoDispather:
+		dispID@localhost
+	Pattern NomeNodoExecutor:
+		execID@localhost
+	dove ID è l'intero che va da 1 fino a NUM_NODI
+
+	
+	erl -sname auction_manager@localhost (Nodo per il client)
+
+2)Sulla shell di ogni nodo eseguire 
+	per ogni nodo creato al punto 1 -> net_kernel:connect_node(...nome nodo...). 
 	cd("...percorso assoluto cartella dove c'e' il codice erlang....").
-3)per ogni file .erl presente su quella cartella esguire sulla shell di a@localhost
+
+3)per ogni file .erl presente su quella cartella eseguire sulla shell di 1 nodo random
 	c("NomeFile.erl").
-4)eseguire infine
-	prova:start_system().
+
+4)eseguire infine sullo stesso nodo random
+	das:start_system().
