@@ -94,39 +94,56 @@ select_auction(AuctionId, UserId) ->
 %Inserts a new bid in Mnesia and calculates the auction's new AuctionState
 make_bid(Message, {Data, State}) ->
     {_, Id, NewBid} = Message,
-    {Code1, Res} = store:insert_bid(NewBid, Id),
-    {Code2,Auction} = store:get_auction(Id),
-    {Code3, BidList} = store:get_bid_list(Id),
-    NewData = compute_auction_state(Auction, BidList),
-    %io:format("NEW ACTION STATE ~p\n", [NewData]),
+    {Code1,Auction} = store:get_auction(Id),
     if 
-        (Code1 == atomic) and (Code2 == atomic) and (Code3 == atomic) ->    NewData = compute_auction_state(Auction, BidList), 
-                                                                            if
-                                                                                self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
-                                                                                true -> null
-                                                                            end,
-                                                                            {{ok,ok}, NewData};
-        Code1 =/= atomic -> {{err, Res}, Data};
-        Code2 =/= atomic -> {{err,Auction}, Data};
-        Code3 =/= atomic -> {{err,BidList}, Data}
+        (Code1 == atomic) and (element(6,Auction) < element(3,NewBid)) ->
+            {Code2, Res} = store:insert_bid(NewBid, Id),
+            {Code3, BidList} = store:get_bid_list(Id),
+            if 
+                (Code2 == atomic) and (Code3 == atomic) ->  
+                    NewData = compute_auction_state(Auction, BidList),                                           
+                    if
+                        self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
+                        true -> null
+                    end,
+                    {{ok,ok}, NewData};
+                Code2 =/= atomic -> 
+                    {{err,Res}, Data};
+                true -> 
+                    {{err,BidList}, Data}
+            end,
+        Code1 =/= atomic -> 
+            {{err, Auction}, Data};
+        true -> 
+            {{err,time_expired},Data}
     end.
+    
 
 %Delets a bid from Mnesia and calculates the auction's new AuctionState
 delete_bid(Message, {Data, State}) ->
     {_, Id, IdBid} = Message,
-    {Code1, Res} = store:delete_bid(IdBid),
-    {Code2,Auction} = store:get_auction(Id),
-    {Code3, BidList} = store:get_bid_list(Id),
+    {Code1,Auction} = store:get_auction(Id),
     if 
-        (Code1 == atomic) and (Code2 == atomic) and (Code3 == atomic) ->    NewData = compute_auction_state(Auction, BidList), 
-                                                                            if
-                                                                                self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
-                                                                                true -> null
-                                                                            end,
-                                                                            {{ok,NewData}, NewData};
-        Code1 =/= atomic -> {{err, Res}, Data};
-        Code2 =/= atomic -> {{err,Auction}, Data};
-        Code3 =/= atomic -> {{err,BidList}, Data}
+        (Code1 == atomic) and (element(6,Auction) < element(3,NewBid)) ->
+            {Code2, Res} = store:delete_bid(IdBid),
+            {Code3, BidList} = store:get_bid_list(Id),
+            if 
+                (Code2 == atomic) and (Code3 == atomic) ->    
+                    NewData = compute_auction_state(Auction, BidList), 
+                    if
+                        self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
+                        true -> null
+                    end,
+                    {{ok,NewData}, NewData};
+                Code2 =/= atomic -> 
+                    {{err,Res}, Data};
+                true =/= atomic -> 
+                    {{err,BidList}, Data}
+            end,
+        Code1 =/= atomic -> 
+            {{err, Auction}, Data};
+        true -> 
+            {{err,time_expired},Data}
     end.
 
 %Returns the auction list
