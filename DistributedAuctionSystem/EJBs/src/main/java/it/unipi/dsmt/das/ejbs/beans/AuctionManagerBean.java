@@ -5,10 +5,12 @@ import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.*;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.annotation.Resource;
+import javax.ejb.*;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Stateless(name = "AuctionManagerEJB")
@@ -19,9 +21,25 @@ public class AuctionManagerBean implements AuctionManager {
     private final String nodeName = "auction_manager@localhost";
     @EJB
     AuctionStatePublisher publisher;
+    @Resource
+    private TimerService timerService;
+
     OtpNode node;
     OtpMbox mbox;
 
+
+    public void scheduleCloseTask(Date expriation, Auction auction) {
+        this.timerService.createTimer(expriation, auction);
+    }
+
+    /**public void scheduleIntervalTask(long timeout, long interval) {
+        this.timerService.createTimer(timeout,interval, "I'm an interval timer");
+    }**/
+
+    @Timeout
+    public void close(Timer timer) {
+        publisher.closeAuction((int)timer.getInfo());
+    }
     public AuctionManagerBean() throws IOException {
        this.node = new OtpNode(nodeName);
        this.mbox = node.createMbox(mboxName);
@@ -39,6 +57,7 @@ public class AuctionManagerBean implements AuctionManager {
             OtpErlangTuple response = (OtpErlangTuple) msg;
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")){
+                this.timerService.createTimer(Instant.EPOCH.getEpochSecond(), auction.getId());
                 return "ok";
             }
             else{
@@ -63,6 +82,11 @@ public class AuctionManagerBean implements AuctionManager {
             OtpErlangTuple response = (OtpErlangTuple) msg;
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")){
+                this.timerService.getTimers().forEach(
+                        timer -> {
+                            if (timer.getInfo() == id)
+                                timer.cancel();
+                        });
                 return "ok";
             }
             else{
@@ -96,9 +120,9 @@ public class AuctionManagerBean implements AuctionManager {
             e.printStackTrace();
         }
         return data;*/
-        Bid b1 = new Bid(1, 3, 1, "2021-05-24 21:00", (float)2.0, 3);
-        Bid b2 = new Bid(1, 3, 1, "2021-05-25 21:00", (float)3.0, 3);
-        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", "2021/05/30 21:00", 1, (float) 0.1, 50);
+        Bid b1 = new Bid(1, 3, 1, Instant.EPOCH.getEpochSecond(), (float)2.0, 3);
+        Bid b2 = new Bid(1, 3, 1, Instant.EPOCH.getEpochSecond(), (float)3.0, 3);
+        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", Instant.EPOCH.getEpochSecond(), 1, (float) 0.1, 50);
         List<Bid> list = new ArrayList<>();
         list.add(b1);
         list.add(b2);
@@ -156,8 +180,8 @@ public class AuctionManagerBean implements AuctionManager {
             e.printStackTrace();
         }
         return list;*/
-        Auction a1 = new Auction(1,1,"Nintendo DS", "style/img/image1.jpg", "Nintendo DS", "2021/05/27 21:00", 30, 1, 5);
-        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", "2021/05/30 21:00", 1, (float) 0.1, 50);
+        Auction a1 = new Auction(1,1,"Nintendo DS", "style/img/image1.jpg", "Nintendo DS", Instant.EPOCH.getEpochSecond(), 30, 1, 5);
+        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", Instant.EPOCH.getEpochSecond(), 1, (float) 0.1, 50);
         List<Auction> list = new ArrayList<>();
         list.add(a1);
         list.add(a3);
@@ -185,8 +209,8 @@ public class AuctionManagerBean implements AuctionManager {
         }
         return list;*/
 
-        Auction a1 = new Auction(1,1,"Nintendo DS", "style/img/image1.jpg", "Nintendo DS", "2021/05/27 21:00", 30, 1, 5);
-        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", "2021/05/30 21:00", 1, (float) 0.1, 50);
+        Auction a1 = new Auction(1,1,"Nintendo DS", "style/img/image1.jpg", "Nintendo DS", Instant.EPOCH.getEpochSecond(), 30, 1, 5);
+        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", Instant.EPOCH.getEpochSecond(), 1, (float) 0.1, 50);
         List<Auction> list = new ArrayList<>();
         list.add(a1);
         list.add(a3);
@@ -194,8 +218,8 @@ public class AuctionManagerBean implements AuctionManager {
     }
 
    @Override
-    public AuctionState makeBid(Bid bid) {
-        AuctionState state = null;
+    public BidStatus makeBid(Bid bid) {
+        BidStatus status = BidStatus.ERROR;
         OtpErlangAtom cmd = new OtpErlangAtom("make_bid");
         OtpErlangInt id = new OtpErlangInt(bid.getAuction());
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,bid.erlangize()});
@@ -206,39 +230,49 @@ public class AuctionManagerBean implements AuctionManager {
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")){
                 OtpErlangList newAuctionState = (OtpErlangList) response.elementAt(2);
-                state = new AuctionState();
+                AuctionState state = new AuctionState();
                 state.derlangize(newAuctionState);
                 publisher.publishState(bid.getAuction(), state);
+                status = BidStatus.RECEIVED;
+            } else if (msgResponse.atomValue().equals("err")){
+                status = BidStatus.EXPIRED;
+            } else {
+                status = BidStatus.ERROR;
             }
         } catch (OtpErlangExit | OtpErlangDecodeException otpErlangExit) {
             otpErlangExit.printStackTrace();
         }
 
-        return state;
+        return status;
 
     }
 
     @Override
-    public AuctionState deleteBid(int auctionId, int bidId) {
-        AuctionState state = null;
+    public BidStatus deleteBid(int auctionId, int bidId) {
         OtpErlangAtom cmd = new OtpErlangAtom("delete_bid");
         OtpErlangInt id = new OtpErlangInt(auctionId);
         OtpErlangInt bId = new OtpErlangInt(bidId);
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,bId});
         mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
+        BidStatus status = BidStatus.ERROR;
         try {
             OtpErlangObject msg = mbox.receive();
             OtpErlangTuple response = (OtpErlangTuple) msg;
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")){
                 OtpErlangList newAuctionState = (OtpErlangList) response.elementAt(2);
-                state = new AuctionState();
+                AuctionState state = new AuctionState();
                 state.derlangize(newAuctionState);
+                status = BidStatus.RECEIVED;
+            } else if (msgResponse.atomValue().equals("err")){
+                status = BidStatus.EXPIRED;
+            } else {
+                status = BidStatus.ERROR;
             }
         } catch (OtpErlangExit | OtpErlangDecodeException otpErlangExit) {
             otpErlangExit.printStackTrace();
         }
-        return state;
+        return status;
     }
 
 

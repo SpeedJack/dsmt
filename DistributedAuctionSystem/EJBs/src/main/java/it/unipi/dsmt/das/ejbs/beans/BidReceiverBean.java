@@ -3,7 +3,6 @@ package it.unipi.dsmt.das.ejbs.beans;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.AuctionState;
-import it.unipi.dsmt.das.model.Bid;
 import it.unipi.dsmt.das.ws.client.WSClient;
 
 import javax.ejb.ActivationConfigProperty;
@@ -12,7 +11,6 @@ import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
 
 @MessageDriven(name = "BidReceiverEJB",
         activationConfig = {
@@ -53,7 +51,7 @@ public class BidReceiverBean implements MessageListener {
         WSClient clientEndPoint = new WSClient(auction); //add listener
         clientEndPoint.addMessageHandler(System.out::println);
         // send message to websocket
-        clientEndPoint.sendMessage(state);
+        clientEndPoint.sendState(state);
     }
 
     public void handleCloseMessage(int auction, AuctionState state) {
@@ -61,6 +59,6 @@ public class BidReceiverBean implements MessageListener {
         WSClient clientEndPoint = new WSClient(auction); //add listener
         clientEndPoint.addMessageHandler(System.out::println);
         // send message to websocket
-        clientEndPoint.sendMessage(state);
+        clientEndPoint.sendClose();
     }
 }

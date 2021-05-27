@@ -44,7 +44,7 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
 
   }
 
-  public void close(int id){
+  public void closeAuction(int id){
     try {
       broadcast(id, states.get(id), true);
     } catch (JMSException ex){

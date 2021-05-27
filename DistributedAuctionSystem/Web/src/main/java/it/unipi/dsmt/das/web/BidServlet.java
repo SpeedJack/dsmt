@@ -42,7 +42,7 @@ public class BidServlet extends HttpServlet {
              * **/
             bid.setValue(Float.parseFloat(req.getParameter("value")));
             bid.setQuantity(Integer.parseInt(req.getParameter("quantity")));
-            bid.setTimestamp(Instant.now().toString());
+            bid.setTimestamp(Instant.EPOCH.toEpochMilli());
             bid.setUser(Integer.parseInt(req.getParameter("user")));
             message.setObjectProperty("bid", bid);
             publisher.send(message);

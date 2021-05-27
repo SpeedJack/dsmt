@@ -5,6 +5,7 @@ import it.unipi.dsmt.das.model.Auction;
 import it.unipi.dsmt.das.model.User;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class OffersServlet extends HttpServlet {
             List<Auction> list = auctionManager.auctionBidderList(0).getList();
             if(list == null) {
                 list = new ArrayList<>();
-                list.add(new Auction(0, 0, "Empty list", "style/img/auction.jpg", "", "", 0, 0, 0));
+                list.add(new Auction(0, 0, "Empty list", "style/img/auction.jpg", "", Instant.EPOCH.getEpochSecond(), 0, 0, 0));
             }
             request.setAttribute("auctionList", list);
         }

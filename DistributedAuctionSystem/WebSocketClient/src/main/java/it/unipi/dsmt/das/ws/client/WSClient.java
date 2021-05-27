@@ -49,12 +49,12 @@ public class WSClient {
         System.out.println("Received message in it.unipi.dsmt.das.ws.client: " + message);
     }
 
-    public void sendMessage(AuctionState state) {
-        try {
-            this.session.getBasicRemote().sendObject(state);
-        } catch (IOException | EncodeException ex) {
-            Logger.getLogger(WSClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void sendState(AuctionState state) {
+        this.session.getAsyncRemote().sendObject(state);
+    }
+
+    public void sendClose() {
+        this.session.getAsyncRemote().sendText("CLOSE");
     }
 
 

@@ -56,7 +56,7 @@ public class AuctionEndpoint {
 
     public static void closeAuction(int id){
         subscribers.get(id).forEach(session -> {
-                session.getAsyncRemote().sendText("END");
+                session.getAsyncRemote().sendText("CLOSE");
         });
     };
 
