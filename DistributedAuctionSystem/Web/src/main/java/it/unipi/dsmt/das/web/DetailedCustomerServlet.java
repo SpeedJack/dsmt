@@ -3,6 +3,7 @@ import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.*;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class DetailedCustomerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     @EJB
     private AuctionManager auctionManager;
+    private final Utility utility = new Utility();
     public DetailedCustomerServlet() {
         super();
     }
@@ -35,7 +37,10 @@ public class DetailedCustomerServlet extends HttpServlet {
             if(auctionData == null)
                 destPage = "error_page.jsp";
             else {
+                String date = "Auction closed";
                 Auction auction = auctionData.getAuction();
+                if(auction != null && auction.getEndDate() > Instant.now().getEpochSecond())
+                    date = utility.convertDate(auction.getEndDate() - Instant.now().getEpochSecond());
                 BidList list = auctionData.getList();
                 List<Bid> bids = null;
                 if(list != null) {
@@ -47,6 +52,7 @@ public class DetailedCustomerServlet extends HttpServlet {
                 request.setAttribute("auction", auction);
                 request.setAttribute("bids", bids);
                 request.setAttribute("message", message);
+                request.setAttribute("date", date);
             }
         }
         else
