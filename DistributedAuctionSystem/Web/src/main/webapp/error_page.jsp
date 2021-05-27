@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="it">
@@ -69,52 +68,7 @@
 		</div>
 		
 		<div id="content">
-			<div id="detailed_auction_tab">
-				<div id="left">
-					<div id="detailed_poster">
-						<h1> ${auction.name} </h1>
-						<img src=${auction.image}>
-						<div class="content_movie_wrapper">
-							<span class="title_stats">Vendor ID</span>: ${auction.agent} <br>
-							<span class="title_stats">Lowest bid</span>: 1$ <br>
-							<span class="title_stats">Available Objects</span>: ${auction.saleQuantity}<br>
-							<span class="title_stats">End time</span>: ${auction.endDate}<br>
-							<form name = "bid" method="post">
-								<table class = "single_bid_table">
-									<tr>
-										<td> <span class="title_stats">Offer</span>
-										<td> <input type="text" placeholder="0" class = "single_bid" required>
-									<tr>
-										<td> <span class="title_stats">N.Objects</span>
-										<td> <input type="text" placeholder="1" class = "single_bid" required>
-									<tr>
-										<td>
-										<td> <input type="submit" value="Bid" class = "single_bid_button">
-								</table>
-							</form>
-							<table id = "offers_bid_table">
-								<caption>Your offers</caption>
-								<tr>
-									<td> <span class="title_stats">Date</span>
-									<td> <span class="title_stats">Quantity</span>
-									<td> <span class="title_stats">Offer</span>
-								<c:forEach items="${bids}" var="bid">
-								<tr>
-									<td> <span class="title_stats">${bid.timestamp}</span>
-									<td> <span class="title_stats">${bid.quantity}</span>
-									<td> <span class="title_stats">${bid.value} $</span>
-								</c:forEach>
-							</table>
-							<span class="bid_state">${message}</span><br><br>
-						</div>	
-						
-					</div>
-					<div id="main">
-						<h2>Description:</h2>
-						<p> ${auction.description}</p>
-					</div>
-				</div>
-			</div>
+			<h1 align = "center"> There was an error!</h1>
 		</div>
 
 	</body>

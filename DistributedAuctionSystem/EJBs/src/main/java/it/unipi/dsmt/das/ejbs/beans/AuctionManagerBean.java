@@ -96,9 +96,14 @@ public class AuctionManagerBean implements AuctionManager {
             e.printStackTrace();
         }
         return data;*/
-
+        Bid b1 = new Bid(1, 3, 1, "2021-05-24 21:00", (float)2.0, 3);
+        Bid b2 = new Bid(1, 3, 1, "2021-05-25 21:00", (float)3.0, 3);
         Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", "2021/05/30 21:00", 1, (float) 0.1, 50);
-        return new AuctionData(a3, null);
+        List<Bid> list = new ArrayList<>();
+        list.add(b1);
+        list.add(b2);
+        BidList bids = new BidList(list);
+        return new AuctionData(a3, bids);
     }
 
     @Override

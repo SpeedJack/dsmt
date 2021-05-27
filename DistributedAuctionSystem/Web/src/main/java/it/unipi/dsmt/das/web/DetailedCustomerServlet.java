@@ -24,6 +24,7 @@ public class DetailedCustomerServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         String destPage;
+        String message;
 
         if (session != null) {
             destPage = "detailedCustomer.jsp";
@@ -36,7 +37,16 @@ public class DetailedCustomerServlet extends HttpServlet {
             else {
                 Auction auction = auctionData.getAuction();
                 BidList list = auctionData.getList();
+                List<Bid> bids = null;
+                if(list != null) {
+                    bids = list.getList();
+                    message = "Currently, you are the winner!";
+                }
+                else
+                    message = "You haven't offers for this item";
                 request.setAttribute("auction", auction);
+                request.setAttribute("bids", bids);
+                request.setAttribute("message", message);
             }
         }
         else
