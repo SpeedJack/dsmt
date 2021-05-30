@@ -69,16 +69,17 @@
 		
 		<div id = "content">
 			<div id = "sell_form">
-			<form action="../php/add_scores.php" method="POST">
+			<form action="sell" method="POST">
+				<p>${message}</p>
 				<p> Object Information </p>
 				<label class = "little">Name:</label>     				 
 		  			<input class = "form" name="name" type="text" size = "40" required><br>
     			<label class = "little">Minimum Bid:</label>  				 
-		  			<input class = "form" name="minimum_bid" type="text" size = "5" required><br>
+		  			<input class = "form" name="minimum_bid" type="number" size = "5" required><br>
 				<label class = "little">Minimum Raise:</label>
-					<input class = "form" name="minimum_raise" type="text" size = "5" required><br>
+					<input class = "form" name="minimum_raise" type="number" size = "5" required><br>
 				<label class = "little">Number of Objects:</label>		  			 
-		  			<input class = "form" name="object" type="text" size = "5" required><br>
+		  			<input class = "form" name="object" type="number" size = "5" required><br>
 				<label class = "little">End Day: </label>     				
 		  			<input class = "form" name="day" type="text" size = "15" required><br>
     			<label class = "little">End Hour:</label>   				 

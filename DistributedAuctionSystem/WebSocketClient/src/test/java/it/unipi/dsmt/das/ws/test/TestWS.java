@@ -3,12 +3,9 @@ package it.unipi.dsmt.das.ws.test;
 import it.unipi.dsmt.das.model.AuctionState;
 import it.unipi.dsmt.das.model.Bid;
 import it.unipi.dsmt.das.ws.client.WSClient;
-import javax.websocket.ContainerProvider;
+
 import javax.websocket.DeploymentException;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
 import java.io.IOException;
-import java.net.URI;
 import java.time.Instant;
 import java.util.concurrent.CountDownLatch;
 
@@ -26,7 +23,7 @@ public class TestWS {
         for (int i = 0; i< 10; ++i){
             Bid bid = new Bid();
             bid.setUser(1);
-            bid.setTimestamp(Instant.now().toString());
+            bid.setTimestamp(Instant.EPOCH.toEpochMilli());
             bid.setValue(32.0F);
             bid.setQuantity(1);
             bid.setAuction(0);
@@ -34,6 +31,6 @@ public class TestWS {
         }
 
         client.addMessageHandler(System.out::println);
-        backend.sendMessage(state);
+        backend.sendState(state);
     }
 }

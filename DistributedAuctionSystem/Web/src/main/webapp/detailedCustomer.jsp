@@ -78,7 +78,7 @@
 							<span class="title_stats">Vendor ID</span>: ${auction.agent} <br>
 							<span class="title_stats">Lowest bid</span>: 1$ <br>
 							<span class="title_stats">Available Objects</span>: ${auction.saleQuantity}<br>
-							<span class="title_stats">End time</span>: ${auction.endDate}<br>
+							<span class="title_stats">End time</span>: ${date}<br>
 							<form name = "bid" method="post">
 								<table class = "single_bid_table">
 									<tr>
@@ -95,16 +95,17 @@
 							<table id = "offers_bid_table">
 								<caption>Your offers</caption>
 								<tr>
-									<td> <span class="title_stats">Date</span>
 									<td> <span class="title_stats">Quantity</span>
 									<td> <span class="title_stats">Offer</span>
+									<td>
 								<c:forEach items="${bids}" var="bid">
 								<tr>
-									<td> <span class="title_stats">${bid.timestamp}</span>
 									<td> <span class="title_stats">${bid.quantity}</span>
 									<td> <span class="title_stats">${bid.value} $</span>
+									<td> <input type="button" value="Delete" class = "single_bid_button">
 								</c:forEach>
 							</table>
+
 							<span class="bid_state">${message}</span><br><br>
 						</div>	
 						

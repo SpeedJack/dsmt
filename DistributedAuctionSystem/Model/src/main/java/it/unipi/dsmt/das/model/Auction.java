@@ -11,13 +11,13 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
     String name;
     String image;
     String description;
-    String endDate;
+    long endDate;
     float minPrice;
     float minRaise;
     int saleQuantity;
 
     public Auction() { }
-    public Auction(int id, int agent, String name, String image, String description, String endDate, float minPrice, float minRaise, int saleQuantity) {
+    public Auction(int id, int agent, String name, String image, String description, long endDate, float minPrice, float minRaise, int saleQuantity) {
         this.id = id;
         this.agent = agent;
         this.name = name;
@@ -65,11 +65,11 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
 
     public void setDescription(String description) { this.description = description; }
 
-    public String getEndDate() {
+    public long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(long endDate) {
         this.endDate = endDate;
     }
 
@@ -105,7 +105,7 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
                         new OtpErlangString(name),
                         new OtpErlangString(image),
                         new OtpErlangString(description),
-                        new OtpErlangString(endDate),
+                        new OtpErlangLong(endDate),
                         new OtpErlangFloat(minPrice),
                         new OtpErlangFloat(minRaise),
                         new OtpErlangInt(saleQuantity)
@@ -119,7 +119,7 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
             setName(((OtpErlangString)tuple.elementAt(3)).stringValue());
             setImage(((OtpErlangString)tuple.elementAt(4)).stringValue());
             setDescription(((OtpErlangString)tuple.elementAt(5)).stringValue());
-            setEndDate(((OtpErlangString)tuple.elementAt(6)).stringValue());
+            setEndDate(((OtpErlangLong)tuple.elementAt(6)).longValue());
             setMinPrice(((OtpErlangFloat)tuple.elementAt(7)).floatValue());
             setMinRaise(((OtpErlangFloat)tuple.elementAt(8)).floatValue());
             setSaleQuantity(((OtpErlangInt)tuple.elementAt(9)).intValue());

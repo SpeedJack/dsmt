@@ -9,14 +9,14 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
     int id;
     int auction;
     int user;
-    String timestamp;
+    long timestamp;
     float value;
     int quantity;
 
     public Bid() {
     }
 
-    public Bid(int id, int auction, int user, String timestamp, float value, int quantity) {
+    public Bid(int id, int auction, int user, long timestamp, float value, int quantity) {
         this.id = id;
         this.auction = auction;
         this.user = user;
@@ -45,11 +45,11 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
         this.user = user;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -76,7 +76,7 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
                         new OtpErlangInt(id),
                         new OtpErlangInt(auction),
                         new OtpErlangInt(user),
-                        new OtpErlangString(timestamp),
+                        new OtpErlangLong(timestamp),
                         new OtpErlangFloat(value),
                         new OtpErlangInt(quantity)
                 });
@@ -87,7 +87,7 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
             setId(((OtpErlangInt)tuple.elementAt(1)).intValue());
             setAuction(((OtpErlangInt)tuple.elementAt(2)).intValue());
             setUser(((OtpErlangInt)tuple.elementAt(3)).intValue());
-            setTimestamp(((OtpErlangString)tuple.elementAt(4)).stringValue());
+            setTimestamp(((OtpErlangLong)tuple.elementAt(4)).longValue());
             setValue(((OtpErlangFloat)tuple.elementAt(5)).floatValue());
             setQuantity(((OtpErlangInt)tuple.elementAt(6)).intValue());
 

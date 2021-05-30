@@ -22,7 +22,10 @@ public class AuctionBackendEndpoint {
 
     @OnMessage
     public void onMessage(Session session, AuctionState state){
-        AuctionEndpoint.updateAuction(auction, state);
+        if(state != null)
+            AuctionEndpoint.updateAuction(auction, state);
+        else
+            AuctionEndpoint.closeAuction(auction);
     }
 
     @OnClose
