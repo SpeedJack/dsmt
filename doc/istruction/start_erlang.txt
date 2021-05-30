@@ -8,14 +8,17 @@ ISTRUZIONI PER AVVIARE ERLANG:
 	...
 	erl -sname NomeNodoExecutorM
 
-	Pattern NomeNodoDispather:
-		dispID@localhost
-	Pattern NomeNodoExecutor:
-		execID@localhost
-	dove ID è l'intero che va da 1 fino a NUM_NODI
+	Pattern NomeNodoDispatherX:
+		dispX@localhost
+	Pattern NomeNodoExecutorY:
+		execY@localhost
+	dove X va da 1 a N, y va da 1 a M
 
 	
-	erl -sname auction_manager@localhost (Nodo per il client)
+	A questo punto non serve più creare il nodo erlang auction_manager perché java
+	lo creerà da solo. Il problema di creazione del nodo per Java avviene solo se il
+	sistema runtime di erlang non e' attivo, ma con i vari nodi già creati non ci dovrebbero
+	essere problemi.
 
 2)Sulla shell di ogni nodo eseguire 
 	per ogni nodo creato al punto 1 -> net_kernel:connect_node(...nome nodo...). 

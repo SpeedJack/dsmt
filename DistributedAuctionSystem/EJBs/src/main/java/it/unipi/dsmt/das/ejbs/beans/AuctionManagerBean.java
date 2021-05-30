@@ -13,8 +13,8 @@ import java.util.List;
 
 @Stateless(name = "AuctionManagerEJB")
 public class AuctionManagerBean implements AuctionManager {
-    private final String dispatcherRegisteredName = "d_2_a@localhost";
-    private final String dispatcherNodeName = "a@localhost";
+    private final String dispatcherRegisteredName = "d_1_disp1@localhost";
+    private final String dispatcherNodeName = "disp1@localhost";
     private final String mboxName = "auction_manager_mbox";
     private final String nodeName = "auction_manager@localhost";
     @EJB
@@ -35,7 +35,7 @@ public class AuctionManagerBean implements AuctionManager {
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,auction.erlangize()});
         mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
         try {
-            OtpErlangObject msg = mbox.receive();
+            OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")){
@@ -59,7 +59,7 @@ public class AuctionManagerBean implements AuctionManager {
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,nan});
         mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
         try {
-            OtpErlangObject msg = mbox.receive();
+            OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")){
@@ -84,7 +84,7 @@ public class AuctionManagerBean implements AuctionManager {
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,uId});
         mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
         try {
-            OtpErlangObject msg = mbox.receive();
+            OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")) {
@@ -112,15 +112,20 @@ public class AuctionManagerBean implements AuctionManager {
         OtpErlangAtom cmd = new OtpErlangAtom("auctions_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangInt p = new OtpErlangInt(page);
-        OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,p});
-        mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
+        OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,p});
+
         try {
-            OtpErlangObject msg = mbox.receive();
-            OtpErlangTuple response = (OtpErlangTuple) msg;
-            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
-            if (msgResponse.atomValue().equals("ok")){
-                list = new AuctionList();
-                list.derlangize((OtpErlangList) response.elementAt(2));
+            OtpErlangTuple response = sendRequest(obj);
+            if (response == null){
+                System.out.println("TIME EXPIRED");
+                return null;
+            }
+            else {
+                OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
+                if (msgResponse.atomValue().equals("ok")) {
+                    list = new AuctionList();
+                    list.derlangize((OtpErlangList) response.elementAt(2));
+                }
             }
         } catch (OtpErlangExit | OtpErlangDecodeException e) {
             e.printStackTrace();
@@ -145,7 +150,7 @@ public class AuctionManagerBean implements AuctionManager {
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,a});
         mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
         try {
-            OtpErlangObject msg = mbox.receive();
+            OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")){
@@ -173,7 +178,7 @@ public class AuctionManagerBean implements AuctionManager {
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,b});
         mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
         try {
-            OtpErlangObject msg = mbox.receive();
+            OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if(msgResponse.atomValue().equals("ok")){
@@ -201,7 +206,7 @@ public class AuctionManagerBean implements AuctionManager {
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,bid.erlangize()});
         mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
         try {
-            OtpErlangObject msg = mbox.receive();
+            OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")){
@@ -227,7 +232,7 @@ public class AuctionManagerBean implements AuctionManager {
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,bId});
         mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
         try {
-            OtpErlangObject msg = mbox.receive();
+            OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
             if (msgResponse.atomValue().equals("ok")){
@@ -242,6 +247,45 @@ public class AuctionManagerBean implements AuctionManager {
     }
 
 
+    public OtpErlangTuple sendRequest(OtpErlangTuple payload) throws OtpErlangExit, OtpErlangDecodeException{
+
+        OtpErlangObject[] tag = new OtpErlangObject[2];
+        tag[0] = mbox.self();
+        tag[1] = node.createRef();
+
+        OtpErlangObject[] header = new OtpErlangObject[3];
+        header[0] = new OtpErlangAtom("$gen_call");
+        header[1] = new OtpErlangTuple(tag);
+        header[2] = payload;
+        OtpErlangTuple reqMsg = new OtpErlangTuple(header);
+
+        mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
+        OtpErlangObject msg = null;
+        msg = mbox.receive(5000);
+        if (msg == null) {
+            return null;
+        }else{
+            return (OtpErlangTuple) msg;
+        }
+    }
+
+    public OtpErlangTuple sendRPCRequest(OtpErlangTuple payload) throws OtpErlangExit, OtpErlangDecodeException, IOException, OtpAuthException {
+            OtpSelf client = new OtpSelf(nodeName);
+            OtpPeer peer = new OtpPeer(dispatcherNodeName);
+            OtpConnection conn = client.connect(peer);
+            conn.sendRPC("gen_server", "call", new OtpErlangObject[] {
+                    new OtpErlangTuple(new OtpErlangObject[] {
+                            new OtpErlangAtom("global"),
+                            new OtpErlangAtom(dispatcherRegisteredName)}),
+                    payload});
+            OtpErlangObject resMsg = conn.receiveRPC();
+            if (resMsg == null){
+                return null;
+            }
+            else{
+                return (OtpErlangTuple) resMsg;
+            }
+    }
 
 
 }
