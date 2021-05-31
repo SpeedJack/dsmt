@@ -141,7 +141,7 @@ get_auction_list(Page) ->
                                     sale_quantity='$9'},
                 Guard = [{'>','$6', UnixTime}],
                 Result = ['$1','$2','$3','$4','$5','$6','$7','$8','$9'],
-                List = mnesia:select(bid,[{MatchHead, Guard, Result}],Page*?PAGE_SIZE, read),
+                List = mnesia:select(auction,[{MatchHead, Guard, Result}],Page*?PAGE_SIZE, read),
                 if 
                     Page == 1 -> lists:reverse(List);
                     true -> lists:sublist(lists:reverse(List),(Page-1)*?PAGE_SIZE + 1, length(List))
@@ -155,7 +155,7 @@ get_bidder_auctions(IdBidder)->
                 MatchHead = #bid{id_auction='$1', id_user= IdBidder, _='_'},
                 Guard = [],
                 Result = ['$1'],
-                IdAuctions = mnesia:select(bid,[{MatchHead, Guard, Result}]),
+                IdAuctions = mnesia:select(auction,[{MatchHead, Guard, Result}]),
                 [record_to_tuple(auction, lists:usort(lists:nth(1,mnesia:read(auction,IdAuction))))|| IdAuction <- IdAuctions]
             end,
     mnesia:transaction(Fun).

@@ -55,13 +55,13 @@ public class AuctionManagerBean implements AuctionManager {
         try {
             OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
-            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
+            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")){
                 this.timerService.createTimer(Instant.EPOCH.getEpochSecond(), auction.getId());
                 return "ok";
             }
             else{
-                OtpErlangAtom errorMsg = (OtpErlangAtom) response.elementAt(2);
+                OtpErlangAtom errorMsg = (OtpErlangAtom) response.elementAt(1);
                 return errorMsg.atomValue();
             }
         } catch (OtpErlangExit | OtpErlangDecodeException e) {
@@ -80,7 +80,7 @@ public class AuctionManagerBean implements AuctionManager {
         try {
             OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
-            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
+            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")){
                 this.timerService.getTimers().forEach(
                         timer -> {
@@ -90,7 +90,7 @@ public class AuctionManagerBean implements AuctionManager {
                 return "ok";
             }
             else{
-                OtpErlangAtom errorMsg = (OtpErlangAtom) response.elementAt(2);
+                OtpErlangAtom errorMsg = (OtpErlangAtom) response.elementAt(1);
                 return errorMsg.atomValue();
             }
         } catch (OtpErlangExit | OtpErlangDecodeException e) {
@@ -110,9 +110,9 @@ public class AuctionManagerBean implements AuctionManager {
         try {
             OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
-            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
+            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")) {
-                OtpErlangTuple dataTuple = (OtpErlangTuple) response.elementAt(2);
+                OtpErlangTuple dataTuple = (OtpErlangTuple) response.elementAt(1);
                 data = new AuctionData();
                 data.derlangize(dataTuple);
             }
@@ -145,11 +145,13 @@ public class AuctionManagerBean implements AuctionManager {
                 return null;
             }
             else {
-                System.out.println(response.toString());
-                OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
+                OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
                 if (msgResponse.atomValue().equals("ok")) {
                     list = new AuctionList();
-                    list.derlangize((OtpErlangList) response.elementAt(2));
+                    list.derlangize((OtpErlangList) response.elementAt(1));
+                }
+                else{
+                    return null;
                 }
             }
         } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
@@ -177,10 +179,10 @@ public class AuctionManagerBean implements AuctionManager {
         try {
             OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
-            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
+            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")){
                list = new AuctionList();
-               list.derlangize((OtpErlangList) response.elementAt(2));
+               list.derlangize((OtpErlangList) response.elementAt(1));
             }
         } catch (OtpErlangExit | OtpErlangDecodeException e) {
             e.printStackTrace();
@@ -205,10 +207,10 @@ public class AuctionManagerBean implements AuctionManager {
         try {
             OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
-            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
+            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if(msgResponse.atomValue().equals("ok")){
                list = new AuctionList();
-               list.derlangize((OtpErlangList) response.elementAt(2));
+               list.derlangize((OtpErlangList) response.elementAt(1));
             }
         } catch (OtpErlangExit | OtpErlangDecodeException e) {
             e.printStackTrace();
@@ -233,9 +235,9 @@ public class AuctionManagerBean implements AuctionManager {
         try {
             OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
-            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
+            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")){
-                OtpErlangList newAuctionState = (OtpErlangList) response.elementAt(2);
+                OtpErlangList newAuctionState = (OtpErlangList) response.elementAt(1);
                 AuctionState state = new AuctionState();
                 state.derlangize(newAuctionState);
                 publisher.publishState(bid.getAuction(), state);
@@ -264,9 +266,9 @@ public class AuctionManagerBean implements AuctionManager {
         try {
             OtpErlangObject msg = mbox.receive(5000);
             OtpErlangTuple response = (OtpErlangTuple) msg;
-            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
+            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")){
-                OtpErlangList newAuctionState = (OtpErlangList) response.elementAt(2);
+                OtpErlangList newAuctionState = (OtpErlangList) response.elementAt(1);
                 AuctionState state = new AuctionState();
                 state.derlangize(newAuctionState);
                 status = BidStatus.RECEIVED;
@@ -301,6 +303,7 @@ public class AuctionManagerBean implements AuctionManager {
                         new OtpErlangInt(5000)
                 });
         OtpErlangObject resMsg = conn.receiveRPC();
+        conn.close();
         if (resMsg == null){
             return null;
         }
