@@ -2,7 +2,7 @@
 -behaviour(gen_server).
 
 -export([dispatcher_initialization/0,forward_message/2, random_message/2]).
--export([init/1, handle_call/3, handle_cast/2]).
+-export([init/1, handle_info/2, handle_call/3, handle_cast/2]).
 
 -define(NUM_CLUSTER, 1).
 -define(INIT_TIMEOUT, 5000).
@@ -59,7 +59,7 @@ init([]) ->
 handle_call({Command,Id,Data}, _From, State) ->
   case Command of
     auction_list -> List = random_message({Command,Id,Data}, State), Result = {ok,List};
-    auctions_agent_list -> List = random_message({Command,Id,Data}, State), Result = {ok,List};
+    auction_agent_list -> List = random_message({Command,Id,Data}, State), Result = {ok,List};
     _ -> Result = forward_message({Command,Id,Data}, State)
   end,
   {reply, Result, State};
@@ -71,4 +71,9 @@ handle_cast({leader_message,Cluster, Leader}, State) ->
   NewState = utility:modify_key_value_list(State, {Cluster, Leader}),
   io:format("~p Nuovo Stato: ~p\n", [self(), NewState]),
   {noreply, NewState}.
+
+
+handle_info(Command, {Data,State}) ->
+    io:format("received command ~p\n", [Command]),
+    {noreply, {Data,State}}.
 

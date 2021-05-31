@@ -29,12 +29,12 @@ stop_d(Start, Num)->
 
 start_dispatchers([], _) -> ok;
 start_dispatchers([H|T], StartName)->
-  rpc:call(H,prova,start_d,[StartName,?NUM_DISPATCHERS_PER_NODE]),
+  rpc:call(H,das,start_d,[StartName,?NUM_DISPATCHERS_PER_NODE]),
   start_dispatchers(T,StartName+?NUM_DISPATCHERS_PER_NODE).
 
 stop_dispatchers([], _) -> ok;
 stop_dispatchers([H|T], StartName)->
-  rpc:call(H,prova,stop_d,[StartName,?NUM_DISPATCHERS_PER_NODE]),
+  rpc:call(H,das,stop_d,[StartName,?NUM_DISPATCHERS_PER_NODE]),
   stop_dispatchers(T,StartName+?NUM_DISPATCHERS_PER_NODE).
 
 %------ INITIALIZATION EXECUTOR -----------------------------------------------------------------------
@@ -52,7 +52,7 @@ start_cluster(Nodes, Cluster, Index, IdName) ->
   io:format("Nodi: ~p, Cluster ~p, Index ~p, IdName ~p\n", [Nodes, Cluster,Index, IdName]),
   Node = lists:nth(Index, Nodes),
   NewIndex = Index rem length(Nodes) + 1,
-  rpc:call(Node,prova, start_e,[Cluster,IdName]),
+  rpc:call(Node,das, start_e,[Cluster,IdName]),
   start_cluster(Nodes, Cluster, NewIndex, IdName-1).
 
 
@@ -60,7 +60,7 @@ stop_cluster([], _,_,0) -> ok;
 stop_cluster(Nodes, Cluster, Index, IdName) ->
   Node = lists:nth(Index, Nodes),
   NewIndex = Index rem length(Nodes) + 1,
-  rpc:call(Node,prova, stop_e,[Cluster,IdName]),
+  rpc:call(Node,das, stop_e,[Cluster,IdName]),
   stop_cluster(Nodes, Cluster, NewIndex, IdName-1).
 
 start_executors(_, 0)->ok;

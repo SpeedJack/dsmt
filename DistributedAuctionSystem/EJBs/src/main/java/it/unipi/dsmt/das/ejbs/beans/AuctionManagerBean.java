@@ -133,9 +133,9 @@ public class AuctionManagerBean implements AuctionManager {
     @Override
     public AuctionList auctionsList(int page) {
         AuctionList list = null;
-        OtpErlangAtom cmd = new OtpErlangAtom("auctions_list");
+        OtpErlangAtom cmd = new OtpErlangAtom("auction_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
-        OtpErlangInt p = new OtpErlangInt(page);
+        OtpErlangInt p = new OtpErlangInt(1);
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,p});
 
         try {
@@ -145,13 +145,14 @@ public class AuctionManagerBean implements AuctionManager {
                 return null;
             }
             else {
+                System.out.println(response.toString());
                 OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(1);
                 if (msgResponse.atomValue().equals("ok")) {
                     list = new AuctionList();
                     list.derlangize((OtpErlangList) response.elementAt(2));
                 }
             }
-        } catch (OtpErlangExit | OtpErlangDecodeException e) {
+        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
             e.printStackTrace();
         }
         return list;
@@ -168,7 +169,7 @@ public class AuctionManagerBean implements AuctionManager {
     @Override
     public AuctionList auctionAgentList(int agentId) {
         /*AuctionList list = null;
-        OtpErlangAtom cmd = new OtpErlangAtom("auctions_agent_list");
+        OtpErlangAtom cmd = new OtpErlangAtom("auction_agent_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangInt a = new OtpErlangInt(agentId);
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,a});
@@ -196,7 +197,7 @@ public class AuctionManagerBean implements AuctionManager {
     @Override
     public AuctionList auctionBidderList(int bidderId) {
         /*AuctionList list = null;
-        OtpErlangAtom cmd = new OtpErlangAtom("auctions_list");
+        OtpErlangAtom cmd = new OtpErlangAtom("auction_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangInt b = new OtpErlangInt(bidderId);
         OtpErlangTuple reqMsg = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,b});
@@ -280,45 +281,32 @@ public class AuctionManagerBean implements AuctionManager {
         return status;
     }
 
-
-    public OtpErlangTuple sendRequest(OtpErlangTuple payload) throws OtpErlangExit, OtpErlangDecodeException{
-
-        OtpErlangObject[] tag = new OtpErlangObject[2];
-        tag[0] = mbox.self();
-        tag[1] = node.createRef();
-
-        OtpErlangObject[] header = new OtpErlangObject[3];
-        header[0] = new OtpErlangAtom("$gen_call");
-        header[1] = new OtpErlangTuple(tag);
-        header[2] = payload;
-        OtpErlangTuple reqMsg = new OtpErlangTuple(header);
-
-        mbox.send(dispatcherRegisteredName, dispatcherNodeName, reqMsg);
-        OtpErlangObject msg = null;
-        msg = mbox.receive(5000);
-        if (msg == null) {
+    /*
+    Questa è la funzione che deve essere sostituita in tutti i metodi (come è stato fatto nel metodo auctionList) che permette
+    di contattare il dispatcher (per ora predefinito). Dovrebbe funzionare, a meno di errori di erlang. L'unica cosa che pare non funzionare
+    e' che se torna errore poi il client Java non riesce a riconnettersi al dispatcher (anche se questo è online). Probabilmente è un problema
+    dell'oggetto OtpConnection che stabilisce la connessione.
+     */
+    public OtpErlangTuple sendRequest(OtpErlangTuple payload) throws OtpErlangExit, OtpErlangDecodeException, IOException, OtpAuthException {
+        OtpSelf client = new OtpSelf("client");
+        OtpPeer peer = new OtpPeer(dispatcherNodeName);
+        OtpConnection conn = client.connect(peer);
+        conn.sendRPC("gen_server", "call",
+                new OtpErlangObject[] {
+                        new OtpErlangTuple(new OtpErlangObject[] {
+                                new OtpErlangAtom("global"),
+                                new OtpErlangString(dispatcherRegisteredName),
+                        }),
+                        payload,
+                        new OtpErlangInt(5000)
+                });
+        OtpErlangObject resMsg = conn.receiveRPC();
+        if (resMsg == null){
             return null;
-        }else{
-            return (OtpErlangTuple) msg;
         }
-    }
-
-    public OtpErlangTuple sendRPCRequest(OtpErlangTuple payload) throws OtpErlangExit, OtpErlangDecodeException, IOException, OtpAuthException {
-            OtpSelf client = new OtpSelf(nodeName);
-            OtpPeer peer = new OtpPeer(dispatcherNodeName);
-            OtpConnection conn = client.connect(peer);
-            conn.sendRPC("gen_server", "call", new OtpErlangObject[] {
-                    new OtpErlangTuple(new OtpErlangObject[] {
-                            new OtpErlangAtom("global"),
-                            new OtpErlangAtom(dispatcherRegisteredName)}),
-                    payload});
-            OtpErlangObject resMsg = conn.receiveRPC();
-            if (resMsg == null){
-                return null;
-            }
-            else{
-                return (OtpErlangTuple) resMsg;
-            }
+        else{
+            return (OtpErlangTuple) resMsg;
+        }
     }
 
 
