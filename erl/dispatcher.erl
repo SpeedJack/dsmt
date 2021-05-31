@@ -58,8 +58,8 @@ init([]) ->
 
 handle_call({Command,Id,Data}, _From, State) ->
   case Command of
-    auction_list -> List = random_message({Command,Id,Data}, State), Result = {ok,List};
-    auction_agent_list -> List = random_message({Command,Id,Data}, State), Result = {ok,List};
+    auction_list -> Result = random_message({Command,Id,Data}, State);
+    auction_agent_list -> Result = random_message({Command,Id,Data}, State);
     _ -> Result = forward_message({Command,Id,Data}, State)
   end,
   {reply, Result, State};
