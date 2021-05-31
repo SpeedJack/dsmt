@@ -6,7 +6,6 @@
 <html lang = "it"> 
 	<head>
 		<meta charset="UTF-8">
-			<meta charset="UTF-8">
 		<meta name = "author" content = "Lorenzo Cima, Nicola Ferrante, Simone Pampaloni, Niccolò Scatena">
 		<meta name="description" content="Modify Password - Auction System">
 		<meta name="keywords" content="Auction, buy, sell">
@@ -27,6 +26,7 @@
 				<ul>	
 					<li> 
 						<p> User: ${username} </p>
+						<p> UserID: ${ID} </p>
 					<li>
 						<a href="password_modify.jsp">
 							<div class="menu_item_img sign_out_img"></div>	

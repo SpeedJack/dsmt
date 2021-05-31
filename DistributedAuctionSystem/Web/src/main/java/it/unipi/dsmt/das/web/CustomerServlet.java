@@ -32,8 +32,8 @@ public class CustomerServlet extends HttpServlet {
             List<Auction> list;
             destPage = "homeCustomer.jsp";
             User sessionUser = (User)session.getAttribute("user");
-            String username = sessionUser.getUsername();
-            request.setAttribute("username", username);
+            request.setAttribute("username", sessionUser.getUsername());
+            request.setAttribute("ID", sessionUser.getId());
             AuctionList auctionList = auctionManager.auctionsList(0);
             if(auctionList == null) {
                 list = new ArrayList<>();

@@ -29,7 +29,8 @@ public class UserLoginServlet extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            request.setAttribute("username", username);
+            request.setAttribute("username", user.getUsername());
+            request.setAttribute("ID", user.getId());
             dispatcher = request.getServletContext().getRequestDispatcher("/customer");
         } else {
             String message = "Credentials not valid. Please retry";

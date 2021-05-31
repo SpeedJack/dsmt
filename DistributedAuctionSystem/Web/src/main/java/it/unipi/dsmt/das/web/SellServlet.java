@@ -6,6 +6,7 @@ import it.unipi.dsmt.das.model.User;
 
 import java.io.IOException;
 
+import javax.ejb.EJB;
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -14,6 +15,7 @@ import javax.servlet.http.*;
 public class SellServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final Utility utility = new Utility();
+    @EJB
     private AuctionManager auctionManager;
     public SellServlet() {
         super();
@@ -26,8 +28,8 @@ public class SellServlet extends HttpServlet {
         if (session != null) {
             destPage = "sell.jsp";
             User sessionUser = (User)session.getAttribute("user");
-            String username = sessionUser.getUsername();
-            request.setAttribute("username", username);
+            request.setAttribute("username", sessionUser.getUsername());
+            request.setAttribute("ID", sessionUser.getId());
         }
         else
             destPage = "index.jsp";
@@ -47,7 +49,8 @@ public class SellServlet extends HttpServlet {
             User sessionUser = (User)session.getAttribute("user");
             String username = sessionUser.getUsername();
             request.setAttribute("username", username);
-            Auction auction = new Auction(  0, 0, request.getParameter("name"),
+            Auction auction = new Auction(  0, Integer.parseInt(request.getParameter("ID")),
+                                            request.getParameter("name"),
                                             request.getParameter("userfile"),
                                             request.getParameter("description"),
                                             utility.getTimestamp(request.getParameter("day") + " " +

@@ -332,16 +332,16 @@ input.single_bid {
 	left: 40%;
 	width: 20%;
 	top: 30px;
-	border: medium solid #fff;
+	border: medium solid black;
 }
 
 #offers_bid_table td{
 	margin-right: 10px;
-	border: medium solid #fff;
+	border: medium solid black;
 }
 
 #offers_bid_table input{
 	text-align: center;
-	width: 40px;
-	margin-bottom: 10px;
+	width: 50px;
+	margin-bottom: 20px;
 }

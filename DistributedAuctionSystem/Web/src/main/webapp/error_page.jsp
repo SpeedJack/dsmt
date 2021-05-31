@@ -25,6 +25,7 @@
 				<ul>	
 					<li> 
 						<p> User: ${username} </p>
+						<p> UserID: ${ID} </p>
 					<li>
 						<a href="password_modify.jsp">
 							<div class="menu_item_img sign_out_img"></div>	

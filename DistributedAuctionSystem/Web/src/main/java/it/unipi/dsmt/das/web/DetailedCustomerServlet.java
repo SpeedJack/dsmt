@@ -31,8 +31,8 @@ public class DetailedCustomerServlet extends HttpServlet {
         if (session != null) {
             destPage = "detailedCustomer.jsp";
             User sessionUser = (User)session.getAttribute("user");
-            String username = sessionUser.getUsername();
-            request.setAttribute("username", username);
+            request.setAttribute("username", sessionUser.getUsername());
+            request.setAttribute("ID", sessionUser.getId());
             AuctionData auctionData = auctionManager.selectAuction(3, 0);
             if(auctionData == null)
                 destPage = "error_page.jsp";
