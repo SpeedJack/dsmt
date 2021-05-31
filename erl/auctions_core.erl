@@ -111,7 +111,7 @@ make_bid(Message, {Data, State}) ->
                     {{err,Res}, Data};
                 true -> 
                     {{err,BidList}, Data}
-            end,
+            end;
         Code1 =/= atomic -> 
             {{err, Auction}, Data};
         true -> 
@@ -124,7 +124,7 @@ delete_bid(Message, {Data, State}) ->
     {_, Id, IdBid} = Message,
     {Code1,Auction} = store:get_auction(Id),
     if 
-        (Code1 == atomic) and (element(6,Auction) < element(3,NewBid)) ->
+        (Code1 == atomic) ->
             {Code2, Res} = store:delete_bid(IdBid),
             {Code3, BidList} = store:get_bid_list(Id),
             if 
@@ -139,7 +139,7 @@ delete_bid(Message, {Data, State}) ->
                     {{err,Res}, Data};
                 true =/= atomic -> 
                     {{err,BidList}, Data}
-            end,
+            end;
         Code1 =/= atomic -> 
             {{err, Auction}, Data};
         true -> 
