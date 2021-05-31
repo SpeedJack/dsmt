@@ -2,7 +2,7 @@
 
 -export([print_table/1]).
 -export([record_to_tuple/2, tuple_to_record/2]).
--export([initialization/1]).
+-export([initialization/1, start/0, stop/0]).
 -export([insert_auction/1, insert_bid/2]).
 -export([delete_auction/1, delete_bid/1]).
 -export([get_auction/1, get_auction_list/1, get_bid_list/1, get_bid_list/2, get_agent_auctions/1, get_bidder_auctions/1]).
@@ -56,9 +56,15 @@ tuple_to_record(auction, Tuple) ->
 
 initialization(Nodes) ->
     mnesia:create_schema(Nodes),
-    mnesia:start(),
+    start(),
     mnesia:create_table(auction,[{disc_copies, Nodes},{attributes, record_info(fields, auction)}]),
     mnesia:create_table(bid, [{disc_copies, Nodes},{attributes, record_info(fields, bid)}]).
+
+start() ->
+    mnesia:start().
+
+stop() ->
+    mnesia:stop().
 
 %--- INSERT --------------------------------------------------------------------------------------------------------
 insert_auction(Auction) ->
@@ -140,11 +146,12 @@ get_auction_list(Page) ->
                                     min_raise='$8', 
                                     sale_quantity='$9'},
                 Guard = [{'>','$6', UnixTime}],
-                Result = ['$1','$2','$3','$4','$5','$6','$7','$8','$9'],
-                List = mnesia:select(auction,[{MatchHead, Guard, Result}],Page*?PAGE_SIZE, read),
+                Result = ['$_'],
+                Match = mnesia:select(auction,[{MatchHead, Guard, Result}],Page*?PAGE_SIZE, read),
                 if 
-                    Page == 1 -> lists:reverse(List);
-                    true -> lists:sublist(lists:reverse(List),(Page-1)*?PAGE_SIZE + 1, length(List))
+                    (Match =/= '$end_of_table') and (Page == 1) -> {List, _} = Match, lists:reverse(List);
+                    Match =/= '$end_of_table' -> {List, _} = Match, lists:sublist(lists:reverse(List),(Page-1)*?PAGE_SIZE + 1, length(List));
+                    true -> []
                 end
             end,
     mnesia:transaction(Fun).

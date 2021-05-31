@@ -49,7 +49,7 @@ public class SellServlet extends HttpServlet {
             User sessionUser = (User)session.getAttribute("user");
             String username = sessionUser.getUsername();
             request.setAttribute("username", username);
-            Auction auction = new Auction(  0, Integer.parseInt(request.getParameter("ID")),
+            Auction auction = new Auction(  Integer.parseInt(request.getParameter("ID")),
                                             request.getParameter("name"),
                                             request.getParameter("userfile"),
                                             request.getParameter("description"),

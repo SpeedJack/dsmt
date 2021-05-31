@@ -37,7 +37,7 @@ public class OffersServlet extends HttpServlet {
             List<Auction> list = auctionManager.auctionBidderList(0).getList();
             if(list == null) {
                 list = new ArrayList<>();
-                list.add(new Auction(0, 0, "Empty list", "style/img/auction.jpg", "", Instant.EPOCH.getEpochSecond(), 0, 0, 0));
+                list.add(new Auction( 0, "Empty list", "style/img/auction.jpg", "", Instant.EPOCH.getEpochSecond(), 0, 0, 0));
             }
             request.setAttribute("auctionList", list);
         }

@@ -2,7 +2,7 @@
 
 -export([start_d/2, stop_d/2,start_dispatchers/2, stop_dispatchers/2]).
 -export([start_e/2, stop_e/2, start_cluster/4, stop_cluster/4, start_executors/2, stop_executors/2]).
--export([start_system/0, stop_system/0]).
+-export([start_system/0, stop_system/0, start_store/1]).
 
 -define(NAME_DISP_NODE, "disp").
 -define(NAME_EXEC_NODE, "exec").
@@ -11,8 +11,11 @@
 -define(NUM_CLUSTER, 1).
 -define(NUM_PROCESSOR_PER_CLUSTER,3).
 
+%----- INITIALIZATION MNESIA -----------------------------------------------------------------------
 
-
+start_store(Nodes) ->
+  RandomExec = lists:nth(rand:uniform(length(Nodes)), Nodes),
+  rpc:cast(RandomExec, store, initialization, [Nodes]).
 
 %----- INITIALIZATION DISPATCHER --------------------------------------------------------------------
 start_d(_, 0) -> ok;
@@ -49,7 +52,7 @@ stop_e(Cluster, IdName)->
 
 start_cluster(_, _,_,0) -> ok;
 start_cluster(Nodes, Cluster, Index, IdName) ->
-  io:format("Nodi: ~p, Cluster ~p, Index ~p, IdName ~p\n", [Nodes, Cluster,Index, IdName]),
+  %io:format("Nodi: ~p, Cluster ~p, Index ~p, IdName ~p\n", [Nodes, Cluster,Index, IdName]),
   Node = lists:nth(Index, Nodes),
   NewIndex = Index rem length(Nodes) + 1,
   rpc:call(Node,das, start_e,[Cluster,IdName]),
@@ -63,12 +66,12 @@ stop_cluster(Nodes, Cluster, Index, IdName) ->
   rpc:call(Node,das, stop_e,[Cluster,IdName]),
   stop_cluster(Nodes, Cluster, NewIndex, IdName-1).
 
-start_executors(_, 0)->ok;
+start_executors(_, 0)-> ok;
 start_executors(Nodes,Num) ->
   start_cluster(Nodes,Num,1,?NUM_PROCESSOR_PER_CLUSTER),
   start_executors(Nodes,Num-1).
 
-stop_executors(_, 0)->ok;
+stop_executors(_, 0)->store:stop(), ok;
 stop_executors(Nodes,Num) ->
   stop_cluster(Nodes,Num,1,?NUM_PROCESSOR_PER_CLUSTER),
   stop_executors(Nodes,Num-1).
@@ -78,7 +81,7 @@ stop_executors(Nodes,Num) ->
 
 start_system() ->
   Nodes = nodes(connected) ++ [node()],
-  store:initialization(Nodes),
+  start_store(lists:filter(fun(N) -> utility:starts_with(atom_to_list(N),?NAME_EXEC_NODE) end,Nodes)),
   start_dispatchers(lists:filter(fun(N) -> utility:starts_with(atom_to_list(N),?NAME_DISP_NODE)end,Nodes), 1),
   start_executors(lists:filter(fun(N) -> utility:starts_with(atom_to_list(N),?NAME_EXEC_NODE) end,Nodes),?NUM_CLUSTER).
 

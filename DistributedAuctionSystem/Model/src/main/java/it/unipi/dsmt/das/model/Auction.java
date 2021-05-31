@@ -17,8 +17,7 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
     int saleQuantity;
 
     public Auction() { }
-    public Auction(int id, int agent, String name, String image, String description, long endDate, float minPrice, float minRaise, int saleQuantity) {
-        this.id = id;
+    public Auction(int agent, String name, String image, String description, long endDate, float minPrice, float minRaise, int saleQuantity) {
         this.agent = agent;
         this.name = name;
         this.image = image;
@@ -27,6 +26,8 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
         this.minPrice = minPrice;
         this.minRaise = minRaise;
         this.saleQuantity = saleQuantity;
+
+        this.id = this.hashCode();
     }
 
     public int getId() {

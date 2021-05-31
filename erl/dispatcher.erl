@@ -47,10 +47,7 @@ forward_message({Command,Id,Data}, State) ->
 %and Mnesia allows the data to be accessible from all nodes
 random_message({Command,Id,Data}, State) ->
   {_,Leader} = lists:keyfind(rand:uniform(length(State)), 1, State),
-  io:format("Leader: ~p\n", [Leader]),
   Result = utility:call(Leader, {Command,Id,Data}),
-  io:format("Result: ~p\n", [Result]),
-
   Result.
 
 %------ CALLBACK DISPATCHER ------------------------------------------------------------------------------------------
