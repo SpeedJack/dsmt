@@ -47,17 +47,17 @@ public class SellServlet extends HttpServlet {
             destPage = "sell.jsp";
             String message;
             User sessionUser = (User)session.getAttribute("user");
-            String username = sessionUser.getUsername();
-            request.setAttribute("username", username);
-            Auction auction = new Auction(  Integer.parseInt(request.getParameter("ID")),
+            request.setAttribute("username", sessionUser.getUsername());
+            request.setAttribute("ID", sessionUser.getId());
+            Auction auction = new Auction(  sessionUser.getId(),
                                             request.getParameter("name"),
                                             request.getParameter("userfile"),
                                             request.getParameter("description"),
                                             utility.getTimestamp(request.getParameter("day") + " " +
                                                     request.getParameter("hour")),
-                                            Float.parseFloat(request.getParameter("minimum_bid")),
-                                            Float.parseFloat(request.getParameter("minimum_raise")),
-                                            Integer.parseInt(request.getParameter("object")));
+                                            Double.parseDouble(request.getParameter("minimum_bid")),
+                                            Double.parseDouble(request.getParameter("minimum_raise")),
+                                            Long.parseLong(request.getParameter("object")));
             String res = auctionManager.createAuction(auction);
             if(res.equals("ok"))
                 message = "Object correctly inserted";

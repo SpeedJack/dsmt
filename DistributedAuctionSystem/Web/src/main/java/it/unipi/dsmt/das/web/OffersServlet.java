@@ -2,6 +2,7 @@ package it.unipi.dsmt.das.web;
 
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.Auction;
+import it.unipi.dsmt.das.model.AuctionList;
 import it.unipi.dsmt.das.model.User;
 
 import java.io.IOException;
@@ -30,15 +31,18 @@ public class OffersServlet extends HttpServlet {
         String destPage;
 
         if (session != null) {
+            List<Auction> list;
             destPage = "offers.jsp";
             User sessionUser = (User)session.getAttribute("user");
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
-            List<Auction> list = auctionManager.auctionBidderList(0).getList();
-            if(list == null) {
+            AuctionList auctionList = auctionManager.auctionBidderList(sessionUser.getId());
+            if(auctionList == null) {
                 list = new ArrayList<>();
                 list.add(new Auction( 0, "Empty list", "style/img/auction.jpg", "", Instant.EPOCH.getEpochSecond(), 0, 0, 0));
             }
+            else
+                list = auctionList.getList();
             request.setAttribute("auctionList", list);
         }
         else

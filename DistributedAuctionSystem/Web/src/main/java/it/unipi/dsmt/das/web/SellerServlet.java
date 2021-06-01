@@ -36,7 +36,7 @@ public class SellerServlet extends HttpServlet {
             User sessionUser = (User)session.getAttribute("user");
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
-            AuctionList auctionList = auctionManager.auctionAgentList(0);
+            AuctionList auctionList = auctionManager.auctionAgentList(sessionUser.getId());
             if(auctionList == null) {
                 list = new ArrayList<>();
                 list.add(new Auction(0, "Empty list", "style/img/auction.jpg", "", Instant.EPOCH.getEpochSecond(), 0, 0, 0));

@@ -49,7 +49,7 @@ public class AuctionManagerBean implements AuctionManager {
     @Override
     public String createAuction(Auction auction) {
         OtpErlangAtom cmd = new OtpErlangAtom("create_auction");
-        OtpErlangInt id = new OtpErlangInt(auction.getId());
+        OtpErlangLong id = new OtpErlangLong(auction.getId());
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,auction.erlangize()});
         try {
             OtpErlangTuple response = sendRequest(obj);
@@ -63,8 +63,9 @@ public class AuctionManagerBean implements AuctionManager {
                     return "ok";
                 }
                 else{
-                    OtpErlangAtom errorMsg = (OtpErlangAtom) response.elementAt(1);
-                    return errorMsg.atomValue();
+                    OtpErlangTuple errorMsg = (OtpErlangTuple) response.elementAt(1);
+                    System.err.println(errorMsg.toString());
+                    return errorMsg.toString();
                 }
             }
         } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
@@ -157,6 +158,8 @@ public class AuctionManagerBean implements AuctionManager {
                 if (msgResponse.atomValue().equals("ok")) {
                     list = new AuctionList();
                     list.derlangize((OtpErlangList) response.elementAt(1));
+                    if(list.getList() == null)
+                        return null;
                 }
                 else{
                     return null;
@@ -194,6 +197,8 @@ public class AuctionManagerBean implements AuctionManager {
             if (msgResponse.atomValue().equals("ok")){
                list = new AuctionList();
                list.derlangize((OtpErlangList) response.elementAt(1));
+               if(list.getList() == null)
+                   return null;
             }
         } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
             e.printStackTrace();
@@ -211,7 +216,7 @@ public class AuctionManagerBean implements AuctionManager {
     @Override
     public AuctionList auctionBidderList(int bidderId) {
         AuctionList list = null;
-        OtpErlangAtom cmd = new OtpErlangAtom("auction_list");
+        OtpErlangAtom cmd = new OtpErlangAtom("auction_bidder_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangInt b = new OtpErlangInt(bidderId);
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,b});
@@ -225,6 +230,8 @@ public class AuctionManagerBean implements AuctionManager {
             if(msgResponse.atomValue().equals("ok")){
                list = new AuctionList();
                list.derlangize((OtpErlangList) response.elementAt(1));
+               if(list.getList() == null)
+                   return null;
             }
         } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
             e.printStackTrace();

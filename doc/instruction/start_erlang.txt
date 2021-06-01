@@ -1,12 +1,15 @@
 ISTRUZIONI PER AVVIARE ERLANG:
 
-1)Da terminale andare nella cartella di erl e eseguire
-	python erlang_nodes_startyp.py
+1)Da terminale andare nella cartella di erl e eseguire (solo la prima volta)
+	erlc ...tutti i file con estensione .erl
+
+2)Da terminale andare nella cartella di erl e eseguire
+	python erlang_nodes_startup.py
 	
 	con le seguenti opzioni:
 	-w ...percorso assoluto della cartella in cui ci sono gli script erlang. il percorso deve avere come separatori "/"(esempio: "C:/Users/simon/Documents/GitHub/dsmt/erl") ...
 	-d [opzionale]... numero di nodi dispatcher che si vogliono (default 1) ...
 	-e [opzionale]... numero di nodi executor che si voglionio (default 3) ...
 
-2)Una volta che i nodi sono stati creati, prenderne uno (consiglio un dispatcher) ed eseguire:
+3)Una volta che i nodi sono stati creati, prenderne uno (consiglio un dispatcher) ed eseguire:
 	das:start_system().

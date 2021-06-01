@@ -6,18 +6,18 @@ import it.unipi.dsmt.das.model.behaviour.Erlangizable;
 import java.io.Serializable;
 
 public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
-    int id;
-    int agent;
+    long id;
+    long agent;
     String name;
     String image;
     String description;
     long endDate;
-    float minPrice;
-    float minRaise;
-    int saleQuantity;
+    double minPrice;
+    double minRaise;
+    long saleQuantity;
 
     public Auction() { }
-    public Auction(int agent, String name, String image, String description, long endDate, float minPrice, float minRaise, int saleQuantity) {
+    public Auction(long agent, String name, String image, String description, long endDate, double minPrice, double minRaise, long saleQuantity) {
         this.agent = agent;
         this.name = name;
         this.image = image;
@@ -30,19 +30,19 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
         this.id = this.hashCode();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getAgent() {
+    public long getAgent() {
         return agent;
     }
 
-    public void setAgent(int agent) {
+    public void setAgent(long agent) {
         this.agent = agent;
     }
 
@@ -74,59 +74,55 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
         this.endDate = endDate;
     }
 
-    public float getMinPrice() {
+    public double getMinPrice() {
         return minPrice;
     }
 
-    public void setMinPrice(float minPrice) {
+    public void setMinPrice(double minPrice) {
         this.minPrice = minPrice;
     }
 
-    public float getMinRaise() {
+    public double getMinRaise() {
         return minRaise;
     }
 
-    public void setMinRaise(float minRaise) {
+    public void setMinRaise(double minRaise) {
         this.minRaise = minRaise;
     }
 
-    public int getSaleQuantity() {
+    public long getSaleQuantity() {
         return saleQuantity;
     }
 
-    public void setSaleQuantity(int saleQuantity) {
+    public void setSaleQuantity(long saleQuantity) {
         this.saleQuantity = saleQuantity;
     }
 
     public OtpErlangTuple erlangize(){
         return new OtpErlangTuple(
                 new OtpErlangObject[] {
-                        new OtpErlangInt(id),
-                        new OtpErlangInt(agent),
+                        new OtpErlangLong(id),
+                        new OtpErlangLong(agent),
                         new OtpErlangString(name),
                         new OtpErlangString(image),
                         new OtpErlangString(description),
                         new OtpErlangLong(endDate),
-                        new OtpErlangFloat(minPrice),
-                        new OtpErlangFloat(minRaise),
-                        new OtpErlangInt(saleQuantity)
+                        new OtpErlangDouble(minPrice),
+                        new OtpErlangDouble(minRaise),
+                        new OtpErlangLong(saleQuantity)
                 });
     }
 
     public void derlangize(OtpErlangTuple tuple){
-        try{
-            setId(((OtpErlangInt)tuple.elementAt(1)).intValue());
-            setAgent(((OtpErlangInt)tuple.elementAt(2)).intValue());
-            setName(((OtpErlangString)tuple.elementAt(3)).stringValue());
-            setImage(((OtpErlangString)tuple.elementAt(4)).stringValue());
-            setDescription(((OtpErlangString)tuple.elementAt(5)).stringValue());
-            setEndDate(((OtpErlangLong)tuple.elementAt(6)).longValue());
-            setMinPrice(((OtpErlangFloat)tuple.elementAt(7)).floatValue());
-            setMinRaise(((OtpErlangFloat)tuple.elementAt(8)).floatValue());
-            setSaleQuantity(((OtpErlangInt)tuple.elementAt(9)).intValue());
+        setId(((OtpErlangLong)tuple.elementAt(1)).longValue());
+        setAgent(((OtpErlangLong)tuple.elementAt(2)).longValue());
+        setName(((OtpErlangString)tuple.elementAt(3)).stringValue());
+        setImage(((OtpErlangString)tuple.elementAt(4)).stringValue());
+        setDescription(((OtpErlangString)tuple.elementAt(5)).stringValue());
+        setEndDate(((OtpErlangLong)tuple.elementAt(6)).longValue());
+        setMinPrice(((OtpErlangDouble)tuple.elementAt(7)).doubleValue());
+        setMinRaise(((OtpErlangDouble)tuple.elementAt(8)).doubleValue());
+        setSaleQuantity(((OtpErlangLong)tuple.elementAt(9)).longValue());
 
-        } catch (OtpErlangRangeException ex) {
-            ex.printStackTrace();
-        }
     }
 }

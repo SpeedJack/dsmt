@@ -75,15 +75,16 @@
 				<label class = "little">Name:</label>     				 
 		  			<input class = "form" name="name" type="text" size = "40" required><br>
     			<label class = "little">Minimum Bid:</label>  				 
-		  			<input class = "form" name="minimum_bid" type="number" size = "5" required><br>
+		  			<input class = "form" name="minimum_bid" type="text" size = "5" required><br>
 				<label class = "little">Minimum Raise:</label>
-					<input class = "form" name="minimum_raise" type="number" size = "5" required><br>
+					<input class = "form" name="minimum_raise" type="text" size = "5" required><br>
 				<label class = "little">Number of Objects:</label>		  			 
-		  			<input class = "form" name="object" type="number" size = "5" required><br>
+		  			<input class = "form" name="object" type="text" size = "5" required><br>
 				<label class = "little">End Day: </label>     				
-		  			<input class = "form" name="day" type="text" size = "15" required><br>
+		  			<input class = "form" name="day" type="text" size = "15" placeholder = "dd/mm/aaaa"
+						   pattern = '(?:((?:0[1-9]|1[0-9]|2[0-9])\/(?:0[1-9]|1[0-2])|(?:30)\/(?!02)(?:0[1-9]|1[0-2])|31\/(?:0[13578]|1[02]))\/(?:19|20)[0-9]{2})' required><br>
     			<label class = "little">End Hour:</label>   				 
-		  			<input class = "form" name="hour" type="text" size = "10" required><br><br>
+		  			<input class = "form" name="hour" type="text" size = "10" pattern = "([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" required><br><br>
 				<label class = "little">Description:</label><br>	 
 		  			<textarea name = "description" rows="5" cols="80" maxlength = "400"></textarea><br>
 				<label class = "little">Image:</label>
