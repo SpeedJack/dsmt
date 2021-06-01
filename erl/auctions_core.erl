@@ -155,8 +155,8 @@ auctions_list(Page) ->
     end.
 
 %returns the list of auctions in which the user has made at least 1 bid
-auctions_bidder_list(BidderList) ->
-    {Code, AuctionList} = store:get_bidder_auctions(BidderList),
+auctions_bidder_list(IdBidder) ->
+    {Code, AuctionList} = store:get_bidder_auctions(IdBidder),
     if
         Code == atomic -> {ok, AuctionList};
         true -> {err, AuctionList}

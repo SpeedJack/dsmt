@@ -2,7 +2,7 @@
 
 -export([start_d/2, stop_d/2,start_dispatchers/2, stop_dispatchers/2]).
 -export([start_e/2, stop_e/2, start_cluster/4, stop_cluster/4, start_executors/2, stop_executors/2]).
--export([start_system/0, stop_system/0, start_store/1]).
+-export([start_system/0, stop_system/0, start_store/1, start_store/2]).
 -export([startup/1]).
 
 
@@ -27,9 +27,17 @@ startup(Args) ->
     
 %----- INITIALIZATION MNESIA -----------------------------------------------------------------------
 
+%start_store(Nodes) ->
+  %RandomExec = lists:nth(rand:uniform(length(Nodes)), Nodes),
+  %rpc:cast(RandomExec, store, initialization, [Nodes]).
+start_store([],_) -> ok;
+start_store([H|T], Nodes) ->
+  rpc:cast(H, store, initialization,Nodes),
+  start_store(T, Nodes).
+
 start_store(Nodes) ->
-  RandomExec = lists:nth(rand:uniform(length(Nodes)), Nodes),
-  rpc:cast(RandomExec, store, initialization, [Nodes]).
+  start_store(Nodes, Nodes).
+
 
 %----- INITIALIZATION DISPATCHER --------------------------------------------------------------------
 start_d(_, 0) -> ok;
