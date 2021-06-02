@@ -114,15 +114,15 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
     }
 
     public void derlangize(OtpErlangTuple tuple){
-        setId(((OtpErlangLong)tuple.elementAt(1)).longValue());
-        setAgent(((OtpErlangLong)tuple.elementAt(2)).longValue());
-        setName(((OtpErlangString)tuple.elementAt(3)).stringValue());
-        setImage(((OtpErlangString)tuple.elementAt(4)).stringValue());
-        setDescription(((OtpErlangString)tuple.elementAt(5)).stringValue());
-        setEndDate(((OtpErlangLong)tuple.elementAt(6)).longValue());
-        setMinPrice(((OtpErlangDouble)tuple.elementAt(7)).doubleValue());
-        setMinRaise(((OtpErlangDouble)tuple.elementAt(8)).doubleValue());
-        setSaleQuantity(((OtpErlangLong)tuple.elementAt(9)).longValue());
+        setId(((OtpErlangLong)tuple.elementAt(0)).longValue());
+        setAgent(((OtpErlangLong)tuple.elementAt(1)).longValue());
+        setName(((OtpErlangString)tuple.elementAt(2)).stringValue());
+        setImage(((OtpErlangString)tuple.elementAt(3)).stringValue());
+        setDescription(((OtpErlangString)tuple.elementAt(4)).stringValue());
+        setEndDate(((OtpErlangLong)tuple.elementAt(5)).longValue());
+        setMinPrice(((OtpErlangDouble)tuple.elementAt(6)).doubleValue());
+        setMinRaise(((OtpErlangDouble)tuple.elementAt(7)).doubleValue());
+        setSaleQuantity(((OtpErlangLong)tuple.elementAt(8)).longValue());
 
     }
 }

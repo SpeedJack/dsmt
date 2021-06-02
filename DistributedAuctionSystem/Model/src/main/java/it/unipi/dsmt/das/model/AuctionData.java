@@ -44,8 +44,8 @@ public class AuctionData implements Serializable, Erlangizable<OtpErlangTuple> {
 
     public void derlangize(OtpErlangTuple tuple){
 
-        auction.derlangize((OtpErlangTuple)tuple.elementAt(1));
-        bidList.derlangize(((OtpErlangList)tuple.elementAt(3)));
+        auction.derlangize((OtpErlangTuple)tuple.elementAt(0));
+        bidList.derlangize(((OtpErlangList)tuple.elementAt(1)));
 
     }
 }
