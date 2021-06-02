@@ -25,31 +25,32 @@ send_to_slaves([HeadPid|T], Message) ->
 %A bid A is worse than bid B if 'bid_value' of A is less than 'bid_value' of B 
 %or if the A and B's 'bid_value' are equal, but 'timestamp' of A is greater than'timestamp' of B.
 compare_bids(ElemA, ElemB) ->
-    element(4,ElemA) < element(4,ElemB) or 
-    ((element(4,ElemA) == element(4,ElemB)) and (element(3, ElemA) > element(3, ElemB))).
+    (element(5,ElemA) < element(5,ElemB)) or 
+    ((element(5,ElemA) == element(5,ElemB)) and (element(4, ElemA) > element(4, ElemB))).
 
 %The method calculates the new AuctionState by sorting the bids by value and timestamp.
 % The method makes sure that winning bids are unique to each user.
 select_winning_bids(_,_,[]) -> [];
 select_winning_bids(SaleQuantity, WinningUsers, [HeadSorted|T]) ->
-    User = element(2,HeadSorted),
+    User = element(3,HeadSorted),
     Check = lists:member(User, WinningUsers),
     if 
         Check == false ->  NewWinningUsers = WinningUsers ++ [User];
         true -> NewWinningUsers = WinningUsers, select_winning_bids(SaleQuantity, WinningUsers, T)
     end,
 
-    BidQuantity = element(5,HeadSorted),
+    BidQuantity = element(6,HeadSorted),
     if 
         SaleQuantity - BidQuantity > 0 -> [HeadSorted] ++ select_winning_bids(SaleQuantity-BidQuantity, NewWinningUsers, T);
         SaleQuantity - BidQuantity == 0 -> [HeadSorted];
-        true -> NewHeadSorted =setelement(5, HeadSorted, SaleQuantity), [NewHeadSorted]
+        true -> [] ++ select_winning_bids(SaleQuantity, NewWinningUsers, T)
     end.
 
 %Computes a new state for an auction. This is done whenever a bid for an auction is added or deleted.
 compute_auction_state(AuctionData, BidList) ->
-    SaleQuantity = element(8,AuctionData),
+    SaleQuantity = element(9,AuctionData),
     SortedBidList = lists:reverse(lists:sort(fun compare_bids/2, BidList)),
+    io:format("SortedBidList ~p\n", [SortedBidList]),
     Result = select_winning_bids(SaleQuantity,[], SortedBidList),
     Result.
 %-----------------------------------------------------------------------------------------------------
@@ -96,7 +97,7 @@ make_bid(Message, {Data, State}) ->
     {_, Id, NewBid} = Message,
     {Code1,Auction} = store:get_auction(Id),
     if 
-        (Code1 == atomic) and (element(6,Auction) < element(3,NewBid)) ->
+        (Code1 == atomic) and (element(6,Auction) > element(4,NewBid)) ->
             {Code2, Res} = store:insert_bid(NewBid, Id),
             {Code3, BidList} = store:get_bid_list(Id),
             if 
@@ -106,7 +107,7 @@ make_bid(Message, {Data, State}) ->
                         self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
                         true -> null
                     end,
-                    {{ok,ok}, NewData};
+                    {{ok,NewData}, NewData};
                 Code2 =/= atomic -> 
                     {{err,Res}, Data};
                 true -> 

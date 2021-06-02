@@ -122,6 +122,9 @@ public class AuctionManagerBean implements AuctionManager {
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")) {
                 OtpErlangTuple dataTuple = (OtpErlangTuple) response.elementAt(1);
+                if(dataTuple.arity() == 0){
+                    return null;
+                }
                 data = new AuctionData();
                 data.derlangize(dataTuple);
             }

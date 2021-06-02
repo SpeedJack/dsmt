@@ -42,6 +42,7 @@ handle_call({Command,Id,Payload},_From, {Data, State}) ->
         auction_bidder_list -> NewData = Data, Result = auctions_core:auctions_bidder_list(Payload);
         make_bid -> {Result,NewData} = auctions_core:make_bid({Command,Id,Payload}, {Data,State});
         delete_bid -> {Result,NewData} = auctions_core:delete_bid({Command,Id,Payload}, {Data,State});
-        leader_update -> NewData = Payload, Result = {ok,ok}
+        leader_update -> NewData = Payload, Result = {ok,ok};
+        true -> Result = {err,command_not_supported}, NewData = Data
     end,
     {reply,Result, {NewData,State}}.

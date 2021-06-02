@@ -2,7 +2,7 @@
 
 -export([print_table/1]).
 -export([record_to_tuple/2, tuple_to_record/2]).
--export([initialization/1, start/0, stop/0]).
+-export([initialization/1, start_nodes/1, stop_nodes/1]).
 -export([insert_auction/1, insert_bid/2]).
 -export([delete_auction/1, delete_bid/1]).
 -export([get_auction/1, get_auction_list/1, get_bid_list/1, get_bid_list/2, get_agent_auctions/1, get_bidder_auctions/1]).
@@ -15,6 +15,7 @@
 %converts a bid record in a tuple
 record_to_tuple(bid, Record) ->
     {Record#bid.id_bid,
+    Record#bid.id_auction,
     Record#bid.id_user,
     Record#bid.timestamp,
     Record#bid.bid_value,
@@ -33,11 +34,11 @@ record_to_tuple(auction, Record)->
 %converts a auction tuple in a record
 tuple_to_record(bid, Tuple) ->
     Record = #bid{id_bid= element(1,Tuple),
-                id_auction = '_',
-                id_user= element(2,Tuple),
-                timestamp= element(3,Tuple),
-                bid_value= element(4,Tuple),
-                quantity= element(5,Tuple)},
+                id_auction = element(2,Tuple),
+                id_user= element(3,Tuple),
+                timestamp= element(4,Tuple),
+                bid_value= element(5,Tuple),
+                quantity= element(6,Tuple)},
     Record;
 %converts an auction tuple in a record
 tuple_to_record(auction, Tuple) ->
@@ -56,15 +57,16 @@ tuple_to_record(auction, Tuple) ->
 
 initialization(Nodes) ->
     mnesia:create_schema(Nodes),
-    start(),
+    mnesia:start(),
+    start_nodes(Nodes),
     mnesia:create_table(auction,[{disc_copies, Nodes},{attributes, record_info(fields, auction)}]),
     mnesia:create_table(bid, [{disc_copies, Nodes},{attributes, record_info(fields, bid)}]).
 
-start() ->
-    mnesia:start().
+start_nodes(Nodes) ->
+    [rpc:cast(Node, mnesia, start, [])||Node <- Nodes, Node =/= node()].
 
-stop() ->
-    mnesia:stop().
+stop_nodes(Nodes) ->
+    [rpc:cast(Node, mnesia, stop, [])|| Node <- Nodes].
 
 %--- INSERT --------------------------------------------------------------------------------------------------------
 insert_auction(Auction) ->
@@ -87,13 +89,13 @@ insert_bid(Bid, AuctionId) ->
 
 delete_auction(AuctionId) ->
     Fun =   fun() ->
-                mnesia:delete(auction, AuctionId)
+                mnesia:delete({auction, AuctionId})
             end,
     mnesia:transaction(Fun).
 
 delete_bid(BidId) ->
     Fun =   fun() ->
-                mnesia:delete(bid, BidId, write)
+                mnesia:delete({bid, BidId})
             end,
     mnesia:transaction(Fun).
 
@@ -106,6 +108,7 @@ get_auction(AuctionId) ->
     if 
         (Code == atomic) and (AuctionRecord =/= []) ->  [H|_] = AuctionRecord, 
                                                         {Code, record_to_tuple(auction, H)};
+        (Code == atomic) and (AuctionRecord == []) -> {Code, {}};
         true -> {Code, AuctionRecord}
     end.
 
@@ -170,11 +173,11 @@ get_bidder_auctions(IdBidder)->
 %returns the list of auctions created by an agent
 get_agent_auctions(IdAgent) ->
     Fun =   fun() ->
-                mnesia:match_object(auction, {auction, '_', IdAgent, '_', '_', '_', '_', '_', '_'}, read)
+                mnesia:match_object(auction, {auction, '_', IdAgent, '_','_', '_', '_', '_', '_', '_'}, read)
             end,
     {Code, AuctionList} = mnesia:transaction(Fun),
     if 
-        (Code == atomic) and (AuctionList =/= []) -> {Code, [record_to_tuple(bid,Auction) || Auction <- AuctionList]};
+        (Code == atomic) and (AuctionList =/= []) -> {Code, [record_to_tuple(auction,Auction) || Auction <- AuctionList]};
         true -> {Code, AuctionList}
     end.
 

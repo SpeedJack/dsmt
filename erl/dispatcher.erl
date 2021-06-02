@@ -13,8 +13,9 @@
 %     {create_auction,IdAuction,AuctionData};
 %     {delete_auction,IdAuction,_};
 %     {select_auction,IdAuction, IdUser};
-%     {auction_list,IdAuction,_};
-%     {auction_agent_list,IdAuction,_};
+%     {auction_list,_,Page};
+%     {auction_agent_list,_,IdAgent};
+%     {auction_bidder_list,_,IdBidder};
 %     {make_bid,IdAuction,BidData};
 %     {delete_bid,IdAuction,IdBid};
 %
