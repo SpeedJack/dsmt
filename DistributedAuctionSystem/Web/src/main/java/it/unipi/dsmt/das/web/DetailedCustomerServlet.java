@@ -33,7 +33,8 @@ public class DetailedCustomerServlet extends HttpServlet {
             User sessionUser = (User)session.getAttribute("user");
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
-            AuctionData auctionData = auctionManager.selectAuction(3, 0);
+            int id = Integer.parseInt(request.getParameter("auctionID"));
+            AuctionData auctionData = auctionManager.selectAuction(id, sessionUser.getId());
             if(auctionData == null)
                 destPage = "error_page.jsp";
             else {

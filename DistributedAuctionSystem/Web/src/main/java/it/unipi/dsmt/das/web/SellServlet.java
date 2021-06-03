@@ -3,15 +3,26 @@ package it.unipi.dsmt.das.web;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.Auction;
 import it.unipi.dsmt.das.model.User;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.*;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
 @WebServlet("/sell")
+@MultipartConfig
 public class SellServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final Utility utility = new Utility();
@@ -44,14 +55,26 @@ public class SellServlet extends HttpServlet {
         String destPage;
 
         if (session != null) {
+            User sessionUser = (User)session.getAttribute("user");
+
+            ServletContext context = getServletContext();
+            String filePath = context.getInitParameter("file-upload");
+            Part filePart = request.getPart("userfile"); // Retrieves <input type="file" name="userfile">
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
+            InputStream fileContent = filePart.getInputStream();
+            File f = new File(filePath + "_" + sessionUser.getId() + "_" + fileName);
+            OutputStream out = new FileOutputStream(f);
+            IOUtils.copy(fileContent, out);
+            fileContent.close();
+            out.close();
+
             destPage = "sell.jsp";
             String message;
-            User sessionUser = (User)session.getAttribute("user");
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
             Auction auction = new Auction(  sessionUser.getId(),
                                             request.getParameter("name"),
-                                            request.getParameter("userfile"),
+                                      filePath + "_" + sessionUser.getId() + "_" + fileName,
                                             request.getParameter("description"),
                                             utility.getTimestamp(request.getParameter("day") + " " +
                                                     request.getParameter("hour")),
