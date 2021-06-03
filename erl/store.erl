@@ -67,7 +67,8 @@ initialization(Nodes) ->
 
 start_nodes(Nodes) ->
     mnesia:start(),
-    [rpc:call(Node, mnesia, start, [])||Node <- Nodes, Node =/= node()].
+    A = [rpc:call(Node, mnesia, start, [])||Node <- Nodes, Node =/= node()],
+    io:format("~p\n", [A]).
 
 stop_nodes(Nodes) ->
     mnesia:stop(),
