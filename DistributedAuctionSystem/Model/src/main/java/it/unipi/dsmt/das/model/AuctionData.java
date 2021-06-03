@@ -10,6 +10,8 @@ public class AuctionData implements Serializable, Erlangizable<OtpErlangTuple> {
     BidList bidList;
 
     public AuctionData() {
+        this.auction = new Auction();
+        this.bidList = new BidList();
     }
 
     public AuctionData(Auction auction, BidList bidList) {
@@ -43,9 +45,8 @@ public class AuctionData implements Serializable, Erlangizable<OtpErlangTuple> {
     }
 
     public void derlangize(OtpErlangTuple tuple){
-
-        auction.derlangize((OtpErlangTuple)tuple.elementAt(1));
-        bidList.derlangize(((OtpErlangList)tuple.elementAt(3)));
+        auction.derlangize((OtpErlangTuple)tuple.elementAt(0));
+        bidList.derlangize(((OtpErlangList)tuple.elementAt(1)));
 
     }
 }

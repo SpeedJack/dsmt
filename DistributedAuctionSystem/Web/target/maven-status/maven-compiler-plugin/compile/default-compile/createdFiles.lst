@@ -1,0 +1,12 @@
+it/unipi/dsmt/das/web/HelloServlet.class
+it/unipi/dsmt/das/web/SellerServlet.class
+it/unipi/dsmt/das/web/BidServlet.class
+it/unipi/dsmt/das/web/CustomerServlet.class
+it/unipi/dsmt/das/web/UserRegistrationServlet.class
+it/unipi/dsmt/das/web/Utility.class
+it/unipi/dsmt/das/web/UserLoginServlet.class
+it/unipi/dsmt/das/web/OffersServlet.class
+it/unipi/dsmt/das/web/DetailedCustomerServlet.class
+it/unipi/dsmt/das/web/UserLogoutServlet.class
+it/unipi/dsmt/das/web/SellServlet.class
+it/unipi/dsmt/das/web/UserModifyPasswordServlet.class

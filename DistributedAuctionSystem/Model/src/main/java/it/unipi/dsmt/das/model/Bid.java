@@ -84,13 +84,16 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
     }
 
     public void derlangize(OtpErlangTuple tuple){
+        if(tuple.arity() != 6){
+            return;
+        }
         try{
-            setId(((OtpErlangInt)tuple.elementAt(1)).intValue());
-            setAuction(((OtpErlangInt)tuple.elementAt(2)).intValue());
-            setUser(((OtpErlangInt)tuple.elementAt(3)).intValue());
-            setTimestamp(((OtpErlangLong)tuple.elementAt(4)).longValue());
-            setValue(((OtpErlangFloat)tuple.elementAt(5)).floatValue());
-            setQuantity(((OtpErlangInt)tuple.elementAt(6)).intValue());
+            setId(((OtpErlangInt)tuple.elementAt(0)).intValue());
+            setAuction(((OtpErlangInt)tuple.elementAt(1)).intValue());
+            setUser(((OtpErlangInt)tuple.elementAt(2)).intValue());
+            setTimestamp(((OtpErlangLong)tuple.elementAt(3)).longValue());
+            setValue(((OtpErlangFloat)tuple.elementAt(4)).floatValue());
+            setQuantity(((OtpErlangInt)tuple.elementAt(5)).intValue());
 
         } catch (OtpErlangRangeException ex) {
             ex.printStackTrace();

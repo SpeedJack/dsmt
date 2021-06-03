@@ -20,13 +20,14 @@ public class WSClient {
         this(0);
     }
 
-    public WSClient(int auction){
-        this("ws://localhost:8080/DAS/auctions_backend/", auction);
+    public WSClient(long auction){
+        this("ws://localhost:8080/ws/auctions_backend/", auction);
     }
 
-    public WSClient(String endpoint, int auction) {
+    public WSClient(String endpoint, long auction) {
         try {
             URI endpointURI = new URI(endpoint + String.valueOf(auction));
+            System.out.println(endpointURI);
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             container.connectToServer(this, endpointURI);
         } catch (Exception e) {

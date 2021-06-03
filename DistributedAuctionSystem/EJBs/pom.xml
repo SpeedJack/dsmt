@@ -29,13 +29,13 @@
         <groupId>org.erlang.otp</groupId>
         <artifactId>jinterface</artifactId>
         <version>1.6.1</version>
-        <scope>provided</scope>
+        <scope>compile</scope>
     </dependency>
     <dependency>
         <groupId>clojang</groupId>
         <artifactId>erlang-jinterface</artifactId>
         <version>1.10-1</version>
-        <scope>provided</scope>
+        <scope>compile</scope>
     </dependency>
         <dependency>
             <groupId>javax.ejb</groupId>
@@ -58,12 +58,6 @@
         <dependency>
             <groupId>it.unipi.dsmt.das</groupId>
             <artifactId>interfaces</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>it.unipi.dsmt.das</groupId>
-            <artifactId>WebSocketServer</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

@@ -57,16 +57,22 @@ tuple_to_record(auction, Tuple) ->
 
 initialization(Nodes) ->
     mnesia:create_schema(Nodes),
+    %io:format("A: ~p\n", [A]),
     mnesia:start(),
     start_nodes(Nodes),
     mnesia:create_table(auction,[{disc_copies, Nodes},{attributes, record_info(fields, auction)}]),
+    %io:format("B: ~p\n", [B]),
     mnesia:create_table(bid, [{disc_copies, Nodes},{attributes, record_info(fields, bid)}]).
+    %io:format("C: ~p\n", [C]).
 
 start_nodes(Nodes) ->
-    [rpc:cast(Node, mnesia, start, [])||Node <- Nodes, Node =/= node()].
+    mnesia:start(),
+    A = [rpc:call(Node, mnesia, start, [])||Node <- Nodes, Node =/= node()],
+    io:format("~p\n", [A]).
 
 stop_nodes(Nodes) ->
-    [rpc:cast(Node, mnesia, stop, [])|| Node <- Nodes].
+    mnesia:stop(),
+    [rpc:call(Node, mnesia, stop, [])|| Node <- Nodes].
 
 %--- INSERT --------------------------------------------------------------------------------------------------------
 insert_auction(Auction) ->
@@ -157,7 +163,9 @@ get_auction_list(Page) ->
                     true -> []
                 end
             end,
-    mnesia:transaction(Fun).
+    {atomic, AuctionList} = mnesia:transaction(Fun),
+    {atomic, [record_to_tuple(auction, Auction)|| Auction <- AuctionList]}.
+
 
 %returns the list of auctions in which the user has made at least 1 bid
 get_bidder_auctions(IdBidder)->
@@ -165,8 +173,8 @@ get_bidder_auctions(IdBidder)->
                 MatchHead = #bid{id_auction='$1', id_user= IdBidder, _='_'},
                 Guard = [],
                 Result = ['$1'],
-                IdAuctions = mnesia:select(auction,[{MatchHead, Guard, Result}]),
-                [record_to_tuple(auction, lists:usort(lists:nth(1,mnesia:read(auction,IdAuction))))|| IdAuction <- IdAuctions]
+                Auctions = mnesia:select(auction,[{MatchHead, Guard, Result}]),
+                [record_to_tuple(auction, lists:usort(lists:nth(1,mnesia:read(auction,Auction))))|| Auction <- Auctions]
             end,
     mnesia:transaction(Fun).
 

@@ -2,6 +2,8 @@
 <project version="4">
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/Web" />
+    <file type="web" url="file://$PROJECT_DIR$/WebSocketServerOld" />
+    <file type="web" url="file://$PROJECT_DIR$/ws-server" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
@@ -12,11 +14,11 @@
         <option value="$PROJECT_DIR$/Web/pom.xml" />
         <option value="$PROJECT_DIR$/EJBs/pom.xml" />
         <option value="$PROJECT_DIR$/Endpoints/pom.xml" />
-        <option value="$PROJECT_DIR$/Persistence/pom.xml" />
         <option value="$PROJECT_DIR$/wsclient/pom.xml" />
         <option value="$PROJECT_DIR$/WebSocketClient/pom.xml" />
         <option value="$PROJECT_DIR$/WebSocket/pom.xml" />
         <option value="$PROJECT_DIR$/WebSocketServer/pom.xml" />
+        <option value="$PROJECT_DIR$/WebSocketServerOld/ws-server/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

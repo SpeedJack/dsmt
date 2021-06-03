@@ -15,6 +15,7 @@ public class BidList implements Serializable, Erlangizable<OtpErlangList> {
     }
 
     public BidList() {
+        list = new ArrayList<>();
     }
 
     public List<Bid> getList() {
@@ -36,6 +37,9 @@ public class BidList implements Serializable, Erlangizable<OtpErlangList> {
     }
 
     public void derlangize(OtpErlangList tempList){
+        if(tempList.arity() == 0){
+            return;
+        }
         for(OtpErlangObject element : tempList.elements()){
             Bid bid = new Bid();
             bid.derlangize((OtpErlangTuple) element);

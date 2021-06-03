@@ -38,7 +38,7 @@ public class AuctionManagerBean implements AuctionManager {
 
     @Timeout
     public void close(Timer timer) {
-        publisher.closeAuction((int)timer.getInfo());
+        publisher.closeAuction((long)timer.getInfo());
     }
     public AuctionManagerBean() throws IOException {
       // this.node = new OtpNode(nodeName);
@@ -119,10 +119,11 @@ public class AuctionManagerBean implements AuctionManager {
                 System.out.println("TIME EXPIRED");
                 return null;
             }
+            System.out.println(response);
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")) {
                 OtpErlangTuple dataTuple = (OtpErlangTuple) response.elementAt(1);
-                if(dataTuple.arity() == 0){
+                if(((OtpErlangTuple)dataTuple.elementAt(0)).arity() == 0){
                     return null;
                 }
                 data = new AuctionData();
@@ -159,10 +160,10 @@ public class AuctionManagerBean implements AuctionManager {
             else {
                 OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
                 if (msgResponse.atomValue().equals("ok")) {
+                    if(((OtpErlangList) response.elementAt(1)).arity() == 0)
+                        return null;
                     list = new AuctionList();
                     list.derlangize((OtpErlangList) response.elementAt(1));
-                    if(list.getList() == null)
-                        return null;
                 }
                 else{
                     return null;
@@ -198,10 +199,10 @@ public class AuctionManagerBean implements AuctionManager {
             }
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")){
+                if(((OtpErlangList) response.elementAt(1)).arity() == 0)
+                    return null;
                list = new AuctionList();
                list.derlangize((OtpErlangList) response.elementAt(1));
-               if(list.getList() == null)
-                   return null;
             }
         } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
             e.printStackTrace();
@@ -231,10 +232,10 @@ public class AuctionManagerBean implements AuctionManager {
             }
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if(msgResponse.atomValue().equals("ok")){
+                if(((OtpErlangList) response.elementAt(1)).arity() == 0)
+                    return null;
                list = new AuctionList();
                list.derlangize((OtpErlangList) response.elementAt(1));
-               if(list.getList() == null)
-                   return null;
             }
         } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
             e.printStackTrace();
