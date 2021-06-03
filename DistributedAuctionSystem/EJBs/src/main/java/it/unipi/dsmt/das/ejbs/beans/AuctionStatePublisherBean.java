@@ -21,7 +21,7 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
    * Chiama la funzione dell'endpoint
    */
 
-  private static final ConcurrentHashMap<Integer, AuctionState> states =
+  private static final ConcurrentHashMap<Long, AuctionState> states =
           new ConcurrentHashMap<>();
   @Resource(lookup = "jms/bidsQueueCF")
   private ConnectionFactory connectionFactory;
@@ -34,7 +34,7 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
   public AuctionStatePublisherBean() { }
 
   @Override
-  public void publishState(int id, AuctionState state) {
+  public void publishState(long id, AuctionState state) {
     states.put(id, state);
     try {
       broadcast(id, state, false);
@@ -44,7 +44,7 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
 
   }
 
-  public void closeAuction(int id){
+  public void closeAuction(long id){
     try {
       broadcast(id, states.get(id), true);
     } catch (JMSException ex){
@@ -52,14 +52,14 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
     }
   }
 
-  private void broadcast(int id, AuctionState state, boolean close) throws JMSException {
+  private void broadcast(long id, AuctionState state, boolean close) throws JMSException {
     Connection connection = connectionFactory.createConnection();
 
     Session session = connection.createSession(true, 0);
     MessageProducer producer = session.createProducer(queue);
 
     Message message = session.createObjectMessage(state);
-    message.setIntProperty("auction", id);
+    message.setLongProperty("auction", id);
     message.setBooleanProperty("close", close);
     producer.send(message);
 

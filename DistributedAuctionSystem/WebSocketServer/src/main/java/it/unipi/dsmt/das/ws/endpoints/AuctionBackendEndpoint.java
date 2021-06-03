@@ -14,9 +14,9 @@ import javax.websocket.server.ServerEndpoint;
         decoders= {AuctionStateDecoder.class})
 
 public class AuctionBackendEndpoint {
-    int auction;
+    long auction;
     @OnOpen
-    public void open(Session session, @PathParam("auction_id") int auctionId){
+    public void open(Session session, @PathParam("auction_id") long auctionId){
         auction=auctionId;
     }
 

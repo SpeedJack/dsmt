@@ -38,7 +38,7 @@ public class AuctionManagerBean implements AuctionManager {
 
     @Timeout
     public void close(Timer timer) {
-        publisher.closeAuction((int)timer.getInfo());
+        publisher.closeAuction((long)timer.getInfo());
     }
     public AuctionManagerBean() throws IOException {
       // this.node = new OtpNode(nodeName);
@@ -119,6 +119,7 @@ public class AuctionManagerBean implements AuctionManager {
                 System.out.println("TIME EXPIRED");
                 return null;
             }
+            System.out.println(response);
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")) {
                 OtpErlangTuple dataTuple = (OtpErlangTuple) response.elementAt(1);

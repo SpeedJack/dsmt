@@ -20,6 +20,7 @@
             <groupId>org.glassfish.tyrus.bundles</groupId>
             <artifactId>tyrus-standalone-client</artifactId>
             <version>1.17</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -41,6 +42,12 @@
         <dependency>
             <groupId>it.unipi.dsmt.das</groupId>
             <artifactId>WebSocket</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>it.unipi.dsmt.das</groupId>
+            <artifactId>WebSocketServer</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

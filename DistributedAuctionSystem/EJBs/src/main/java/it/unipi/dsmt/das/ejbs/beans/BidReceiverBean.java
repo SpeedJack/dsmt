@@ -34,7 +34,7 @@ public class BidReceiverBean implements MessageListener {
     public void onMessage(Message message) {
         try {
             AuctionState state = message.getBody(AuctionState.class);
-            int auction = message.getIntProperty("auction");
+            long auction = message.getLongProperty("auction");
             boolean close = message.getBooleanProperty("closed");
             if (close)
                 handleCloseMessage(auction, state);
@@ -46,7 +46,7 @@ public class BidReceiverBean implements MessageListener {
         }
     }
 
-    public void handleStateMessage(int auction, AuctionState state) {
+    public void handleStateMessage(long auction, AuctionState state) {
 
         WSClient clientEndPoint = new WSClient(auction); //add listener
         clientEndPoint.addMessageHandler(System.out::println);
@@ -54,7 +54,7 @@ public class BidReceiverBean implements MessageListener {
         clientEndPoint.sendState(state);
     }
 
-    public void handleCloseMessage(int auction, AuctionState state) {
+    public void handleCloseMessage(long auction, AuctionState state) {
 
         WSClient clientEndPoint = new WSClient(auction); //add listener
         clientEndPoint.addMessageHandler(System.out::println);

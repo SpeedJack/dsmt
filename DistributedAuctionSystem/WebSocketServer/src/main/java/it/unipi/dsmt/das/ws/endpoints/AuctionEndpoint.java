@@ -18,10 +18,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
         decoders= {AuctionStateDecoder.class})
 
 public class AuctionEndpoint {
-    public static final Map<Integer, Queue<Session>> subscribers = new ConcurrentHashMap<>();
+    public static final Map<Long, Queue<Session>> subscribers = new ConcurrentHashMap<>();
 
     @OnOpen
-    public void open(Session session, @PathParam("auction_id") int auctionId){
+    public void open(Session session, @PathParam("auction_id") long auctionId){
         System.out.println("AUCTION ID = " + auctionId);
         subscribers.putIfAbsent(auctionId, new ConcurrentLinkedQueue<>());
         subscribers.get(auctionId).add(session);
@@ -54,13 +54,13 @@ public class AuctionEndpoint {
         error.printStackTrace();
     };
 
-    public static void closeAuction(int id){
+    public static void closeAuction(long id){
         subscribers.get(id).forEach(session -> {
                 session.getAsyncRemote().sendText("CLOSE");
         });
     };
 
-    public static void updateAuction(int id, AuctionState state){
+    public static void updateAuction(long id, AuctionState state){
         System.out.println(state);
         subscribers.get(id).forEach( session -> {
                 session.getAsyncRemote().sendObject(state);
