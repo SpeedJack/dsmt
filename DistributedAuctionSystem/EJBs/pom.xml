@@ -63,12 +63,6 @@
         </dependency>
         <dependency>
             <groupId>it.unipi.dsmt.das</groupId>
-            <artifactId>WebSocketServer</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>it.unipi.dsmt.das</groupId>
             <artifactId>WebSocketClient</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
