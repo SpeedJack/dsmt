@@ -8,10 +8,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Interfaces" />
         <module name="Persistence" />
+        <module name="interfaces" />
         <module name="WebSocketServer" />
         <module name="Web" />
+        <module name="web" />
         <module name="EJBs" />
         <module name="Model" />
+        <module name="ejbs" />
+        <module name="model" />
         <module name="WebSocketClient" />
         <module name="WebSocket" />
       </profile>
@@ -19,12 +23,16 @@
     <bytecodeTargetLevel>
       <module name="DistributedAuctionSystem" target="1.8" />
       <module name="EJBs" target="1.8" />
+      <module name="ejbs" target="1.8" />
       <module name="endpoints" target="1.8" />
+      <module name="interfaces" target="1.8" />
       <module name="Interfaces" target="1.8" />
       <module name="Model" target="1.8" />
+      <module name="model" target="1.8" />
       <module name="Persistence" target="1.8" />
       <module name="Prova" target="1.8" />
       <module name="Web" target="1.8" />
+      <module name="web" target="1.8" />
       <module name="WebSocket" target="1.8" />
       <module name="WebSocketClient" target="1.8" />
       <module name="WebSocketServer" target="1.8" />
