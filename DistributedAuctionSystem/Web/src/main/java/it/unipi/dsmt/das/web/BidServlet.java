@@ -1,8 +1,11 @@
 package it.unipi.dsmt.das.web;
 
+import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.Bid;
+import it.unipi.dsmt.das.model.BidStatus;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -17,41 +20,25 @@ import java.time.Instant;
 
 @WebServlet("/bid")
 public class BidServlet extends HttpServlet {
-    @Resource(lookup = "jms/bidsQueue")
+    @EJB
+    AuctionManager manager;
+/*    @Resource(lookup = "jms/bidsQueue")
     Queue queue;
     @Resource(lookup = "jms/bidsQueueCF")
     QueueConnectionFactory connectionFactory;
-
+*/
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        String mode = req.getParameter("TYPE") != null ? req.getParameter("TYPE") : "MAKE";
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
+            long auction_id = Long.parseLong(req.getParameter("auction_id"));
+            long user_id = Long.parseLong(req.getParameter("user_id"));
+            long timestamp = Instant.EPOCH.getEpochSecond();
+            double value = Double.parseDouble(req.getParameter("value"));
+            int quantity = Integer.parseInt(req.getParameter("quantity"));
+            Bid bid = new Bid(auction_id, user_id, timestamp, value, quantity);
+            BidStatus status = manager.makeBid(bid);
+            res.getWriter().println(status.toString());
 
-        try (Connection connection = connectionFactory.createQueueConnection()){
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer publisher = session.createProducer(queue);
-
-            connection.start();
-
-            Message message = session.createMessage();
-            message.setStringProperty("TYPE", mode);
-            Bid bid = new Bid();
-            bid.setAuction(Integer.parseInt(req.getParameter("auction")));
-            /**TODO Come si calcola l'id?
-             * bid.setId(Integer.parseInt(USERID));
-             * **/
-            bid.setValue(Float.parseFloat(req.getParameter("value")));
-            bid.setQuantity(Integer.parseInt(req.getParameter("quantity")));
-            bid.setTimestamp(Instant.EPOCH.toEpochMilli());
-            bid.setUser(Integer.parseInt(req.getParameter("user")));
-            message.setObjectProperty("bid", bid);
-            publisher.send(message);
-
-        } catch (JMSException e) {
-            res.getWriter().println("Error while trying to send bid " + e.getMessage());
-        }
-
-        res.getWriter().println("BID sent");
     }
 
 }

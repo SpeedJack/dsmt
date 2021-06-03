@@ -21,7 +21,7 @@ public class WSClient {
     }
 
     public WSClient(long auction){
-        this("ws://localhost:8080/ws/auctions_backend/", auction);
+        this("ws://localhost:8080/ws/auction_backend/", auction);
     }
 
     public WSClient(String endpoint, long auction) {

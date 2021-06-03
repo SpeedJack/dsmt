@@ -6,17 +6,17 @@ import it.unipi.dsmt.das.model.behaviour.Erlangizable;
 import java.io.Serializable;
 
 public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
-    int id;
-    int auction;
-    int user;
+    long id;
+    long auction;
+    long user;
     long timestamp;
-    float value;
-    int quantity;
+    double value;
+    long quantity;
 
     public Bid() {
     }
 
-    public Bid(int auction, int user, long timestamp, float value, int quantity) {
+    public Bid(long auction, long user, long timestamp, double value, long quantity) {
         this.auction = auction;
         this.user = user;
         this.timestamp = timestamp;
@@ -26,23 +26,23 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
         this.id = this.hashCode();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getAuction() { return auction;}
+    public long getAuction() { return auction;}
 
-    public void setAuction(int auction) { this.auction = auction;}
+    public void setAuction(long auction) { this.auction = auction;}
 
-    public int getUser() {
+    public long getUser() {
         return user;
     }
 
-    public void setUser(int user) {
+    public void setUser(long user) {
         this.user = user;
     }
 
@@ -54,19 +54,19 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
         this.timestamp = timestamp;
     }
 
-    public float getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void setValue(double value) {
         this.value = value;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
 
@@ -74,12 +74,12 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
     public OtpErlangTuple erlangize(){
         return new OtpErlangTuple(
                 new OtpErlangObject[] {
-                        new OtpErlangInt(id),
-                        new OtpErlangInt(auction),
-                        new OtpErlangInt(user),
+                        new OtpErlangLong(id),
+                        new OtpErlangLong(auction),
+                        new OtpErlangLong(user),
                         new OtpErlangLong(timestamp),
-                        new OtpErlangFloat(value),
-                        new OtpErlangInt(quantity)
+                        new OtpErlangDouble(value),
+                        new OtpErlangLong(quantity)
                 });
     }
 
@@ -87,16 +87,12 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
         if(tuple.arity() != 6){
             return;
         }
-        try{
-            setId(((OtpErlangInt)tuple.elementAt(0)).intValue());
-            setAuction(((OtpErlangInt)tuple.elementAt(1)).intValue());
-            setUser(((OtpErlangInt)tuple.elementAt(2)).intValue());
-            setTimestamp(((OtpErlangLong)tuple.elementAt(3)).longValue());
-            setValue(((OtpErlangFloat)tuple.elementAt(4)).floatValue());
-            setQuantity(((OtpErlangInt)tuple.elementAt(5)).intValue());
+        setId(((OtpErlangLong)tuple.elementAt(0)).longValue());
+        setAuction(((OtpErlangLong)tuple.elementAt(1)).longValue());
+        setUser(((OtpErlangLong)tuple.elementAt(2)).longValue());
+        setTimestamp(((OtpErlangLong)tuple.elementAt(3)).longValue());
+        setValue(((OtpErlangDouble)tuple.elementAt(4)).doubleValue());
+        setQuantity(((OtpErlangLong)tuple.elementAt(5)).longValue());
 
-        } catch (OtpErlangRangeException ex) {
-            ex.printStackTrace();
-        }
     }
 }

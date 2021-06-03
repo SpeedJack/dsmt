@@ -40,7 +40,7 @@ public class AuctionManagerBean implements AuctionManager {
     public void close(Timer timer) {
         publisher.closeAuction((long)timer.getInfo());
     }
-    public AuctionManagerBean() throws IOException {
+    public AuctionManagerBean() {
       // this.node = new OtpNode(nodeName);
       // this.mbox = node.createMbox(mboxName);
     }
@@ -254,7 +254,7 @@ public class AuctionManagerBean implements AuctionManager {
     public BidStatus makeBid(Bid bid) {
         BidStatus status = BidStatus.ERROR;
         OtpErlangAtom cmd = new OtpErlangAtom("make_bid");
-        OtpErlangInt id = new OtpErlangInt(bid.getAuction());
+        OtpErlangLong id = new OtpErlangLong(bid.getAuction());
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,bid.erlangize()});
         try {
             OtpErlangTuple response = sendRequest(obj);

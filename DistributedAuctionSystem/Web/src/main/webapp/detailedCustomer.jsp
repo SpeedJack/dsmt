@@ -14,6 +14,9 @@
 		<link rel="stylesheet" href="style/auctions_menu.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="style/auctions.css" type="text/css" media="screen">
 		<title>Detailed Object</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="js/websocket.js"></script>
+		<script src="js/ajax.js"></script>
 	</head>
 	<body>
 		<div id="menu">
@@ -77,22 +80,25 @@
 						<img src=${auction.image}>
 						<div class="content_movie_wrapper">
 							<span class="title_stats">Vendor ID</span>: ${auction.agent} <br>
-							<span class="title_stats">Lowest bid</span>: 1$ <br>
+							<span class="title_stats">Lowest bid</span>: ${auction.minPrice} <br>
 							<span class="title_stats">Available Objects</span>: ${auction.saleQuantity}<br>
 							<span class="title_stats">End time</span>: ${date}<br>
-							<form name = "bid" method="post">
+							<form name = "bid" id="bid_form" action="/web/bid" method="post">
 								<table class = "single_bid_table">
 									<tr>
 										<td> <span class="title_stats">Offer</span>
-										<td> <input type="text" placeholder="0" class = "single_bid" required>
+										<td> <input type="text" name="value" placeholder="0" class = "single_bid" required />
 									<tr>
 										<td> <span class="title_stats">N.Objects</span>
-										<td> <input type="text" placeholder="1" class = "single_bid" required>
+										<td> <input type="text" name="quantity" placeholder="1" class = "single_bid" required/>
 									<tr>
 										<td>
-										<td> <input type="submit" value="Bid" class = "single_bid_button">
+										<td> <input type="submit" class = "single_bid_button" />
 								</table>
+								<input hidden=True name="auction_id" id="auction_id" readonly value="${auction.id}" />
+								<input hidden=True name="user_id" id="user_id" readonly value="${user.id}" />
 							</form>
+							<p id="result"></p>
 							<table id = "offers_bid_table">
 								<caption>Your offers</caption>
 								<tr>
@@ -120,4 +126,5 @@
 		</div>
 
 	</body>
+
 </html>
