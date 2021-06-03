@@ -84,6 +84,9 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
     }
 
     public void derlangize(OtpErlangTuple tuple){
+        if(tuple.arity() != 6){
+            return;
+        }
         try{
             setId(((OtpErlangInt)tuple.elementAt(0)).intValue());
             setAuction(((OtpErlangInt)tuple.elementAt(1)).intValue());

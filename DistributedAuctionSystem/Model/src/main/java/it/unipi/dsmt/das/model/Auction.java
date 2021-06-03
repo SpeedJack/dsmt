@@ -114,6 +114,9 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
     }
 
     public void derlangize(OtpErlangTuple tuple){
+        if(tuple.arity() != 9){
+            return;
+        }
         setId(((OtpErlangLong)tuple.elementAt(0)).longValue());
         setAgent(((OtpErlangLong)tuple.elementAt(1)).longValue());
         setName(((OtpErlangString)tuple.elementAt(2)).stringValue());

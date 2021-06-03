@@ -123,7 +123,7 @@ public class AuctionManagerBean implements AuctionManager {
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")) {
                 OtpErlangTuple dataTuple = (OtpErlangTuple) response.elementAt(1);
-                if(dataTuple.arity() == 0){
+                if(((OtpErlangTuple)dataTuple.elementAt(0)).arity() == 0){
                     return null;
                 }
                 data = new AuctionData();

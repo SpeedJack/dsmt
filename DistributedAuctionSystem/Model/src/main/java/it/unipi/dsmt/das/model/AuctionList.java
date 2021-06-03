@@ -37,6 +37,9 @@ public class AuctionList implements Serializable, Erlangizable<OtpErlangList> {
     }
 
     public void derlangize(OtpErlangList tempList){
+        if(tempList.arity() == 0){
+            return;
+        }
         for(OtpErlangObject element : tempList.elements()){
             Auction auction = new Auction();
             auction.derlangize((OtpErlangTuple) element);
