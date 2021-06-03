@@ -13,7 +13,7 @@
         <module>Interfaces</module>
         <module>EJBs</module>
         <module>WebSocketClient</module>
-        <module>WebSocketServer</module>
+        <module>ws-server</module>
         <module>WebSocket</module>
         <module>Web</module>
     </modules>

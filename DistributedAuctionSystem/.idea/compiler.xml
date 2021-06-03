@@ -6,18 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Interfaces" />
-        <module name="Persistence" />
         <module name="interfaces" />
-        <module name="WebSocketServer" />
+        <module name="ws-server" />
+        <module name="WebSocketClient" />
+        <module name="WebSocket" />
+        <module name="Interfaces" />
         <module name="Web" />
         <module name="web" />
         <module name="EJBs" />
         <module name="Model" />
         <module name="ejbs" />
         <module name="model" />
-        <module name="WebSocketClient" />
-        <module name="WebSocket" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -35,8 +34,9 @@
       <module name="web" target="1.8" />
       <module name="WebSocket" target="1.8" />
       <module name="WebSocketClient" target="1.8" />
-      <module name="WebSocketServer" target="1.8" />
+      <module name="WebSocketServerOld" target="1.8" />
       <module name="ws" target="1.8" />
+      <module name="ws-server" target="1.8" />
       <module name="wsclient" target="1.8" />
     </bytecodeTargetLevel>
   </component>

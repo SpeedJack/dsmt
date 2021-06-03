@@ -3,9 +3,12 @@
     <output-path>$PROJECT_DIR$/out/artifacts/EJBs_ejb_exploded</output-path>
     <root id="root">
       <element id="module-output" name="EJBs" />
-      <element id="library" level="project" name="Maven: it.unipi.dsmt.das:ws:1.0-SNAPSHOT" />
       <element id="module-output" name="Interfaces" />
       <element id="module-output" name="Model" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/clojang/erlang-jinterface/1.10-1/erlang-jinterface-1.10-1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/erlang/otp/jinterface/1.6.1/jinterface-1.6.1.jar" path-in-jar="/" />
+      <element id="module-output" name="WebSocketClient" />
+      <element id="module-output" name="WebSocket" />
     </root>
   </artifact>
 </component>
