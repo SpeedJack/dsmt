@@ -56,19 +56,21 @@ tuple_to_record(auction, Tuple) ->
 %--------------------------------------------------------------------------------------------------------------
 
 initialization(Nodes) ->
-    A = mnesia:create_schema(Nodes),
-    io:format("A: ~p\n", [A]),
+    mnesia:create_schema(Nodes),
+    %io:format("A: ~p\n", [A]),
     mnesia:start(),
     start_nodes(Nodes),
-    B = mnesia:create_table(auction,[{disc_copies, Nodes},{attributes, record_info(fields, auction)}]),
-    io:format("B: ~p\n", [B]),
-    C = mnesia:create_table(bid, [{disc_copies, Nodes},{attributes, record_info(fields, bid)}]),
-    io:format("C: ~p\n", [C]).
+    mnesia:create_table(auction,[{disc_copies, Nodes},{attributes, record_info(fields, auction)}]),
+    %io:format("B: ~p\n", [B]),
+    mnesia:create_table(bid, [{disc_copies, Nodes},{attributes, record_info(fields, bid)}]).
+    %io:format("C: ~p\n", [C]).
 
 start_nodes(Nodes) ->
+    mnesia:start(),
     [rpc:call(Node, mnesia, start, [])||Node <- Nodes, Node =/= node()].
 
 stop_nodes(Nodes) ->
+    mnesia:stop(),
     [rpc:call(Node, mnesia, stop, [])|| Node <- Nodes].
 
 %--- INSERT --------------------------------------------------------------------------------------------------------

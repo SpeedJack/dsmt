@@ -29,8 +29,7 @@ startup(Args) ->
 
 start_store(Nodes) ->
   RandomExec = lists:nth(rand:uniform(length(Nodes)), Nodes),
-  io:format("Selezionato nodo ~p\n", [RandomExec]),
-  rpc:cast(RandomExec, store, initialization, [Nodes]).
+  rpc:cast(RandomExec, store, start_nodes, [Nodes]).
 
 %start_store([],_) -> ok;
 %start_store([H|T], Nodes) ->
