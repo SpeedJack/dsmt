@@ -88,7 +88,13 @@
 				<label class = "little">Description:</label><br>	 
 		  			<textarea name = "description" rows="5" cols="80" maxlength = "400"></textarea><br>
 				<label class = "little">Image:</label>
-		  			<input name="userfile" class = "form" type="file" required><br><br>
+				<!-- <form action = "UploadServlet" method = "post"
+                      enctype = "multipart/form-data">
+                    <input type = "file" name = "file" size = "50" />
+                    <br />
+                    <input name="userfile" type = "submit" value = "Upload File" required />
+                </form> -->
+                  <input name="userfile" class = "form" type="file" required><br><br>
 				<input type="submit" value="Confirm" class ="submit">
 			</form>
 			</div>
