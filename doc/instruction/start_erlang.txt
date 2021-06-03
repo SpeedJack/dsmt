@@ -8,10 +8,13 @@ ISTRUZIONI PER AVVIARE ERLANG:
 	
 	con le seguenti opzioni:
 	-w ...percorso assoluto della cartella in cui ci sono gli script erlang. il percorso deve avere come separatori "/"(esempio: "C:/Users/simon/Documents/GitHub/dsmt/erl") ...
+	-i (crea i nodi in fase di inizializzazione)
 
-3) Se siete alla prima inizializzazione e nella cartella erl non ci sono le cartelle Mnesia.NomeNodo (ATTENZIONE CI DEVONO ESSERE TUTTE E 3 E DEVONO ESSERE STATE CREATE PRECEDENTEMENTE
+A questo punto il sistema parte da solo
+
+3a) Se siete alla prima inizializzazione (opzione di prima -i) e nella cartella erl non ci sono le cartelle Mnesia.NomeNodo (ATTENZIONE CI DEVONO ESSERE TUTTE E 3 E DEVONO ESSERE STATE CREATE PRECEDENTEMENTE
 CON QUESTA GUIDA) eseguire su uno degli executor:
 	store:initialization([exec1@localhost, exec2@localhost, exec3@localhost]).
 
-4)Infine prendere un nodo (consiglio un dispatcher) ed eseguire:
+3b)Infine prendere un nodo (consiglio un dispatcher) ed eseguire:
 	das:start_system().
