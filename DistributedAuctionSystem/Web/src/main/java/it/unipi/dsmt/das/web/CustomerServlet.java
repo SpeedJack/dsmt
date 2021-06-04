@@ -37,7 +37,7 @@ public class CustomerServlet extends HttpServlet {
             AuctionList auctionList = auctionManager.auctionsList(1);
             if(auctionList == null) {
                 list = new ArrayList<>();
-                list.add(new Auction( 0, "Empty list", "style/img/auction.jpg", "", Instant.EPOCH.getEpochSecond(), 0, 0, 0));
+                list.add(new Auction( 0, "Empty list", "", "", Instant.EPOCH.getEpochSecond(), 0, 0, 0));
             }
             else
                 list = auctionList.getList();
