@@ -73,7 +73,7 @@
 					<c:forEach items="${auctionList}" var="auction">
 					<li class="poster_auction_item_wrapper">
 						<p class = "bid"> <b> ${auction.name} </b> </p>
-						<div class="poster_auction_item"> <a href="detailedCustomer">
+						<div class="poster_auction_item"> <a href="detailedCustomer?auctionID=${auction.id}">
 							<img src= ${auction.image}>
 						</a></div>
 						<div class="detail_auction_item">
@@ -86,22 +86,3 @@
 		</div>
 	</body>
 </html>
-
-<!-- <li class="poster_auction_item_wrapper">
-<p class = "bid"> <b> Nintendo DS </b> </p>
-<div class="poster_auction_item"> <a href="detailedCustomer.jsp">
-<img src= "style/img/image1.jpg">
-</a></div>
-<div class="detail_auction_item">
-<p class = "auction_state"> Auction finished </p>
-<p class = "bid"> Total Object: 5 </p>
-<p class = "bid"> Total Gain: 500$ </p>
-</div>
-<li class="poster_auction_item_wrapper">
-<p class = "bid"> <b> Nutella </b> </p>
-<div class="poster_auction_item"> <a href="detailedCustomer.jsp">
-<img src= "style/img/image3.jpg">
-</a></div>
-<div class="detail_auction_item">
-<p class = "auction_state"> Auction in Progress </p>
-</div> -->

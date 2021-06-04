@@ -109,7 +109,7 @@
 								<tr>
 									<td> <span class="title_stats">${bid.quantity}</span>
 									<td> <span class="title_stats">${bid.value} </span>
-									<td> <input type="button" value="Delete" class = "single_bid_button" onClick="document.location.href='delete?bidID=${bid.id}'">
+									<td> <input type="button" value="Delete" class = "single_bid_button" onClick="document.location.href='delete?bidID=${bid.id}&auction=${auction}'">
 								</c:forEach>
 							</table>
 

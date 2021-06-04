@@ -40,6 +40,12 @@ public class DeleteServlet extends HttpServlet {
             User sessionUser = (User)session.getAttribute("user");
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
+
+            Auction auction = (Auction)request.getAttribute("auction");
+            int bidID = Integer.parseInt(request.getParameter("bidID"));
+
+            auctionManager.deleteBid((int)auction.getId(), bidID);
+            request.setAttribute("auction", auction);
         }
         else
             destPage = "index.jsp";
@@ -48,49 +54,4 @@ public class DeleteServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        String destPage;
-
-        if (session != null) {
-            User sessionUser = (User)session.getAttribute("user");
-
-            ServletContext context = getServletContext();
-            String filePath = context.getInitParameter("file-upload");
-            Part filePart = request.getPart("userfile"); // Retrieves <input type="file" name="userfile">
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
-            InputStream fileContent = filePart.getInputStream();
-            File f = new File(filePath + "_" + sessionUser.getId() + "_" + fileName);
-            OutputStream out = new FileOutputStream(f);
-            IOUtils.copy(fileContent, out);
-            fileContent.close();
-            out.close();
-
-            destPage = "sell.jsp";
-            String message;
-            request.setAttribute("username", sessionUser.getUsername());
-            request.setAttribute("ID", sessionUser.getId());
-            Auction auction = new Auction(  sessionUser.getId(),
-                    request.getParameter("name"),
-                    filePath + "_" + sessionUser.getId() + "_" + fileName,
-                    request.getParameter("description"),
-                    utility.getTimestamp(request.getParameter("day") + " " +
-                            request.getParameter("hour")),
-                    Double.parseDouble(request.getParameter("minimum_bid")),
-                    Double.parseDouble(request.getParameter("minimum_raise")),
-                    Long.parseLong(request.getParameter("object")));
-            String res = auctionManager.createAuction(auction);
-            if(res.equals("ok"))
-                message = "Object correctly inserted";
-            else
-                message = "Error in inserting new object";
-            request.setAttribute("message", message);
-        }
-        else
-            destPage = "index.jsp";
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
-        dispatcher.forward(request, response);
-    }
 }
