@@ -14,6 +14,10 @@
 		<link rel="stylesheet" href="style/auctions_menu.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="style/auctions.css" type="text/css" media="screen">
 		<title>Seller Home</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="js/websocket.js"></script>
+		<script src="js/ajax.js"></script>
+		<script src="js/countdown.js"></script>
 	</head>
 	<body>
 		<div id="menu">
@@ -85,7 +89,7 @@
 						</a></div>
 						<div class="detail_auction_item">
 							<p class = "bid"> Starting Bid: ${auction.minPrice} $ </p>
-							<p class = "bid"> End: ${auction.endDate} </p>
+							<p class = "bid"> End: </p><span hidden id="end_date">${auction.endDate * 1000}</span>
 						</div>
 						</c:forEach>
 				</ul>

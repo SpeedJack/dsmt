@@ -124,7 +124,7 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
         setName(((OtpErlangString)tuple.elementAt(2)).stringValue());
         try {
             setImage(((OtpErlangList)tuple.elementAt(3)).stringValue());
-        } catch (OtpErlangException e) {
+        } catch (OtpErlangException | ClassCastException e) {
             setImage(((OtpErlangString)tuple.elementAt(3)).stringValue());
             e.printStackTrace();
         }

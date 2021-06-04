@@ -46,6 +46,7 @@ public class DetailedCustomerServlet extends HttpServlet {
                 List<Bid> bids = null;
                 if(list != null) {
                     bids = list.getList();
+
                     message = "Currently, you are the winner!";
                 }
                 else

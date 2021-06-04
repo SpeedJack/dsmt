@@ -20,6 +20,10 @@
 		<link rel="stylesheet" href="style/auctions_menu.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="style/auctions.css" type="text/css" media="screen">
 		<title>Sell Object</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="js/websocket.js"></script>
+		<script src="js/ajax.js"></script>
+		<script src="js/countdown.js"></script>
 	</head>
 	<body class = "personal">
 		<div id="menu">

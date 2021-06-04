@@ -40,8 +40,7 @@ public class DeleteServlet extends HttpServlet {
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
 
-            Auction auction = (Auction)request.getAttribute("auction");
-            int auctionID = (int)auction.getId();
+            int auctionID = Integer.parseInt(request.getParameter("auctionID"));
             int bidID = Integer.parseInt(request.getParameter("bidID"));
 
             BidStatus status = auctionManager.deleteBid(auctionID, bidID);
