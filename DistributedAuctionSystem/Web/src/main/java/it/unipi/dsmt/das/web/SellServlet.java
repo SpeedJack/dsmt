@@ -74,7 +74,7 @@ public class SellServlet extends HttpServlet {
             request.setAttribute("ID", sessionUser.getId());
             Auction auction = new Auction(  sessionUser.getId(),
                                             request.getParameter("name"),
-                                      filePath + "\\" + sessionUser.getId() + "_" + fileName,
+                                      filePath + sessionUser.getId() + "_" + fileName,
                                             request.getParameter("description"),
                                             utility.getTimestamp(request.getParameter("day") + " " +
                                                     request.getParameter("hour")),
