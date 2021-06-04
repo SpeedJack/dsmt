@@ -83,7 +83,7 @@
 							<span class="title_stats">Lowest bid</span>: ${auction.minPrice} <br>
 							<span class="title_stats">Available Objects</span>: ${auction.saleQuantity}<br>
 							<span class="title_stats">End time</span>: ${date}<br>
-							<form name = "bid" id="bid_form" action="/web/bid" method="post">
+							<form name = "bid" id="bid_form" action="bid" method="post">
 								<table class = "single_bid_table">
 									<tr>
 										<td> <span class="title_stats">Offer</span>
@@ -108,8 +108,8 @@
 								<c:forEach items="${bids}" var="bid">
 								<tr>
 									<td> <span class="title_stats">${bid.quantity}</span>
-									<td> <span class="title_stats">${bid.value} $</span>
-									<td> <input type="button" value="Delete" class = "single_bid_button">
+									<td> <span class="title_stats">${bid.value} </span>
+									<td> <input type="button" value="Delete" class = "single_bid_button" onClick="document.location.href='delete?bidID=${bid.id}'">
 								</c:forEach>
 							</table>
 
