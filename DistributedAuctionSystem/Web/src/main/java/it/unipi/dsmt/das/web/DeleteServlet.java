@@ -2,6 +2,7 @@ package it.unipi.dsmt.das.web;
 
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.Auction;
+import it.unipi.dsmt.das.model.BidStatus;
 import it.unipi.dsmt.das.model.User;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -24,7 +25,6 @@ import javax.servlet.http.*;
 @WebServlet("/delete")
 public class DeleteServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private final Utility utility = new Utility();
     @EJB
     private AuctionManager auctionManager;
     public DeleteServlet() {
@@ -34,23 +34,24 @@ public class DeleteServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String destPage;
+        RequestDispatcher dispatcher;
         if (session != null) {
-            destPage = "sell.jsp";
             User sessionUser = (User)session.getAttribute("user");
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
 
             Auction auction = (Auction)request.getAttribute("auction");
+            int auctionID = (int)auction.getId();
             int bidID = Integer.parseInt(request.getParameter("bidID"));
 
-            auctionManager.deleteBid((int)auction.getId(), bidID);
-            request.setAttribute("auction", auction);
+            BidStatus status = auctionManager.deleteBid(auctionID, bidID);
+            response.getWriter().println(status.toString());
+            request.setAttribute("auctionID", auctionID);
+            dispatcher = request.getServletContext().getRequestDispatcher("/detailedCustomer");
         }
         else
-            destPage = "index.jsp";
+            dispatcher = request.getRequestDispatcher("index.jsp");
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
         dispatcher.forward(request, response);
     }
 

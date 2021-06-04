@@ -62,7 +62,7 @@ public class SellServlet extends HttpServlet {
             Part filePart = request.getPart("userfile"); // Retrieves <input type="file" name="userfile">
             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
             InputStream fileContent = filePart.getInputStream();
-            File f = new File(filePath + "\\" + sessionUser.getId() + "_" + fileName);
+            File f = new File(filePath + sessionUser.getId() + "_" + fileName);
             OutputStream out = new FileOutputStream(f);
             IOUtils.copy(fileContent, out);
             fileContent.close();
