@@ -133,15 +133,6 @@ public class AuctionManagerBean implements AuctionManager {
             e.printStackTrace();
         }
         return data;
-
-        /*Bid b1 = new Bid(1, 3, 1, Instant.now().getEpochSecond(), (float)2.0, 3);
-        Bid b2 = new Bid(1, 3, 1, Instant.EPOCH.getEpochSecond(), (float)3.0, 3);
-        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", 1622660400, 1, (float) 0.1, 50);
-        List<Bid> list = new ArrayList<>();
-        list.add(b1);
-        list.add(b2);
-        BidList bids = new BidList(list);
-        return new AuctionData(a3, bids);*/
     }
 
     @Override
@@ -173,15 +164,6 @@ public class AuctionManagerBean implements AuctionManager {
             e.printStackTrace();
         }
         return list;
-
-        /*Auction a1 = new Auction(1,1,"Nintendo DS", "style/img/image1.jpg", "Nintendo DS", 1622228400, 30, 1, 5);
-        Auction a2 = new Auction(2,1,"Xiaomi Mi 11", "style/img/image2.jpg", "Xiaomi Mi 11", 1622361600, 300, 5, 2);
-        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", 1622660400, 1, (float) 0.1, 50);
-        List<Auction> list = new ArrayList<>();
-        list.add(a1);
-        list.add(a2);
-        list.add(a3);
-        return new AuctionList(list);*/
     }
 
     @Override
@@ -208,13 +190,6 @@ public class AuctionManagerBean implements AuctionManager {
             e.printStackTrace();
         }
         return list;
-
-        /*Auction a1 = new Auction(1,1,"Nintendo DS", "style/img/image1.jpg", "Nintendo DS", Instant.EPOCH.getEpochSecond(), 30, 1, 5);
-        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", Instant.EPOCH.getEpochSecond(), 1, (float) 0.1, 50);
-        List<Auction> list = new ArrayList<>();
-        list.add(a1);
-        list.add(a3);
-        return new AuctionList(list);*/
     }
 
     @Override
@@ -241,13 +216,6 @@ public class AuctionManagerBean implements AuctionManager {
             e.printStackTrace();
         }
         return list;
-
-        /*Auction a1 = new Auction(1,1,"Nintendo DS", "style/img/image1.jpg", "Nintendo DS", Instant.EPOCH.getEpochSecond(), 30, 1, 5);
-        Auction a3 = new Auction(3,1,"Nutella", "style/img/image3.jpg", "Che mondo sarebbe senza Nutella", Instant.EPOCH.getEpochSecond(), 1, (float) 0.1, 50);
-        List<Auction> list = new ArrayList<>();
-        list.add(a1);
-        list.add(a3);
-        return new AuctionList(list);*/
     }
 
    @Override

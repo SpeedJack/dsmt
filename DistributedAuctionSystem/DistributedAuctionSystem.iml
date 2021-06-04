@@ -16,6 +16,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
+          <factory-entry name="DistributedAuctionSystem" />
           <factory-entry name="default" />
         </datasource-mapping>
         <naming-strategy-map />
