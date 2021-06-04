@@ -17,6 +17,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="js/websocket.js"></script>
 		<script src="js/ajax.js"></script>
+		<script src="js/countdown.js"></script>
 	</head>
 	<body>
 		<div id="menu">
@@ -82,7 +83,7 @@
 							<span class="title_stats">Vendor ID</span>: ${auction.agent} <br>
 							<span class="title_stats">Lowest bid</span>: ${auction.minPrice} <br>
 							<span class="title_stats">Available Objects</span>: ${auction.saleQuantity}<br>
-							<span class="title_stats">End time</span>: ${date}<br>
+							<span class="title_stats">End time</span>: <span hidden id="end_date">${date}</span><br>
 							<form name = "bid" id="bid_form" action="bid" method="post">
 								<table class = "single_bid_table">
 									<tr>
@@ -93,7 +94,7 @@
 										<td> <input type="text" name="quantity" placeholder="1" class = "single_bid" required/>
 									<tr>
 										<td>
-										<td> <input type="submit" class = "single_bid_button" />
+										<td> <input id="submit_button "type="submit" class = "single_bid_button" />
 								</table>
 								<input hidden=True name="auction_id" id="auction_id" readonly value="${auction.id}" />
 								<input hidden=True name="user_id" id="user_id" readonly value="${user.id}" />

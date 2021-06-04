@@ -41,7 +41,7 @@ public class DetailedCustomerServlet extends HttpServlet {
                 String date = "Auction closed";
                 Auction auction = auctionData.getAuction();
                 if(auction != null && auction.getEndDate() > Instant.now().getEpochSecond())
-                    date = utility.convertDate(auction.getEndDate() - Instant.now().getEpochSecond());
+                    date = Long.toString(auction.getEndDate()*1000);
                 BidList list = auctionData.getList();
                 List<Bid> bids = null;
                 if(list != null) {
