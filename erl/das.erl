@@ -10,7 +10,7 @@
 -define(NAME_DISP_NODE, "disp").
 -define(NAME_EXEC_NODE, "exec").
 
--define(NUM_DISPATCHERS_PER_NODE, 1).
+-define(NUM_DISPATCHERS_PER_NODE, 3).
 -define(NUM_CLUSTER, 1).
 -define(NUM_PROCESSOR_PER_CLUSTER,3).
 
@@ -72,12 +72,12 @@ stop_d(Start, Num)->
 start_dispatchers([], _) -> ok;
 start_dispatchers([H|T], StartName)->
   rpc:call(H,das,start_d,[StartName,?NUM_DISPATCHERS_PER_NODE]),
-  start_dispatchers(T,StartName+?NUM_DISPATCHERS_PER_NODE).
+  start_dispatchers(T,StartName).
 
 stop_dispatchers([], _) -> ok;
 stop_dispatchers([H|T], StartName)->
   rpc:call(H,das,stop_d,[StartName,?NUM_DISPATCHERS_PER_NODE]),
-  stop_dispatchers(T,StartName+?NUM_DISPATCHERS_PER_NODE).
+  stop_dispatchers(T,StartName).
 
 %------ INITIALIZATION EXECUTOR -----------------------------------------------------------------------
 

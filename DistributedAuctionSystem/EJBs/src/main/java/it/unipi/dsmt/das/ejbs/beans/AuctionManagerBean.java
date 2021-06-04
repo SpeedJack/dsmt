@@ -4,6 +4,7 @@ import com.ericsson.otp.erlang.*;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.*;
+import javafx.util.Pair;
 
 import javax.annotation.Resource;
 import javax.ejb.*;
@@ -19,6 +20,10 @@ public class AuctionManagerBean implements AuctionManager {
     private final String dispatcherNodeName = "disp1@localhost";
     private final String mboxName = "auction_manager_mbox";
     private final String nodeName = "auction_manager@localhost";
+
+    private final int numDispatcherNodes = 1;
+    private final int numDispatcherPerNode = 3;
+
     @EJB
     AuctionStatePublisher publisher;
     @Resource
@@ -333,6 +338,16 @@ public class AuctionManagerBean implements AuctionManager {
         else{
             return (OtpErlangTuple) resMsg;
         }
+    }
+
+    public Pair<String, String> selectDispatcher(){
+        int randomNode = (int) ((Math.random() * (numDispatcherNodes + 1 - 1)) + 1);
+        int randomProcess = (int) ((Math.random() * (numDispatcherPerNode + 1 - 1)) + 1);
+
+        String nodeName = "disp" + randomNode + "@localhost";
+        String processName = "d_" + randomProcess + "_" + nodeName;
+
+        return new Pair<>(nodeName,processName);
     }
 
 

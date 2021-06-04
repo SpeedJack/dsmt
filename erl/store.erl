@@ -173,8 +173,9 @@ get_bidder_auctions(IdBidder)->
                 MatchHead = #bid{id_auction='$1', id_user= IdBidder, _='_'},
                 Guard = [],
                 Result = ['$1'],
-                Auctions = mnesia:select(auction,[{MatchHead, Guard, Result}]),
-                [record_to_tuple(auction, lists:usort(lists:nth(1,mnesia:read(auction,Auction))))|| Auction <- Auctions]
+                Auctions = mnesia:select(bid,[{MatchHead, Guard, Result}]),
+                List = [record_to_tuple(auction, lists:nth(1,mnesia:read(auction,Auction)))|| Auction <- Auctions],
+                lists:usort(List)
             end,
     mnesia:transaction(Fun).
 
