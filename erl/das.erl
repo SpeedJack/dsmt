@@ -3,7 +3,7 @@
 -export([start_d/2, stop_d/2,start_dispatchers/2, stop_dispatchers/2]).
 -export([start_e/2, stop_e/2, start_cluster/4, stop_cluster/4, start_executors/2, stop_executors/2]).
 -export([start_system/0, stop_system/0, start_store/1]).
--export([startup/1, wait_for_startsystem/0]).
+-export([startup/1, wait_for_startsystem/1]).
 
 -define(NUM_EXECUTOR_NODES, 3).
 
@@ -17,25 +17,28 @@
 
 %----- STARTUP -------------------------------------------------------------------------------------
 
-wait_for_startsystem() ->
-  Nodes = [utility:starts_with(atom_to_list(Node), "exec") || Node <- erlang:nodes()],
+wait_for_startsystem(StartType) ->
+  Nodes = [Node || Node <- erlang:nodes(), utility:starts_with(atom_to_list(Node), "exec")],
   if 
-    length(Nodes) == ?NUM_EXECUTOR_NODES -> start_system();
-    true -> wait_for_startsystem()
+    (length(Nodes) == ?NUM_EXECUTOR_NODES) and (StartType == start) -> start_system();
+    (length(Nodes) == ?NUM_EXECUTOR_NODES) and (StartType == init) -> RandomNode = lists:nth(rand:uniform(length(Nodes)), Nodes),
+                                                                      io:format("RandomNode : ~p\n", [RandomNode]),
+                                                                      rpc:call(RandomNode, store, initialization, [Nodes]),
+                                                                      start_system();
+    true -> wait_for_startsystem(StartType)
   end.
   
 
 startup(Args) ->
-    Init = lists:nth(1,Args),
+    StartType = lists:nth(1,Args),
     WorkingDir = lists:nth(2,Args),
     Node = lists:nth(3,Args),
+    io:format("~p\n", [Args]),
     c:cd(atom_to_list(WorkingDir)),
     if
       Node =/= frist -> io:format("Try to connect to ~p/n", [Node]), A = net_kernel:connect_node(Node), io:format("Result connection ~p\n", [A]) ;
-      true -> if
-                Init == start -> wait_for_startsystem();
-                true -> ok
-              end
+      true -> wait_for_startsystem(StartType)
+      
     end.
     
 %----- INITIALIZATION MNESIA -----------------------------------------------------------------------
