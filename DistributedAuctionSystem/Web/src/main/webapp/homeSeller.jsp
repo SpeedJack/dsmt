@@ -74,7 +74,7 @@
 					<li class="poster_auction_item_wrapper">
 						<p class = "bid"> <b> ${auction.name} </b> </p>
 						<div class="poster_auction_item"> <a href="detailedCustomer?auctionID=${auction.id}">
-							<img src= ${auction.image}>
+							<img src="data:image/gif;base64,${auction.image}">
 						</a></div>
 						<div class="detail_auction_item">
 							<p class = "bid"> Starting Bid: ${auction.minPrice} $ </p>

@@ -114,13 +114,20 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
     }
 
     public void derlangize(OtpErlangTuple tuple){
+        System.out.println(tuple.elementAt(3).toString());
+        System.out.println(tuple.elementAt(2).toString());
         if(tuple.arity() != 9){
             return;
         }
         setId(((OtpErlangLong)tuple.elementAt(0)).longValue());
         setAgent(((OtpErlangLong)tuple.elementAt(1)).longValue());
         setName(((OtpErlangString)tuple.elementAt(2)).stringValue());
-        setImage(((OtpErlangString)tuple.elementAt(3)).stringValue());
+        try {
+            setImage(((OtpErlangList)tuple.elementAt(3)).stringValue());
+        } catch (OtpErlangException e) {
+            setImage(((OtpErlangString)tuple.elementAt(3)).stringValue());
+            e.printStackTrace();
+        }
         setDescription(((OtpErlangString)tuple.elementAt(4)).stringValue());
         setEndDate(((OtpErlangLong)tuple.elementAt(5)).longValue());
         setMinPrice(((OtpErlangDouble)tuple.elementAt(6)).doubleValue());

@@ -7,7 +7,7 @@
         <description>Location to store uploaded file</description>
         <param-name>file-upload</param-name>
         <param-value>
-            \style\\images\\
+            /images/
         </param-value>
     </context-param>
 </web-app>

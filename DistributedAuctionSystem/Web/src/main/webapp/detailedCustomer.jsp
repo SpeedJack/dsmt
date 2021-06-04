@@ -78,7 +78,7 @@
 				<div id="left">
 					<div id="detailed_poster">
 						<h1> ${auction.name} </h1>
-						<img src=${auction.image}>
+						<img src="data:image/gif;base64,${auction.image}">
 						<div class="content_movie_wrapper">
 							<span class="title_stats">Vendor ID</span>: ${auction.agent} <br>
 							<span class="title_stats">Lowest bid</span>: ${auction.minPrice} <br>

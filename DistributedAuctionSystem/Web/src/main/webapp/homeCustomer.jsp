@@ -19,7 +19,7 @@
 		<div id="menu">
 			<div id="menu_home" class="menu_single_section">
 				<a href="customer">
-					<img src = "style/img/auction.jpg" class="logo_img">	
+					<img src = "style/img/auction.jpg" class="logo_img">
 				</a>
 			</div>
 			<div id="sign_out_menu" class="menu_single_section">
@@ -74,7 +74,7 @@
 					<li class="poster_auction_item_wrapper">
 						<p class = "bid"> <b> ${auction.name} </b> </p>
 						<div class="poster_auction_item"> <a href="detailedCustomer?auctionID=${auction.id}">
-							<img src= ${auction.image}>
+							<img src="data:image/gif;base64,${auction.image}">
 						</a></div>
 						<div class="detail_auction_item">
 							<p class = "bid"> ${auction.saleQuantity} available </p>

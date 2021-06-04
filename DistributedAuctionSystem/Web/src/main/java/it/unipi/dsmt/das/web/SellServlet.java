@@ -10,12 +10,16 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
+import java.awt.image.BufferedImage;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 import javax.servlet.*;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -57,30 +61,39 @@ public class SellServlet extends HttpServlet {
         if (session != null) {
             User sessionUser = (User)session.getAttribute("user");
 
-            ServletContext context = getServletContext();
-            String filePath = context.getInitParameter("file-upload");
-            Part filePart = request.getPart("userfile"); // Retrieves <input type="file" name="userfile">
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
+            Auction auction = new Auction( sessionUser.getId(),
+                    request.getParameter("name"),
+                    "noImage.jpg",
+                    request.getParameter("description"),
+                    utility.getTimestamp(request.getParameter("day") + " " + request.getParameter("hour")),
+                    Double.parseDouble(request.getParameter("minimum_bid")),
+                    Double.parseDouble(request.getParameter("minimum_raise")),
+                    Long.parseLong(request.getParameter("object")));
+
+            Part filePart = request.getPart("userfile");
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
             InputStream fileContent = filePart.getInputStream();
-            File f = new File(filePath + sessionUser.getId() + "_" + fileName);
+
+            BufferedImage sourceimage = ImageIO.read(fileContent);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            ImageIO.write(sourceimage, "png", bytes);
+            String binaryImage = Base64.encode(bytes.toByteArray());
+
+            auction.setImage(binaryImage);
+
+            /*auction.setImage(auction.getId() + "_" + fileName);
+
+            String filePath = getServletContext().getRealPath(getServletContext().getInitParameter("file-upload"));
+            File f = new File(filePath + auction.getId() + "_" + fileName);
             OutputStream out = new FileOutputStream(f);
             IOUtils.copy(fileContent, out);
             fileContent.close();
-            out.close();
+            out.close();*/
 
             destPage = "sell.jsp";
             String message;
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
-            Auction auction = new Auction(  sessionUser.getId(),
-                                            request.getParameter("name"),
-                                      filePath + "\\" + sessionUser.getId() + "_" + fileName,
-                                            request.getParameter("description"),
-                                            utility.getTimestamp(request.getParameter("day") + " " +
-                                                    request.getParameter("hour")),
-                                            Double.parseDouble(request.getParameter("minimum_bid")),
-                                            Double.parseDouble(request.getParameter("minimum_raise")),
-                                            Long.parseLong(request.getParameter("object")));
             String res = auctionManager.createAuction(auction);
             if(res.equals("ok"))
                 message = "Object correctly inserted";
