@@ -8,35 +8,31 @@ import sys
 NUM_DISPATCHER_NODES = 1
 NUM_EXECUTOR_NODES = 3
 
-WORKING_DIRECTORY = "C:/Users/simon/Documents/GitHub/dsmt/erl"
-
-START_TERMINAL = "start /wait"
-
-SETTING_SHELL = True
-
-INITIALIZATION = "start"
-
-
 def configuration():
-    global NUM_DISPATCHER_NODES, NUM_EXECUTOR_NODES, WORKING_DIRECTORY, START_TERMINAL, SETTING_SHELL, INITIALIZATION
+    working_dir = "C:/Users/simon/Documents/GitHub/dsmt/erl"
+    initialization = "start"
+    shell = True
+    system = "start /wait"
     ap = ArgumentParser()
     ap.add_argument("-w", "--working_dir", help="Erlang working directory (where .bean files are)")
-    ap.add_argument("-i", "--initialization", action='store_true', help="Erlang working directory (where .bean files are)")
+    ap.add_argument("-i", "--initialization", action='store_true', help="option that initialize mnesia database if is not present")
     ap.add_argument("-ns", "--noshell", action='store_false', help="Disable the executor shells (default active)")
 
     args=vars(ap.parse_args())
 
-    if args['working_dir'] is not None: WORKING_DIRECTORY = args['working_dir']
-    if args['initialization'] is True: INITIALIZATION = "init"
-    if args['noshell'] is False: SETTING_SHELL = False
-
-    print("SETTED SHELL:" + str(SETTING_SHELL))
-    print("INIT:" + str(INITIALIZATION))
+    if args['working_dir'] is not None: 
+        working_dir = args['working_dir']
+    if args['initialization'] is True:
+        initialization = "init"
+    if args['noshell'] is False: 
+        shell = False
 
     if sys.platform.startswith('win32'):
-        START_TERMINAL = "start /wait"
+        system = "start /wait"
     elif sys.platform.startswith('linux'):
-        START_TERMINAL = "gnome-terminal -x"
+        system = "gnome-terminal -x"
+
+    return working_dir, initialization, shell, system
 
 
 
@@ -53,26 +49,27 @@ def generate_node_names():
 
 
 def create_node(name, connectTo):
+    wd, init, sh, sy = configuration()
     if connectTo == "":
-        subprocess.call(START_TERMINAL + ' erl -sname ' + name + ' -s das startup '+ INITIALIZATION + ' ' + WORKING_DIRECTORY + ' frist', shell=True)
-        print(START_TERMINAL + ' erl -sname ' + name + ' -s das startup '+ INITIALIZATION + ' ' + WORKING_DIRECTORY + ' frist')
+        subprocess.call(sy + ' erl -sname ' + name + ' -s das startup '+ init + ' ' + wd + ' frist', shell=True)
+        print(sy + ' erl -sname ' + name + ' -s das startup '+ init + ' ' + wd + ' frist')
     else:
-        if SETTING_SHELL == False:
+        if sh == False:
             print(name)
-            subprocess.call(START_TERMINAL + ' erl -sname ' + name + ' -noshell -s das startup '+ INITIALIZATION + ' ' + WORKING_DIRECTORY + ' '+ connectTo, shell=True)
-            print(START_TERMINAL + ' erl -sname ' + name + ' -noshell -s das startup '+ INITIALIZATION + ' ' + WORKING_DIRECTORY + ' ')
+            subprocess.call(sy + ' erl -sname ' + name + ' -noshell -s das startup '+ init + ' ' + wd + ' '+ connectTo, shell=True)
+            print(sy + ' erl -sname ' + name + ' -noshell -s das startup '+ init + ' ' + wd + ' ')
         else:
-            subprocess.call(START_TERMINAL + ' erl -sname ' + name + ' -s das startup '+ INITIALIZATION + ' ' + WORKING_DIRECTORY + ' '+ connectTo, shell=True)
-            print(START_TERMINAL + ' erl -sname ' + name + ' -s das startup '+ INITIALIZATION + ' ' + WORKING_DIRECTORY + ' ')
+            subprocess.call(sy + ' erl -sname ' + name + ' -s das startup '+ init + ' ' + wd + ' '+ connectTo, shell=True)
+            print(sy + ' erl -sname ' + name + ' -s das startup '+ init + ' ' + wd + ' ')
 
     #subprocess.call('start /wait erl -sname '+ name + ' < input1.txt', shell=True)
     #subprocess.call('start /wait erl -sname ' + name + ' -s das startup node  '+name, shell=True)
     
     
 if __name__ == "__main__":
-    configuration()
+    wd, init, sh, sy = configuration()
     name_list = generate_node_names()
-    print("CONFIGURATION SETTINGS ->I: ", INITIALIZATION, " W: ", WORKING_DIRECTORY, " D: ", NUM_DISPATCHER_NODES, " E: ", NUM_EXECUTOR_NODES, " SHELL:", str(SETTING_SHELL))
+    print("CONFIGURATION SETTINGS ->I: ", init, " W: ", wd, " D: ", NUM_DISPATCHER_NODES, " E: ", NUM_EXECUTOR_NODES, " SHELL:", str(sh))
     print("GENERATED NODE NAMES -> ", name_list)
     try:
         fristNode = None
