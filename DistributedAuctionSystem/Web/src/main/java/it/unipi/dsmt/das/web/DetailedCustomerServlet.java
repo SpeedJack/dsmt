@@ -41,8 +41,7 @@ public class DetailedCustomerServlet extends HttpServlet {
                     dispatcher = request.getRequestDispatcher("error_page.jsp");
                 else {
                     if (auction.getAgent() != sessionUser.getId()) {
-                        if (auction.getEndDate() > Instant.now().getEpochSecond())
-                            date = Long.toString(auction.getEndDate() * 1000);
+                        date = Long.toString(auction.getEndDate() * 1000);
                         BidList list = auctionData.getList();
                         List<Bid> bids = null;
                         //TODO: recuperare auction state

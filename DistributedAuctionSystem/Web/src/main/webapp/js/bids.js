@@ -33,7 +33,7 @@ $(document).ready(function(){
             bidID: bid_id = $(this).closest("tr").attr('id')
         };
         console.log(params);
-        $.post("/web/delete", params,
+        $.post("/web/deleteBid", params,
             function(data){
                 console.log(data);
                 if(result.hasChildNodes()){

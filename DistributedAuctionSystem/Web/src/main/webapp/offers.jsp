@@ -14,9 +14,6 @@
 		<link rel="stylesheet" href="style/auctions_menu.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="style/auctions.css" type="text/css" media="screen">
 		<title>Followed Auctions</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-		<script src="js/websocket.js"></script>
-		<script src="js/ajax.js"></script>
 		<script src="js/countdown.js"></script>
 	</head>
 	<body>
@@ -88,10 +85,9 @@
 							</c:choose>
 						</a></div>
 						<div class="detail_auction_item">
-							<p class = "bid"> ${auction.saleQuantity} available </p>
-							<p class = "bid"> Starting bid: ${auction.minPrice}$ </p>
+							<p class = "bid"> End: </p><span hidden class="end_date">${auction.endDate * 1000}</span>
 						</div>
-						</c:forEach>
+					</c:forEach>
 				</ul>
 			</section>	
 		</div>

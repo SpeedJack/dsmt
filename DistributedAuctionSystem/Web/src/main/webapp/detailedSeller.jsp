@@ -82,7 +82,7 @@
                 <div class="content_movie_wrapper">
                     <span class="title_stats">Lowest Bid</span>: ${auction.minPrice} $<br>
                     <span class="title_stats">Available Objects</span>: ${auction.saleQuantity}<br>
-                    <span class="title_stats">End Time</span>: <span hidden id="end_date">${date}</span><br>
+                    <span class="title_stats">End Time</span>: <span hidden class="end_date">${date}</span><br>
                     <span class="title_stats">Sold Objects</span>: ${sold}<br>
                     <span class="title_stats">Total Gain</span>: ${gain} $<br>
                     <span class="bid_state">${message}</span><br><br>

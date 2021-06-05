@@ -39,7 +39,7 @@ public class DetailedSellerServlet extends HttpServlet {
             else {
                 String date = "Auction closed";
                 Auction auction = auctionData.getAuction();
-                if(auction != null && auction.getEndDate() > Instant.now().getEpochSecond())
+                if(auction != null)
                     date = Long.toString(auction.getEndDate()*1000);
                 request.setAttribute("auction", auction);
                 request.setAttribute("date", date);
