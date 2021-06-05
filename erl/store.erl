@@ -95,10 +95,7 @@ insert_bid(Bid, AuctionId) ->
 
 delete_auction(AuctionId) ->
     Fun =   fun() ->
-                mnesia:delete({auction, AuctionId}),
-                {atomic, Bids} = get_bid_list(AuctionId),
-                [delete_bid(element(1,Bid))|| Bid <- Bids],
-                ok
+                mnesia:delete({auction, AuctionId})
             end,
     mnesia:transaction(Fun).
 
