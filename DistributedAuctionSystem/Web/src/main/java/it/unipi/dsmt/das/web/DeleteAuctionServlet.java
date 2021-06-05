@@ -20,36 +20,34 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
-@WebServlet("/delete")
-public class DeleteServlet extends HttpServlet {
+@WebServlet("/deleteAuction")
+public class DeleteAuctionServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     @EJB
     private AuctionManager auctionManager;
-    public DeleteServlet() {
+    public DeleteAuctionServlet() {
         super();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         RequestDispatcher dispatcher;
         if (session != null) {
-            User sessionUser = (User)session.getAttribute("user");
-            request.setAttribute("username", sessionUser.getUsername());
-            request.setAttribute("ID", sessionUser.getId());
-
             long auctionID = Long.parseLong(request.getParameter("auctionID"));
-            long bidID = Long.parseLong(request.getParameter("bidID"));
-
-            BidStatus status = auctionManager.deleteBid(auctionID, bidID);
-            response.getWriter().println(status.toString());
-            request.setAttribute("auctionID", auctionID);
-           // dispatcher = request.getServletContext().getRequestDispatcher("/detailedCustomer");
+            if(auctionManager.deleteAuction(auctionID).equals("ok"))
+                dispatcher = request.getServletContext().getRequestDispatcher("/seller");
+            else {
+                User sessionUser = (User)session.getAttribute("user");
+                request.setAttribute("username", sessionUser.getUsername());
+                request.setAttribute("ID", sessionUser.getId());
+                dispatcher = request.getRequestDispatcher("error_page.jsp");
+            }
         }
-        else {
+        else
             dispatcher = request.getRequestDispatcher("index.jsp");
-            dispatcher.forward(request, response);
-        }
+
+        dispatcher.forward(request, response);
     }
 
 }

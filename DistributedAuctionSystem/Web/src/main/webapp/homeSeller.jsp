@@ -77,7 +77,7 @@
 					<c:forEach items="${auctionList}" var="auction">
 					<li class="poster_auction_item_wrapper">
 						<p class = "bid"> <b> ${auction.name} </b> </p>
-						<div class="poster_auction_item"> <a href="detailedCustomer?auctionID=${auction.id}">
+						<div class="poster_auction_item"> <a href="detailedSeller?auctionID=${auction.id}">
 							<c:choose>
 								<c:when test="${auction.image==''}">
 									<img src="style/img/auction.jpg">

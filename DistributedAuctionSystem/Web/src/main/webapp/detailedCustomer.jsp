@@ -115,7 +115,7 @@
 									<td> ${bid.quantity}</td>
 									<td> ${bid.value} </td>
 									<td> ${bid.user}</td>
-									<td> <input class="delete-bid-button" type="button" value="Delete" /></td>
+									<td> <input class="delete-bid-button" type="button" value="Delete"/></td>
 								</tr>
 								</c:forEach>
 								</tbody>

@@ -17,7 +17,6 @@ public class DetailedCustomerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     @EJB
     private AuctionManager auctionManager;
-    private final Utility utility = new Utility();
     public DetailedCustomerServlet() {
         super();
     }
@@ -25,43 +24,51 @@ public class DetailedCustomerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        String destPage;
         String message;
-
+        RequestDispatcher dispatcher;
         if (session != null) {
-            destPage = "detailedCustomer.jsp";
             User sessionUser = (User)session.getAttribute("user");
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
-            long id = Long.parseLong(request.getParameter("auctionID"));
-            AuctionData auctionData = auctionManager.selectAuction(id, sessionUser.getId());
+            long auctionID = Long.parseLong(request.getParameter("auctionID"));
+            AuctionData auctionData = auctionManager.selectAuction(auctionID, sessionUser.getId());
             if(auctionData == null)
-                destPage = "error_page.jsp";
+                dispatcher = request.getRequestDispatcher("error_page.jsp");
             else {
                 String date = "Auction closed";
                 Auction auction = auctionData.getAuction();
-                if(auction != null && auction.getEndDate() > Instant.now().getEpochSecond())
-                    date = Long.toString(auction.getEndDate()*1000);
-                BidList list = auctionData.getList();
-                List<Bid> bids = null;
-                if(list != null) {
-                    bids = list.getList();
+                if(auction == null)
+                    dispatcher = request.getRequestDispatcher("error_page.jsp");
+                else {
+                    if (auction.getAgent() != sessionUser.getId()) {
+                        if (auction.getEndDate() > Instant.now().getEpochSecond())
+                            date = Long.toString(auction.getEndDate() * 1000);
+                        BidList list = auctionData.getList();
+                        List<Bid> bids = null;
+                        //TODO: recuperare auction state
+                        if (list != null) {
+                            bids = list.getList();
 
-                    message = "Currently, you are the winner!";
+                            message = "Currently, you are the winner!";
+                        } else
+                            message = "You haven't offers for this item";
+                        request.setAttribute("auction", auction);
+                        request.setAttribute("bids", bids);
+                        request.setAttribute("message", message);
+                        request.setAttribute("date", date);
+                        dispatcher = request.getRequestDispatcher("detailedCustomer.jsp");
+                    }
+                    else{
+                        request.setAttribute("auctionID", auctionID);
+                        dispatcher = request.getServletContext().getRequestDispatcher("/detailedSeller");
+                    }
+
                 }
-                else
-                    message = "You haven't offers for this item";
-                request.setAttribute("auction", auction);
-                request.setAttribute("bids", bids);
-                request.setAttribute("message", message);
-                request.setAttribute("date", date);
-                request.setAttribute("user", sessionUser);
             }
         }
         else
-            destPage = "index.jsp";
+            dispatcher = request.getRequestDispatcher("index.jsp");
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
         dispatcher.forward(request, response);
     }
 
