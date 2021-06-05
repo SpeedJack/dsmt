@@ -38,7 +38,7 @@ public class WSClient {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-        session.getAsyncRemote().sendText("Opening connection");
+        //session.getAsyncRemote().sendText("Opening connection");
     }
 
     public void addMessageHandler(MessageHandler msgHandler) {

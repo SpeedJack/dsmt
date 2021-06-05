@@ -16,7 +16,7 @@
 		<title>Detailed Object</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="js/websocket.js"></script>
-		<script src="js/ajax.js"></script>
+		<script src="js/bids.js"></script>
 		<script src="js/countdown.js"></script>
 	</head>
 	<body>
@@ -102,16 +102,23 @@
 							<p id="result"></p>
 							<table id = "offers_bid_table">
 								<caption>Your offers</caption>
-								<tr>
-									<td> <span class="title_stats">Quantity</span>
-									<td> <span class="title_stats">Offer</span>
-									<td>
+								<thead>
+									<th> Quantity </th>
+									<th> Offer </th>
+									<th> User</th>
+									<th></th>
+								</thead>
+								<tbody>
 								<c:forEach items="${bids}" var="bid">
-								<tr>
-									<td> <span class="title_stats">${bid.quantity}</span>
-									<td> <span class="title_stats">${bid.value} </span>
-									<td> <input type="button" value="Delete" class = "single_bid_button" onClick="document.location.href='delete?bidID=${bid.id}&auctionID=${auction.id}'">
+								<tr id="${bid.id}">
+
+									<td> ${bid.quantity}</td>
+									<td> ${bid.value} </td>
+									<td> ${bid.user}</td>
+									<td> <input class="delete-bid-button" type="button" value="Delete" /></td>
+								</tr>
 								</c:forEach>
+								</tbody>
 							</table>
 
 							<span class="bid_state">${message}</span><br><br>

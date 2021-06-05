@@ -33,7 +33,7 @@ public class DetailedCustomerServlet extends HttpServlet {
             User sessionUser = (User)session.getAttribute("user");
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
-            int id = Integer.parseInt(request.getParameter("auctionID"));
+            long id = Long.parseLong(request.getParameter("auctionID"));
             AuctionData auctionData = auctionManager.selectAuction(id, sessionUser.getId());
             if(auctionData == null)
                 destPage = "error_page.jsp";
@@ -55,6 +55,7 @@ public class DetailedCustomerServlet extends HttpServlet {
                 request.setAttribute("bids", bids);
                 request.setAttribute("message", message);
                 request.setAttribute("date", date);
+                request.setAttribute("user", sessionUser);
             }
         }
         else

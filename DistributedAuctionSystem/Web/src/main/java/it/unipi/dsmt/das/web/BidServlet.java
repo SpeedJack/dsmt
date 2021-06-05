@@ -48,13 +48,13 @@ public class BidServlet extends HttpServlet {
             BidStatus status = manager.makeBid(bid);
             response.getWriter().println(status.toString());
 
-            request.setAttribute("auctionID", auction_id);
-            dispatcher = request.getServletContext().getRequestDispatcher("/detailedCustomer");
+           // request.setAttribute("auctionID", auction_id);
+           // dispatcher = request.getServletContext().getRequestDispatcher("/detailedCustomer");
         }
-        else
+        else {
             dispatcher = request.getRequestDispatcher("index.jsp");
-
-        dispatcher.forward(request, response);
+            dispatcher.forward(request, response);
+        }
     }
 
 }

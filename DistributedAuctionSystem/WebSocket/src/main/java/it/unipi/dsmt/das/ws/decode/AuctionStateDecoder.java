@@ -12,7 +12,7 @@ public class AuctionStateDecoder implements Decoder.Text<AuctionState> {
 
     @Override
     public AuctionState decode(String s) throws DecodeException {
-        System.out.println(s);
+        System.out.println("json string: " + s);
         Gson gson = new Gson();
         try {
             return gson.fromJson(s, AuctionState.class);

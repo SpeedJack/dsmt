@@ -4,15 +4,13 @@ import com.ericsson.otp.erlang.*;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.*;
-import javafx.util.Pair;
+//import javafx.util.Pair;
 
 import javax.annotation.Resource;
 import javax.ejb.*;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Stateless(name = "AuctionManagerEJB")
 public class AuctionManagerBean implements AuctionManager {
@@ -80,9 +78,9 @@ public class AuctionManagerBean implements AuctionManager {
     }
 
     @Override
-    public String deleteAuction(int auctionId) {
+    public String deleteAuction(long auctionId) {
         OtpErlangAtom cmd = new OtpErlangAtom("delete_auction");
-        OtpErlangInt id = new OtpErlangInt(auctionId);
+        OtpErlangLong id = new OtpErlangLong(auctionId);
         OtpErlangAtom nan = new OtpErlangAtom("_");
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd, id, nan});
         try {
@@ -112,11 +110,11 @@ public class AuctionManagerBean implements AuctionManager {
 
 
     @Override
-    public AuctionData selectAuction(int auctionId, int userId) {
+    public AuctionData selectAuction(long auctionId, long userId) {
         AuctionData data = null;
         OtpErlangAtom cmd = new OtpErlangAtom("select_auction");
-        OtpErlangInt id = new OtpErlangInt(auctionId);
-        OtpErlangInt uId = new OtpErlangInt(userId);
+        OtpErlangLong id = new OtpErlangLong(auctionId);
+        OtpErlangLong uId = new OtpErlangLong(userId);
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,uId});
         try {
             OtpErlangTuple response = sendRequest(obj);
@@ -172,11 +170,11 @@ public class AuctionManagerBean implements AuctionManager {
     }
 
     @Override
-    public AuctionList auctionAgentList(int agentId) {
+    public AuctionList auctionAgentList(long agentId) {
         AuctionList list = null;
         OtpErlangAtom cmd = new OtpErlangAtom("auction_agent_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
-        OtpErlangInt a = new OtpErlangInt(agentId);
+        OtpErlangLong a = new OtpErlangLong(agentId);
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,a});
         try {
             OtpErlangTuple response = sendRequest(obj);
@@ -198,11 +196,11 @@ public class AuctionManagerBean implements AuctionManager {
     }
 
     @Override
-    public AuctionList auctionBidderList(int bidderId) {
+    public AuctionList auctionBidderList(long bidderId) {
         AuctionList list = null;
         OtpErlangAtom cmd = new OtpErlangAtom("auction_bidder_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
-        OtpErlangInt b = new OtpErlangInt(bidderId);
+        OtpErlangLong b = new OtpErlangLong(bidderId);
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,b});
         try {
             OtpErlangTuple response = sendRequest(obj);
@@ -256,10 +254,10 @@ public class AuctionManagerBean implements AuctionManager {
     }
 
     @Override
-    public BidStatus deleteBid(int auctionId, int bidId) {
+    public BidStatus deleteBid(long auctionId, long bidId) {
         OtpErlangAtom cmd = new OtpErlangAtom("delete_bid");
-        OtpErlangInt id = new OtpErlangInt(auctionId);
-        OtpErlangInt bId = new OtpErlangInt(bidId);
+        OtpErlangLong id = new OtpErlangLong(auctionId);
+        OtpErlangLong bId = new OtpErlangLong(bidId);
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,id,bId});
         BidStatus status = BidStatus.ERROR;
         try {
@@ -308,7 +306,7 @@ public class AuctionManagerBean implements AuctionManager {
         }
     }
 
-    public Pair<String, String> selectDispatcher(){
+/*    public Pair<String, String> selectDispatcher(){
         int randomNode = (int) ((Math.random() * (numDispatcherNodes + 1 - 1)) + 1);
         int randomProcess = (int) ((Math.random() * (numDispatcherPerNode + 1 - 1)) + 1);
 
@@ -316,7 +314,8 @@ public class AuctionManagerBean implements AuctionManager {
         String processName = "d_" + randomProcess + "_" + nodeName;
 
         return new Pair<>(nodeName,processName);
-    }
 
+    }
+*/
 
 }

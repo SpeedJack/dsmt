@@ -1,9 +1,7 @@
 package it.unipi.dsmt.das.web;
 
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
-import it.unipi.dsmt.das.model.Auction;
-import it.unipi.dsmt.das.model.BidStatus;
-import it.unipi.dsmt.das.model.User;
+import it.unipi.dsmt.das.model.*;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -31,7 +29,7 @@ public class DeleteServlet extends HttpServlet {
         super();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         RequestDispatcher dispatcher;
@@ -40,18 +38,18 @@ public class DeleteServlet extends HttpServlet {
             request.setAttribute("username", sessionUser.getUsername());
             request.setAttribute("ID", sessionUser.getId());
 
-            int auctionID = Integer.parseInt(request.getParameter("auctionID"));
-            int bidID = Integer.parseInt(request.getParameter("bidID"));
+            long auctionID = Long.parseLong(request.getParameter("auctionID"));
+            long bidID = Long.parseLong(request.getParameter("bidID"));
 
             BidStatus status = auctionManager.deleteBid(auctionID, bidID);
             response.getWriter().println(status.toString());
             request.setAttribute("auctionID", auctionID);
-            dispatcher = request.getServletContext().getRequestDispatcher("/detailedCustomer");
+           // dispatcher = request.getServletContext().getRequestDispatcher("/detailedCustomer");
         }
-        else
+        else {
             dispatcher = request.getRequestDispatcher("index.jsp");
-
-        dispatcher.forward(request, response);
+            dispatcher.forward(request, response);
+        }
     }
 
 }

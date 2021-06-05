@@ -9,6 +9,7 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/erlang/otp/jinterface/1.6.1/jinterface-1.6.1.jar" path-in-jar="/" />
       <element id="module-output" name="WebSocketClient" />
       <element id="module-output" name="WebSocket" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
