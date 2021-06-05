@@ -14,7 +14,6 @@
 		<link rel="stylesheet" href="style/auctions_menu.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="style/auctions.css" type="text/css" media="screen">
 		<title>Customer Home</title>
-		<script src="js/countdown.js"></script>
 	</head>
 	<body>
 		<div id="menu">

@@ -87,11 +87,7 @@
 								</c:otherwise>
 							</c:choose>
 						</a></div>
-						<div class="detail_auction_item">
-							<p class = "bid"> Starting Bid: ${auction.minPrice} $ </p>
-							<p class = "bid"> End: </p><span hidden id="end_date">${auction.endDate * 1000}</span>
-						</div>
-						</c:forEach>
+					</c:forEach>
 				</ul>
 			</section>	
 		</div>
