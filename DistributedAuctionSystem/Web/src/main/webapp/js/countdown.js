@@ -15,7 +15,6 @@ function endate_countdown() {
 
         for (var i = 0; i < list.length; i++) {
             elem = list.item(i);
-            console.log(elem);
             var countDownDate =  dates[i];
             var distance = countDownDate - now;
 
