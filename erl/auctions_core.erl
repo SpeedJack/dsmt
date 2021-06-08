@@ -102,8 +102,8 @@ get_auction_state(AuctionId, {Data, _}) ->
             {Code1,Auction} = store:get_auction(AuctionId),
             {Code2, BidList} = store:get_bid_list(AuctionId),
             if 
-                (Code1 == atomic) and (Code2 == atomic) -> compute_auction_state(Auction, BidList);
-                true -> []
+                (Code1 == atomic) and (Code2 == atomic) -> AuctionState = compute_auction_state(Auction, BidList), {ok, AuctionState};
+                true -> {ok,[]}
             end;
 
         true -> {_, List} = Tuple, List 
