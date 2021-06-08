@@ -19,8 +19,10 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String url = request.getRequestURI().substring(request.getContextPath().length());
         String page = url.substring(1);
-        if(page.equals("login") || page.equals("register") || page.equals("modifyPassword"))
-            getPage(page, request, response);
+        if(page.equals("login") || page.equals("register") || page.equals("modifyPassword")){
+            request.setAttribute("target", page);
+            request.getRequestDispatcher("credentials.jsp").forward(request, response);
+        }
         else if(page.equals("logout"))
             doLogout(request, response);
     }
@@ -32,9 +34,6 @@ public class UserServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/login");
     }
 
-    private void getPage(String page, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher(page + ".jsp").forward(request, response);
-    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -63,7 +62,7 @@ public class UserServlet extends HttpServlet {
         String newPassword = request.getParameter("new_password");
         String newPassword2 = request.getParameter("confirm_password");
 
-        String destPage = "modifyPassword.jsp";
+        String destPage = "credentials.jsp";
         String message;
 
         if(!newPassword.equals(newPassword2)) {
@@ -77,6 +76,7 @@ public class UserServlet extends HttpServlet {
                 message = "Error in the inserted password";
             }
         }
+        request.setAttribute("target", "modifyPassword");
         request.setAttribute("message", message);
         RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
         dispatcher.forward(request, response);
@@ -89,7 +89,7 @@ public class UserServlet extends HttpServlet {
         String password2 = request.getParameter("confirm_password");
 
         String message;
-        String destination = "register.jsp";
+        String destination = "credentials.jsp";
         try {
             if(!password.equals(password2)) {
                 message = "The two passwords inserted are different. Retry";
@@ -104,6 +104,7 @@ public class UserServlet extends HttpServlet {
 
                 }
             }
+            request.setAttribute("target", "register");
             request.setAttribute("message", message);
             request.getRequestDispatcher(destination).forward(request, response);
 
@@ -123,8 +124,9 @@ public class UserServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/auction");
         } else {
             String message = "Credentials not valid. Please retry";
+            request.setAttribute("target", "login");
             request.setAttribute("message", message);
-            request.getRequestDispatcher("login.jsp").forward(request,response);
+            request.getRequestDispatcher("credentials.jsp").forward(request,response);
         }
     }
 }

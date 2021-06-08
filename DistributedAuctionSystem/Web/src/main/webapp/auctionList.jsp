@@ -8,8 +8,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<section class="container my-1 mx-auto">
-    <div class="card-deck">
+<section class="container my-4 mx-auto align-content-center ">
+    <div class="card-deck justify-content-center">
         <c:forEach items="${auctionList}" var="auction">
             <c:set var="auction" value="${auction}" scope="request" />
             <jsp:include page="auction.jsp">
