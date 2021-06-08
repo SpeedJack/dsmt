@@ -121,12 +121,12 @@ make_bid(Message, {Data, State}) ->
                 (Code2 == atomic) and (Code3 == atomic) -> 
                     NewAuctionState = compute_auction_state(Auction, BidList),
                     NewData = utility:modify_key_value_list(Data, {Id, NewAuctionState}),
-                    io:format("AUCTIION STATE: ~p\n", [NewData]),                                   
+                    %io:format("AUCTIION STATE: ~p\n", [NewData]),                                   
                     if
                         self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
                         true -> null
                     end,
-                    {{ok,NewData}, NewData};
+                    {{ok,NewAuctionState}, NewData};
                 Code2 =/= atomic -> 
                     {{err,Res}, Data};
                 true -> 
@@ -155,7 +155,7 @@ delete_bid(Message, {Data, State}) ->
                         self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
                         true -> null
                     end,
-                    {{ok,NewData}, NewData};
+                    {{ok,NewAuctionState}, NewData};
                 Code2 =/= atomic -> 
                     {{err,Res}, Data};
                 true =/= atomic -> 
