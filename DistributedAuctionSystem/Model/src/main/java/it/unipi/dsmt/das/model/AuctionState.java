@@ -47,6 +47,41 @@ public class AuctionState implements Serializable, Erlangizable<OtpErlangList> {
         return new OtpErlangList(tempList.toArray(tempArray));
     }
 
+    public double getGain(){
+        double gain = 0;
+        for(Bid bid : winningBids){
+            gain += bid.quantity * bid.value;
+        }
+        return gain;
+    };
+
+    public int getSold(){
+        int sold = 0;
+        for(Bid bid: winningBids){
+            sold += bid.quantity;
+        }
+        return sold;
+    }
+
+    public double getLowestBid(Auction auction){
+        //SE SONO FINITI GLI OGGETTI
+        double lowestBid = auction.getMinPrice();
+        int sold = getSold();
+        if (sold == auction.getSaleQuantity()){
+            lowestBid = 0;
+            Iterator<Bid> iter = winningBids.iterator();
+            if(iter.hasNext())
+                lowestBid = iter.next().getValue();
+            while(iter.hasNext()){
+                double value = iter.next().getValue();
+                if(lowestBid > value)
+                    lowestBid = value;
+            }
+        }
+        lowestBid += auction.getMinRaise();
+        return lowestBid;
+    }
+
     public void derlangize(OtpErlangList tempList){
         for(OtpErlangObject element : tempList.elements()){
             Bid bid = new Bid();

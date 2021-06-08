@@ -13,11 +13,10 @@ function registerHandlers() {
 
 function makeBidHandler(event){
     event.preventDefault();
-
     let data = new FormData(event.target);
-    console.log(data);
     data = Object.fromEntries(data.entries());
     data.action = "make";
+    console.log(data);
     $("#offers_bid_table_container").load("/web/bid", data, registerHandlers);
 }
 
@@ -30,6 +29,6 @@ function deleteBidHandler(event){
         bidID: bid_id = $(this).closest("tr").attr('id'),
         action: "delete"
     };
-
+    console.log(params);
     $("#offers_bid_table_container").load("/web/bid", params, registerHandlers);
 }

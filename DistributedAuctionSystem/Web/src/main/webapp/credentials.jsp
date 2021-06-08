@@ -16,7 +16,7 @@
     <title> Login </title>
 </head>
 <body >
-<section class="text-white my-4 mx-auto py-4 px-auto container align-content-center" >
+<section class="my-4 mx-auto py-4 px-auto container align-content-center" >
 
     <div class="row align-content-center justify-content-center">
         <c:choose>

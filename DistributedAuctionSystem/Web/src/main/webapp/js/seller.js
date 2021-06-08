@@ -4,18 +4,19 @@ window.addEventListener('load', (event) => {
     console.log('opening socket');
     init_socket(socket,
         (event) => {
-            console.log(`[received message]: ${event.data}`)
-            updateGain(event.data);
-            updateSold(event.data);
-        })
+            console.log(`[received message]: ${event.data}`);
+            $("#details")
+                .load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`,
+                {action: "detail",
+                auctionID: get_auction_id()});
+    })
 });
 
 function updateGain(data){
-    if (!data || data === [])
-        return;
     let gain = 0;
-    for (let bid in data){
-        gain += bid.quantity * bid.value;
+    for (let i = 0; i<data.length; i++){
+        console.log(data[i]);
+        gain += data[i].quantity * data[i].value;
     }
     let gain_elem = document.getElementById("gain");
     if(gain_elem.hasChildNodes()){
@@ -25,14 +26,39 @@ function updateGain(data){
     gain_elem.appendChild(document.createTextNode(gain.toString()));
 }
 
+
+function updateLowest(data){
+    if(data.length == 0)
+        return
+    let low_value = data[0].value;
+    //MIN
+    for (let i = 1; i<data.length; i++){
+        if(data[i].value < low_value)
+            low_value = data[i].value;
+    }
+    let min_raise = Number.parseFloat(
+        document
+            .getElementById("min-raise")
+            .innerText
+            .toString());
+
+    let low_elem = document.getElementById("min-bid");
+
+    if(low_elem.hasChildNodes()){
+        for(let child of low_elem.childNodes)
+            low_elem.removeChild(child);
+    }
+    low_elem.appendChild(document.createTextNode((low_value + min_raise).toString()));
+}
+
 function updateSold(data){
     if (!data || data === [])
         return;
     let sold = 0;
-    for (let bid in data){
-        sold += bid.quantity;
+    for (let i = 0; i<data.length; i++){
+        sold += data[i].quantity;
     }
-    let sold_elem = document.getElementById("gain");
+    let sold_elem = document.getElementById("sold");
     if(sold_elem.hasChildNodes()){
         for(let child of sold_elem.childNodes)
             sold_elem.removeChild(child);

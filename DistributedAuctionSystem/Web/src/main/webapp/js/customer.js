@@ -1,10 +1,14 @@
+let socket = null;
+
 window.addEventListener('load', (event) => {
-    let socket = null;
     console.log('opening socket');
     init_socket(socket,
         (event) => {
-            console.log(`[received message]: ${event.data}`)
-            updateAuctionStats();
+            console.log(`[received message]: ${event.data}`);
+            $("#details")
+                .load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`,
+                    {action: "detail",
+                        auctionID: get_auction_id()});
         })
 });
 

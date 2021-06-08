@@ -11,13 +11,15 @@
 	<body>
 	<jsp:include page='menu.jsp' />
 	<div class="container">
-		<div class="card-deck">
+		<div class="row">
+		<div id="details" class="card-deck">
 				<jsp:include page="auctionDetail.jsp">
 					<jsp:param name="target" value="${target}" />
 					<jsp:param name="auction" value="${auction}" />
 					<jsp:param name="gain" value="${gain}" />
 					<jsp:param name="message" value="${message}" />
 				</jsp:include>
+			<div class="col-4">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="card-title">Control Panel</h3>
@@ -41,6 +43,8 @@
 				</c:choose>
 				</div>
 				</div>
+			</div>
+		</div>
 		</div>
 	</div>
 	</body>

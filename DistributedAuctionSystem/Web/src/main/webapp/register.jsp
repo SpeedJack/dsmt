@@ -2,7 +2,7 @@
     pageEncoding="utf-8"%>
 <div class="col-4 align-content-center">
 	<h3> Register </h3>
-	<img class="img-fluid rounded" src = "style/img/auction.jpg" alt = "Auctions">
+	<img class="img-fluid rounded" src = "style/img/auction.png" alt = "Auctions">
 	<form name="login" action="register" method="post">
 		<div class="form-group">
 			<label> Username

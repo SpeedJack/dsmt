@@ -16,7 +16,7 @@
     <a href="auction?action=detail&auctionID=${auction.id}">
       <c:choose>
         <c:when test="${empty auction.image}">
-          <img class="card-img-top" alt="..." src="style/img/auction.jpg">
+          <img class="card-img-top" alt="..." src="style/img/auction.png">
         </c:when>
         <c:otherwise>
           <img  class="card-img-top" alt="..." class="card-img-top" src="data:image/gif;base64,${auction.image}">

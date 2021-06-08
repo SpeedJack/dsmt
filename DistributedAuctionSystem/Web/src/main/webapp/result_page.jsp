@@ -8,10 +8,7 @@
 		<title>Detailed Object</title>
 	</head>
 	<body>
-	<jsp:include page='menu.jsp'>
-		<jsp:param name="username" value="${user.username}"/>
-		<jsp:param name="ID" value="${user.id}"/>
-	</jsp:include>
+	<jsp:include page='menu.jsp' />
 		<div align="center" id="content">
 			<h1 align="center">${status}</h1>
 			<p align="center">${message}</p>

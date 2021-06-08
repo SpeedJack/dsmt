@@ -1,6 +1,7 @@
 package it.unipi.dsmt.das.web;
 
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
+import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.*;
 
 import javax.ejb.EJB;
@@ -27,6 +28,8 @@ import java.util.Map;
 public class AuctionServlet extends HttpServlet {
     @EJB
     AuctionManager auctionManager;
+    @EJB
+    AuctionStatePublisher publisher;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -104,11 +107,13 @@ public class AuctionServlet extends HttpServlet {
     }
 
     private void getAuctionDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //TODO: Se l'auction è finita vai alla pagina di risultato e setta il messaggio vinto/perso
         long auctionId = Long.parseLong(request.getParameter("auctionID"));
         HttpSession session = request.getSession(false);
         User sessionUser = (User)session.getAttribute("user");
         String destination = "detailed.jsp";
         AuctionData data = auctionManager.selectAuction(auctionId, sessionUser.getId());
+        AuctionState state = publisher.getState(auctionId);
         String target = "customer";
         if(data != null && data.getAuction() != null){
             if(data.getAuction().getAgent() == sessionUser.getId()){
@@ -120,15 +125,14 @@ public class AuctionServlet extends HttpServlet {
             if (list != null) {
                 bids = list.getList();
             }
+            request.setAttribute("state", state);
             request.setAttribute("target", target);
             request.setAttribute("auction", data.getAuction());
-            request.setAttribute("user", sessionUser);
             request.setAttribute("bids", bids);
             request.setAttribute("date", date);
         } else {
             request.setAttribute("status", "Auction Not Found!");
             request.setAttribute("message","This auction has been deleted and it's no more available");
-            response.setStatus(404);
             request.getRequestDispatcher("result_page.jsp").forward(request, response);
         }
         request.getRequestDispatcher(destination).forward(request, response);
@@ -150,7 +154,6 @@ public class AuctionServlet extends HttpServlet {
             case "detail":
                 getAuctionDetail(request, response);
             default:
-                response.setStatus(404);
                 request.setAttribute("message", "your request cannot be served");
                 request.getRequestDispatcher("error_page").forward(request, response);
                 break;

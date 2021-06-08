@@ -9,7 +9,7 @@
 <% User user = (User) session.getAttribute("user");%>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="auction">
-        <!--<img src = "style/img/auction.jpg" width="30" height="30" class="logo_img"> -->
+        <img src = "style/img/auction.png" width="32" height="32" class="logo_img">
         Distributed Auction System
     </a>
 
