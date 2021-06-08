@@ -106,7 +106,7 @@ get_auction_state(AuctionId, {Data, _}) ->
                 true -> {ok,[]}
             end;
 
-        true -> {_, List} = Tuple, List 
+        true -> {_, List} = Tuple, {ok,List} 
     end.
         
 %Inserts a new bid in Mnesia and calculates the auction's new AuctionState
