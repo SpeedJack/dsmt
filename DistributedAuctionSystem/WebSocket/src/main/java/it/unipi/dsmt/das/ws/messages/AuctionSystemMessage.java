@@ -1,6 +1,6 @@
 package it.unipi.dsmt.das.ws.messages;
 
-public abstract class AuctionSystemMessage {
+public class AuctionSystemMessage {
     String type;
 
     public AuctionSystemMessage(String type){

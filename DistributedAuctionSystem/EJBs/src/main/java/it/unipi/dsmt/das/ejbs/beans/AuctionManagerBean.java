@@ -99,6 +99,35 @@ public class AuctionManagerBean implements AuctionManager {
             }
     }
 
+    public AuctionState getAuctionState(long auctionId){
+        OtpErlangAtom cmd = new OtpErlangAtom("get_auction_state");
+        OtpErlangAtom nan = new OtpErlangAtom("_");
+        OtpErlangLong id = new OtpErlangLong(auctionId);
+        OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,id, nan});
+        AuctionState state = null;
+        try {
+            OtpErlangTuple response = sendRequest(obj);
+            if (response == null) {
+                System.out.println("TIME EXPIRED");
+                return null;
+            }
+            System.out.println(response);
+            OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
+            if (msgResponse.atomValue().equals("ok")) {
+                OtpErlangList dataList = (OtpErlangList) response.elementAt(1);
+                if (dataList.arity() == 0)
+                    return null;
+                /*if(((OtpErlangTuple)dataList.elementAt(0)).arity() == 0){
+                    return null;
+                }*/
+                state = new AuctionState();
+                state.derlangize(dataList);
+            }
+        } catch (OtpErlangExit | OtpAuthException e) {
+            e.printStackTrace();
+        }
+        return state;
+    }
 
     @Override
     public AuctionData selectAuction(long auctionId, long userId) {
@@ -262,6 +291,7 @@ public class AuctionManagerBean implements AuctionManager {
                 OtpErlangList newAuctionState = (OtpErlangList) response.elementAt(1);
                 AuctionState state = new AuctionState();
                 state.derlangize(newAuctionState);
+                publisher.publishState(auctionId, state);
                 status = BidStatus.RECEIVED;
             } else if (msgResponse.atomValue().equals("err")){
                 status = BidStatus.EXPIRED;

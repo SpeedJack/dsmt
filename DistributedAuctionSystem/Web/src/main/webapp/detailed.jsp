@@ -7,7 +7,6 @@
 	<head>
 		<jsp:include page="meta.jsp" />
 		<title>Detailed Object</title>
-		<script src="js/countdown.js"></script>
 	</head>
 	<body>
 	<jsp:include page='menu.jsp' />
@@ -27,7 +26,7 @@
 				<c:choose>
 					<c:when test="${target=='seller'}">
 						<jsp:include page="deleteAuctionForm.jsp" />
-						<script src="js/customer.js"></script>
+						<script src="js/seller.js"></script>
 					</c:when>
 					<c:otherwise>
 						<jsp:include page="bidForm.jsp" />
@@ -45,4 +44,5 @@
 		</div>
 	</div>
 	</body>
+	<script src="js/countdown.js"></script>
 </html>

@@ -11,4 +11,4 @@
         <input class="btn btn-secondary" id="submit_button" type="submit" value="Delete Auction" />
     </div>
 </form>
-<script src="js/seller.js"></script>
+

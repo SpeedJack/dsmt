@@ -191,7 +191,6 @@ public class AuctionServlet extends HttpServlet {
         String hour = request.getParameter("hour");
         long timestamp = 0;
         try {
-            Instant instant = Instant.parse(day+" "+hour);
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             timestamp = Math.floorDiv(df.parse(day + " " + hour).getTime(),1000);
         }
