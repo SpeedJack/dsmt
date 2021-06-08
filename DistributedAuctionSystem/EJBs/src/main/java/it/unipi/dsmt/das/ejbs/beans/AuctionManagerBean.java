@@ -4,23 +4,21 @@ import com.ericsson.otp.erlang.*;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.*;
-//import javafx.util.Pair;
 
 import javax.annotation.Resource;
 import javax.ejb.*;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Stateless(name = "AuctionManagerEJB")
 public class AuctionManagerBean implements AuctionManager {
-    private final String dispatcherRegisteredName = "d_1_disp1@localhost";
-    private final String dispatcherNodeName = "disp1@localhost";
-    private final String mboxName = "auction_manager_mbox";
-    private final String nodeName = "auction_manager@localhost";
 
     private final int numDispatcherNodes = 1;
     private final int numDispatcherPerNode = 3;
+    private final int maxConnectionTriesToDispatcher = 3;
 
     @EJB
     AuctionStatePublisher publisher;
@@ -64,7 +62,7 @@ public class AuctionManagerBean implements AuctionManager {
                     return errorMsg.toString();
                 }
             }
-        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
+        } catch (OtpErlangExit | OtpAuthException e) {
             e.printStackTrace();
             return e.toString();
         }
@@ -95,7 +93,7 @@ public class AuctionManagerBean implements AuctionManager {
                     return errorMsg.atomValue();
                 }
             }
-            } catch(OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e){
+            } catch(OtpErlangExit | OtpAuthException e){
                 e.printStackTrace();
                 return e.toString();
             }
@@ -125,7 +123,7 @@ public class AuctionManagerBean implements AuctionManager {
                 data = new AuctionData();
                 data.derlangize(dataTuple);
             }
-        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
+        } catch (OtpErlangExit | OtpAuthException e) {
             e.printStackTrace();
         }
         return data;
@@ -156,7 +154,7 @@ public class AuctionManagerBean implements AuctionManager {
                     return null;
                 }
             }
-        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
+        } catch (OtpErlangExit | OtpAuthException e) {
             e.printStackTrace();
         }
         return list;
@@ -182,7 +180,7 @@ public class AuctionManagerBean implements AuctionManager {
                list = new AuctionList();
                list.derlangize((OtpErlangList) response.elementAt(1));
             }
-        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
+        } catch (OtpErlangExit | OtpAuthException e) {
             e.printStackTrace();
         }
         return list;
@@ -208,7 +206,7 @@ public class AuctionManagerBean implements AuctionManager {
                list = new AuctionList();
                list.derlangize((OtpErlangList) response.elementAt(1));
             }
-        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
+        } catch (OtpErlangExit | OtpAuthException e) {
             e.printStackTrace();
         }
         return list;
@@ -238,7 +236,7 @@ public class AuctionManagerBean implements AuctionManager {
             } else {
                 status = BidStatus.ERROR;
             }
-        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException otpErlangExit) {
+        } catch (OtpErlangExit | OtpAuthException otpErlangExit) {
             otpErlangExit.printStackTrace();
         }
 
@@ -270,45 +268,55 @@ public class AuctionManagerBean implements AuctionManager {
             } else {
                 status = BidStatus.ERROR;
             }
-        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException otpErlangExit) {
+        } catch (OtpErlangExit | OtpAuthException otpErlangExit) {
             otpErlangExit.printStackTrace();
         }
         return status;
     }
 
-    public OtpErlangTuple sendRequest(OtpErlangTuple payload) throws OtpErlangExit, OtpErlangDecodeException, IOException, OtpAuthException {
-        OtpSelf client = new OtpSelf("client");
-        OtpPeer peer = new OtpPeer(dispatcherNodeName);
-        OtpConnection conn = client.connect(peer);
-        conn.sendRPC("gen_server", "call",
-                new OtpErlangObject[] {
-                        new OtpErlangTuple(new OtpErlangObject[] {
-                                new OtpErlangAtom("global"),
-                                new OtpErlangString(dispatcherRegisteredName),
-                        }),
-                        payload,
-                        new OtpErlangInt(5000)
-                });
-        OtpErlangObject resMsg = conn.receiveRPC();
-        conn.close();
-        if (resMsg == null){
-            return null;
+    public OtpErlangTuple sendRequest(OtpErlangTuple payload) throws OtpErlangExit, OtpAuthException {
+        int connectionAttempts = 1;
+        OtpErlangObject resMsg = null;
+        while(connectionAttempts >= 1 && connectionAttempts <= maxConnectionTriesToDispatcher) {
+            try {
+                List<String> disp = selectDispatcher();
+                //System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA" + disp.get(0) + "  " + disp.get(1));
+                OtpSelf client = new OtpSelf("client");
+                OtpPeer peer = new OtpPeer(disp.get(0));
+                OtpConnection conn = client.connect(peer);
+                conn.sendRPC("gen_server", "call",
+                        new OtpErlangObject[]{
+                                new OtpErlangTuple(new OtpErlangObject[]{
+                                        new OtpErlangAtom("global"),
+                                        new OtpErlangString(disp.get(1)),
+                                }),
+                                payload,
+                                new OtpErlangInt(5000)
+                        });
+                resMsg = conn.receiveRPC();
+                conn.close();
+                connectionAttempts = 0;
+
+            }catch(IOException e){
+                connectionAttempts++;
+            }
         }
-        else{
-            return (OtpErlangTuple) resMsg;
-        }
+        return (OtpErlangTuple)resMsg;
     }
 
-/*    public Pair<String, String> selectDispatcher(){
+    public List<String> selectDispatcher(){
         int randomNode = (int) ((Math.random() * (numDispatcherNodes + 1 - 1)) + 1);
         int randomProcess = (int) ((Math.random() * (numDispatcherPerNode + 1 - 1)) + 1);
 
         String nodeName = "disp" + randomNode + "@localhost";
         String processName = "d_" + randomProcess + "_" + nodeName;
 
-        return new Pair<>(nodeName,processName);
+        List<String> res = new ArrayList<String>();
+        res.add(nodeName);
+        res.add(processName);
 
+        return res;
     }
-*/
+
 
 }
