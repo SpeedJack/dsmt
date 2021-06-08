@@ -7,9 +7,9 @@ import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
-public class AuctionStateEncoder implements Encoder.Text<AuctionState>{
+public class CloseAuctionMessageEncoder implements Encoder.Text<AuctionState>{
     @Override
-    public String encode(AuctionState object) throws EncodeException {
+    public String encode(AuctionState object) {
         if(object == null)
             return null;
         Gson gson = new Gson();

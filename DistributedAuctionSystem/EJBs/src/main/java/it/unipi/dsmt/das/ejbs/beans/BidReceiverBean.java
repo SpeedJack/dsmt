@@ -4,6 +4,7 @@ import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.AuctionState;
 import it.unipi.dsmt.das.ws.client.WSClient;
+import it.unipi.dsmt.das.ws.messages.AuctionStateMessage;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
@@ -49,16 +50,13 @@ public class BidReceiverBean implements MessageListener {
     public void handleStateMessage(long auction, AuctionState state) {
 
         WSClient clientEndPoint = new WSClient(auction); //add listener
-        clientEndPoint.addMessageHandler(System.out::println);
-        // send message to websocket
         clientEndPoint.sendState(state);
     }
 
     public void handleCloseMessage(long auction, AuctionState state) {
 
         WSClient clientEndPoint = new WSClient(auction); //add listener
-        clientEndPoint.addMessageHandler(System.out::println);
         // send message to websocket
-        clientEndPoint.sendClose();
+        clientEndPoint.close();
     }
 }

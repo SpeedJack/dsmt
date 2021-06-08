@@ -27,25 +27,17 @@ public class AuctionManagerBean implements AuctionManager {
     @Resource
     private TimerService timerService;
 
-    OtpNode node;
-    OtpMbox mbox;
-
-
-    public void scheduleCloseTask(Date expriation, Auction auction) {
-        this.timerService.createTimer(expriation, auction);
+    public void scheduleCloseTask(Date expiration, long auction) {
+        this.timerService.createTimer(expiration, auction);
     }
-
-    /**public void scheduleIntervalTask(long timeout, long interval) {
-        this.timerService.createTimer(timeout,interval, "I'm an interval timer");
-    }**/
 
     @Timeout
     public void close(Timer timer) {
         publisher.closeAuction((long)timer.getInfo());
     }
+
     public AuctionManagerBean() {
-      // this.node = new OtpNode(nodeName);
-      // this.mbox = node.createMbox(mboxName);
+
     }
 
 
@@ -62,7 +54,8 @@ public class AuctionManagerBean implements AuctionManager {
             else {
                 OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
                 if (msgResponse.atomValue().equals("ok")){
-                    this.timerService.createTimer(Instant.EPOCH.getEpochSecond(), auction.getId());
+                    Date date = new Date(auction.getEndDate());
+                    scheduleCloseTask(date, auction.getId());
                     return "ok";
                 }
                 else{
@@ -93,7 +86,7 @@ public class AuctionManagerBean implements AuctionManager {
                 if (msgResponse.atomValue().equals("ok")) {
                     this.timerService.getTimers().forEach(
                             timer -> {
-                                if (timer.getInfo() == id)
+                                if ((long)timer.getInfo() == id.longValue())
                                     timer.cancel();
                             });
                     return "ok";
@@ -143,7 +136,7 @@ public class AuctionManagerBean implements AuctionManager {
         AuctionList list = null;
         OtpErlangAtom cmd = new OtpErlangAtom("auction_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
-        OtpErlangInt p = new OtpErlangInt(1);
+        OtpErlangInt p = new OtpErlangInt(page);
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,p});
         try {
             OtpErlangTuple response = sendRequest(obj);

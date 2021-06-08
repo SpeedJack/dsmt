@@ -1,8 +1,11 @@
 package it.unipi.dsmt.das.ws.endpoints;
 
 import it.unipi.dsmt.das.model.AuctionState;
-import it.unipi.dsmt.das.ws.decode.AuctionStateDecoder;
-import it.unipi.dsmt.das.ws.encode.AuctionStateEncoder;
+import it.unipi.dsmt.das.ws.decode.AuctionDecoder;
+import it.unipi.dsmt.das.ws.encode.AuctionStateMessageEncoder;
+import it.unipi.dsmt.das.ws.messages.AuctionStateMessage;
+import it.unipi.dsmt.das.ws.messages.AuctionSystemMessage;
+import it.unipi.dsmt.das.ws.messages.CloseAuctionMessage;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
@@ -10,8 +13,8 @@ import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint(
         value = "/auction_backend/{auction_id}",
-        encoders= {AuctionStateEncoder.class},
-        decoders= {AuctionStateDecoder.class})
+        encoders= {AuctionStateMessageEncoder.class},
+        decoders= {AuctionDecoder.class})
 
 public class AuctionBackendEndpoint {
     long auction;
@@ -21,11 +24,14 @@ public class AuctionBackendEndpoint {
     }
 
     @OnMessage
-    public void onMessage(Session session, AuctionState state){
-        if(state != null)
-            AuctionEndpoint.updateAuction(auction, state);
-        else
-            AuctionEndpoint.closeAuction(auction);
+    public void onMessage(Session session, AuctionSystemMessage message){
+        if(message != null) {
+            if (message.getClass().isAssignableFrom(AuctionStateMessage.class)) {
+                AuctionEndpoint.updateAuction(auction, ((AuctionStateMessage) message).getState());
+            } else if (message.getClass().isAssignableFrom(CloseAuctionMessage.class)) {
+                AuctionEndpoint.closeAuction(((CloseAuctionMessage) message).getAuction());
+            }
+        }
     }
 
     @OnClose

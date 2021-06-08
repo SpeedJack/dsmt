@@ -12,13 +12,10 @@
         <!--<img src = "style/img/auction.jpg" width="30" height="30" class="logo_img"> -->
         Distributed Auction System
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse">
+
         <ul class="navbar-nav" id="navbarNav">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <%= user.getUsername() %>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -27,7 +24,7 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Auctions
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -42,5 +39,4 @@
                 </a>
             </li>
         </ul>
-    </div>
 </nav>

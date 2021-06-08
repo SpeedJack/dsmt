@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<section class="container">
+<section class="container my-1 mx-auto">
     <div class="card-deck">
         <c:forEach items="${auctionList}" var="auction">
             <c:set var="auction" value="${auction}" scope="request" />
@@ -16,5 +16,6 @@
                 <jsp:param name="auction" value="${auction}" />
             </jsp:include>
         </c:forEach>
+        <script src="js/countdown.js"></script>
     </div>
 </section>

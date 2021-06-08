@@ -7,7 +7,6 @@
 	<head>
 		<jsp:include page="meta.jsp" />
 		<title>Detailed Object</title>
-		<script src="js/bids.js"></script>
 		<script src="js/countdown.js"></script>
 	</head>
 	<body>
@@ -28,6 +27,7 @@
 				<c:choose>
 					<c:when test="${target=='seller'}">
 						<jsp:include page="deleteAuctionForm.jsp" />
+						<script src="js/customer.js"></script>
 					</c:when>
 					<c:otherwise>
 						<jsp:include page="bidForm.jsp" />
@@ -36,6 +36,8 @@
 							<jsp:param name="bids" value="${bids}"/>
 						</jsp:include>
 						</div>
+						<script src="js/bids.js"></script>
+						<script src="js/customer.js"></script>
 					</c:otherwise>
 				</c:choose>
 				</div>

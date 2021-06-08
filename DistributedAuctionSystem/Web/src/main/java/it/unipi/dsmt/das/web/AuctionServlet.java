@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -71,8 +72,12 @@ public class AuctionServlet extends HttpServlet {
             target = "customer";
         String pageParam = request.getParameter("page");
         int page = 1;
-        if(pageParam != null && !pageParam.isEmpty())
+        if(pageParam != null && !pageParam.isEmpty()){
             page = Integer.parseInt(pageParam);
+            if (page <= 1)
+                page=1;
+        }
+
         AuctionList auctionList;
         if(target.equals("seller"))
             auctionList = auctionManager.auctionAgentList(sessionUser.getId());
@@ -186,7 +191,8 @@ public class AuctionServlet extends HttpServlet {
         String hour = request.getParameter("hour");
         long timestamp = 0;
         try {
-            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            Instant instant = Instant.parse(day+" "+hour);
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             timestamp = Math.floorDiv(df.parse(day + " " + hour).getTime(),1000);
         }
         catch (ParseException e) {
