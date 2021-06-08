@@ -37,6 +37,7 @@ handle_call({Command,Id,Payload},_From, {Data, State}) ->
         create_auction -> {Result,NewData} = auctions_core:create_auction({Command,Id,Payload}, {Data,State});
         delete_auction -> {Result,NewData} = auctions_core:delete_auction({Command,Id,Payload}, {Data,State});
         select_auction -> NewData = Data, Result = auctions_core:select_auction(Id,Payload);
+        get_auction_state -> NewData = Data, Result = auctions_core:get_auction_state(Id, {Data,State});
         auction_list -> NewData = Data, Result = auctions_core:auctions_list(Payload);
         auction_agent_list -> NewData = Data, Result = auctions_core:auctions_agent_list(Payload);
         auction_bidder_list -> NewData = Data, Result = auctions_core:auctions_bidder_list(Payload);
