@@ -73,7 +73,7 @@ create_auction(Message, {Data, State}) ->
 delete_auction(Message, {Data, State}) ->
     {_, Id, _} = Message,
     {Code,Res} = store:delete_auction(Id),
-    {atomic, Bids} = store:get_bid_list(AuctionId),
+    {atomic, Bids} = store:get_bid_list(Id),
     [store:delete_bid(element(1,Bid))|| Bid <- Bids],
     if
         (Code == atomic) and (self() == State#state.leader) ->  NewData = lists:keydelete(Id, 1, Data), 

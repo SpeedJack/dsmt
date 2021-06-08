@@ -14,37 +14,41 @@
 		<jsp:include page="meta.jsp"/>
 		<title>Sell Object</title>
 		</head>
-	<body class = "personal">
-	<jsp:include page='menu.jsp'>
-		<jsp:param name="username" value="${username}"/>
-		<jsp:param name="ID" value="${ID}"/>
-	</jsp:include>
-		<div id = "content">
-			<div id = "sell_form">
-			<form action="auction" method="POST" enctype="multipart/form-data">
-				<p>${message}</p>
-				<p> Object Information </p>
-				<input type="text" hidden readonly name="action" value="create" />
-				<label class = "little">Name:</label>     				 
-		  			<input class = "form" name="name" type="text" size = "40" required><br>
-    			<label class = "little">Minimum Bid:</label>  				 
-		  			<input class = "form" name="minimum_bid" type="text" size = "5" required><br>
-				<label class = "little">Minimum Raise:</label>
-					<input class = "form" name="minimum_raise" type="text" size = "5" required><br>
-				<label class = "little">Number of Objects:</label>		  			 
-		  			<input class = "form" name="object" type="text" size = "5" required><br>
-				<label class = "little">End Day: </label>     				
-		  			<input class = "form" name="day" type="text" size = "15" placeholder = "dd/mm/aaaa"
-						   pattern = '(?:((?:0[1-9]|1[0-9]|2[0-9])\/(?:0[1-9]|1[0-2])|(?:30)\/(?!02)(?:0[1-9]|1[0-2])|31\/(?:0[13578]|1[02]))\/(?:19|20)[0-9]{2})' required><br>
-    			<label class = "little">End Hour:</label>   				 
-		  			<input class = "form" name="hour" type="text" size = "10" pattern = "([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" required><br><br>
-				<label class = "little">Description:</label><br>	 
-		  			<textarea name = "description" rows="5" cols="80" maxlength = "400"></textarea><br>
-				<label class = "little">Image:</label>
-                  <input name="userfile" class = "form" type="file" required><br><br>
-				<input type="submit" value="Confirm" class ="submit">
-			</form>
+	<body>
+		<jsp:include page='menu.jsp' />
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class = "card">
+						<div class = "card-body">
+							<form action="auction" method="POST" enctype="multipart/form-data">
+								<h3 class="card-title"> Sell something! </h3>
+								<input type="text" hidden readonly name="action" value="create" />
+								<div class="form-group">
+									<label>Name:</label>
+									<input class = "form-control" name="name" type="text" size = "40" required />
+									<label>Minimum Bid:</label>
+									<input class = "form-control" name="minimum_bid" type="number" step="0.01" required />
+									<label>Minimum Raise:</label>
+									<input class = "form-control" name="minimum_raise" type="number" step="0.01" required />
+									<label >Number of Objects:</label>
+									<input class = "form-control" name="object" type="number" step="1" required />
+									<label >End Day: </label>
+									<input class = "form-control" name="day" type="date" required/>
+									<label >End Hour:</label>
+									<input class = "form-control" name="hour" type="time" required />
+									<label >Description:</label>
+									<textarea class="form-control " name = "description" rows="5" cols="80" maxlength = "400"></textarea>
+									<label>Image:</label>
+									<input name="userfile" class = "form-control" type="file" required />
+									<input class = "btn btn-secondary" type="submit" value="Sell" class ="submit" />
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
 			</div>
+
 		</div>
 	</body>
 </html>

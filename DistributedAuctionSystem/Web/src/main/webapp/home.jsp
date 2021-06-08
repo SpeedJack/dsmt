@@ -6,10 +6,6 @@
 <html lang="it">
 	<head>
 		<jsp:include page="meta.jsp"/>
-		<link rel = "icon" href = "style/img/auction.jpg" sizes = "32x32" type = "image/jpg">
-		<link rel = "stylesheet" href = "style/utility.css" type="text/css" media="screen">
-		<link rel="stylesheet" href="style/auctions_menu.css" type="text/css" media="screen">
-		<link rel="stylesheet" href="style/auctions.css" type="text/css" media="screen">
 		<title>Auction List</title>
 	</head>
 	<body>

@@ -4,43 +4,40 @@ import com.ericsson.otp.erlang.*;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.*;
+//import javafx.util.Pair;
 
 import javax.annotation.Resource;
 import javax.ejb.*;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Stateless(name = "AuctionManagerEJB")
 public class AuctionManagerBean implements AuctionManager {
+    private final String dispatcherRegisteredName = "d_1_disp1@localhost";
+    private final String dispatcherNodeName = "disp1@localhost";
+    private final String mboxName = "auction_manager_mbox";
+    private final String nodeName = "auction_manager@localhost";
 
     private final int numDispatcherNodes = 1;
     private final int numDispatcherPerNode = 3;
-    private final int maxConnectionTriesToDispatcher = 3;
 
     @EJB
     AuctionStatePublisher publisher;
     @Resource
     private TimerService timerService;
 
-
-    public void scheduleCloseTask(Date expriation, Auction auction) {
-        this.timerService.createTimer(expriation, auction);
+    public void scheduleCloseTask(Date expiration, long auction) {
+        this.timerService.createTimer(expiration, auction);
     }
-
-    /**public void scheduleIntervalTask(long timeout, long interval) {
-        this.timerService.createTimer(timeout,interval, "I'm an interval timer");
-    }**/
 
     @Timeout
     public void close(Timer timer) {
         publisher.closeAuction((long)timer.getInfo());
     }
+
     public AuctionManagerBean() {
-      // this.node = new OtpNode(nodeName);
-      // this.mbox = node.createMbox(mboxName);
+
     }
 
 
@@ -57,7 +54,8 @@ public class AuctionManagerBean implements AuctionManager {
             else {
                 OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
                 if (msgResponse.atomValue().equals("ok")){
-                    this.timerService.createTimer(Instant.EPOCH.getEpochSecond(), auction.getId());
+                    Date date = new Date(auction.getEndDate());
+                    scheduleCloseTask(date, auction.getId());
                     return "ok";
                 }
                 else{
@@ -66,7 +64,7 @@ public class AuctionManagerBean implements AuctionManager {
                     return errorMsg.toString();
                 }
             }
-        } catch (OtpErlangExit | OtpAuthException e) {
+        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
             e.printStackTrace();
             return e.toString();
         }
@@ -88,7 +86,7 @@ public class AuctionManagerBean implements AuctionManager {
                 if (msgResponse.atomValue().equals("ok")) {
                     this.timerService.getTimers().forEach(
                             timer -> {
-                                if (timer.getInfo() == id)
+                                if ((long)timer.getInfo() == id.longValue())
                                     timer.cancel();
                             });
                     return "ok";
@@ -97,7 +95,7 @@ public class AuctionManagerBean implements AuctionManager {
                     return errorMsg.atomValue();
                 }
             }
-            } catch(OtpErlangExit | OtpAuthException e){
+            } catch(OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e){
                 e.printStackTrace();
                 return e.toString();
             }
@@ -127,7 +125,7 @@ public class AuctionManagerBean implements AuctionManager {
                 data = new AuctionData();
                 data.derlangize(dataTuple);
             }
-        } catch (OtpErlangExit | OtpAuthException e) {
+        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
             e.printStackTrace();
         }
         return data;
@@ -138,7 +136,7 @@ public class AuctionManagerBean implements AuctionManager {
         AuctionList list = null;
         OtpErlangAtom cmd = new OtpErlangAtom("auction_list");
         OtpErlangAtom nan = new OtpErlangAtom("_");
-        OtpErlangInt p = new OtpErlangInt(1);
+        OtpErlangInt p = new OtpErlangInt(page);
         OtpErlangTuple obj = new OtpErlangTuple(new OtpErlangObject[]{cmd,nan,p});
         try {
             OtpErlangTuple response = sendRequest(obj);
@@ -158,7 +156,7 @@ public class AuctionManagerBean implements AuctionManager {
                     return null;
                 }
             }
-        } catch (OtpErlangExit | OtpAuthException e) {
+        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
             e.printStackTrace();
         }
         return list;
@@ -184,7 +182,7 @@ public class AuctionManagerBean implements AuctionManager {
                list = new AuctionList();
                list.derlangize((OtpErlangList) response.elementAt(1));
             }
-        } catch (OtpErlangExit | OtpAuthException e) {
+        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
             e.printStackTrace();
         }
         return list;
@@ -210,7 +208,7 @@ public class AuctionManagerBean implements AuctionManager {
                list = new AuctionList();
                list.derlangize((OtpErlangList) response.elementAt(1));
             }
-        } catch (OtpErlangExit | OtpAuthException e) {
+        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException e) {
             e.printStackTrace();
         }
         return list;
@@ -240,7 +238,7 @@ public class AuctionManagerBean implements AuctionManager {
             } else {
                 status = BidStatus.ERROR;
             }
-        } catch (OtpErlangExit | OtpAuthException otpErlangExit) {
+        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException otpErlangExit) {
             otpErlangExit.printStackTrace();
         }
 
@@ -272,55 +270,45 @@ public class AuctionManagerBean implements AuctionManager {
             } else {
                 status = BidStatus.ERROR;
             }
-        } catch (OtpErlangExit | OtpAuthException otpErlangExit) {
+        } catch (OtpErlangExit | OtpErlangDecodeException | IOException | OtpAuthException otpErlangExit) {
             otpErlangExit.printStackTrace();
         }
         return status;
     }
 
-    public OtpErlangTuple sendRequest(OtpErlangTuple payload) throws OtpErlangExit, OtpAuthException {
-        int connectionAttempts = 1;
-        OtpErlangObject resMsg = null;
-        while(connectionAttempts >= 1 && connectionAttempts <= maxConnectionTriesToDispatcher) {
-            try {
-                List<String> disp = selectDispatcher();
-                //System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA" + disp.get(0) + "  " + disp.get(1));
-                OtpSelf client = new OtpSelf("client");
-                OtpPeer peer = new OtpPeer(disp.get(0));
-                OtpConnection conn = client.connect(peer);
-                conn.sendRPC("gen_server", "call",
-                        new OtpErlangObject[]{
-                                new OtpErlangTuple(new OtpErlangObject[]{
-                                        new OtpErlangAtom("global"),
-                                        new OtpErlangString(disp.get(1)),
-                                }),
-                                payload,
-                                new OtpErlangInt(5000)
-                        });
-                resMsg = conn.receiveRPC();
-                conn.close();
-                connectionAttempts = 0;
-
-            }catch(IOException e){
-                connectionAttempts++;
-            }
+    public OtpErlangTuple sendRequest(OtpErlangTuple payload) throws OtpErlangExit, OtpErlangDecodeException, IOException, OtpAuthException {
+        OtpSelf client = new OtpSelf("client");
+        OtpPeer peer = new OtpPeer(dispatcherNodeName);
+        OtpConnection conn = client.connect(peer);
+        conn.sendRPC("gen_server", "call",
+                new OtpErlangObject[] {
+                        new OtpErlangTuple(new OtpErlangObject[] {
+                                new OtpErlangAtom("global"),
+                                new OtpErlangString(dispatcherRegisteredName),
+                        }),
+                        payload,
+                        new OtpErlangInt(5000)
+                });
+        OtpErlangObject resMsg = conn.receiveRPC();
+        conn.close();
+        if (resMsg == null){
+            return null;
         }
-        return (OtpErlangTuple)resMsg;
+        else{
+            return (OtpErlangTuple) resMsg;
+        }
     }
 
-    public List<String> selectDispatcher(){
+/*    public Pair<String, String> selectDispatcher(){
         int randomNode = (int) ((Math.random() * (numDispatcherNodes + 1 - 1)) + 1);
         int randomProcess = (int) ((Math.random() * (numDispatcherPerNode + 1 - 1)) + 1);
 
         String nodeName = "disp" + randomNode + "@localhost";
         String processName = "d_" + randomProcess + "_" + nodeName;
 
-        List<String> res = new ArrayList<String>();
-        res.add(nodeName);
-        res.add(processName);
+        return new Pair<>(nodeName,processName);
 
-        return res;
     }
-
+*/
 
 }

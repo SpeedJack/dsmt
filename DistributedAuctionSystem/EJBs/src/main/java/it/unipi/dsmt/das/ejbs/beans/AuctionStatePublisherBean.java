@@ -44,6 +44,10 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
 
   }
 
+  public AuctionState getState(long id){
+    return states.getOrDefault(id, null);
+  }
+
   public void closeAuction(long id){
     try {
       broadcast(id, states.get(id), true);

@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <form action="auction?action=delete&auctionID=${auction.id}" method="post">
     <div class="form-control">
-        <input class="btn btn-secondary" type="submit" value="Delete Auction" />
+        <input class="btn btn-secondary" id="submit_button" type="submit" value="Delete Auction" />
     </div>
 </form>
 <script src="js/seller.js"></script>

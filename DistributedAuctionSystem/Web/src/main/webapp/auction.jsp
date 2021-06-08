@@ -8,8 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<div class ="col-3">
-
+<div class ="col-lg-3 col-md-6 col-sm-12">
   <div class="card">
     <div class="card-header">
       <h5 class="card-title">${auction.name}</h5>
@@ -25,7 +24,7 @@
       </c:choose>
     </a>
     <div class="card-body">
-      <p class = "card-text"> End: </p><span hidden class="end_date">${auction.endDate * 1000}</span>
+      <p class = "card-text"> End: <span hidden class="end_date">${auction.endDate * 1000}</span></p>
       <p class = "card-text"> ${auction.saleQuantity} available </p>
       <p class = "card-text"> Starting bid: ${auction.minPrice}$ </p>
     </div>

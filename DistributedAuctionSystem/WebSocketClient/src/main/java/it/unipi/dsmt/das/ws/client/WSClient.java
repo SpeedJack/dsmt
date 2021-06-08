@@ -1,18 +1,19 @@
 package it.unipi.dsmt.das.ws.client;
 
 import it.unipi.dsmt.das.model.AuctionState;
-import it.unipi.dsmt.das.ws.encode.AuctionStateEncoder;
+import it.unipi.dsmt.das.ws.encode.AuctionStateMessageEncoder;
+import it.unipi.dsmt.das.ws.messages.AuctionStateMessage;
+import it.unipi.dsmt.das.ws.messages.CloseAuctionMessage;
 
+import java.util.concurrent.Future;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @ClientEndpoint(
-        encoders = {AuctionStateEncoder.class})
+        encoders = {AuctionStateMessageEncoder.class})
 public class WSClient {
-
+    long auction;
     Session session = null;
     private MessageHandler handler;
 
@@ -26,7 +27,8 @@ public class WSClient {
 
     public WSClient(String endpoint, long auction) {
         try {
-            URI endpointURI = new URI(endpoint + String.valueOf(auction));
+            this.auction = auction;
+            URI endpointURI = new URI(endpoint + auction);
             System.out.println(endpointURI);
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             container.connectToServer(this, endpointURI);
@@ -38,7 +40,6 @@ public class WSClient {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-        //session.getAsyncRemote().sendText("Opening connection");
     }
 
     public void addMessageHandler(MessageHandler msgHandler) {
@@ -51,13 +52,37 @@ public class WSClient {
     }
 
     public void sendState(AuctionState state) {
-        this.session.getAsyncRemote().sendObject(state);
+        try {
+            AuctionStateMessage message = new AuctionStateMessage();
+            message.setAuction(this.auction);
+            message.setState(state);
+            this.session.getBasicRemote().sendObject(message);
+
+        } catch (EncodeException | IOException e) {
+            e.printStackTrace();
+        }
+        this.close();
     }
 
-    public void sendClose() {
-        this.session.getAsyncRemote().sendText("CLOSE");
+    public void sendClose(){
+        try {
+            CloseAuctionMessage message = new CloseAuctionMessage();
+            message.setAuction(this.auction);
+            this.session.getBasicRemote().sendObject(message);
+        } catch (EncodeException | IOException e) {
+            e.printStackTrace();
+        }
+        this.close();
     }
 
+    public void close() {
+        try{
+            this.session.close();
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+        this.session = null;
+    }
 
     public static interface MessageHandler {
         public void handleMessage(String message);

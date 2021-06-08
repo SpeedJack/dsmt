@@ -1,6 +1,4 @@
-window.addEventListener('load', (event) => {
-    endate_countdown()
-});
+$(document).ready(endate_countdown);
 
 function endate_countdown() {
     var list = document.getElementsByClassName("end_date");

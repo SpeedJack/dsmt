@@ -1,6 +1,5 @@
-let socket = null;
-
 window.addEventListener('load', (event) => {
+    let socket = null;
     console.log('opening socket');
     init_socket(socket,
         (event) => {

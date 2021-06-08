@@ -23,6 +23,9 @@
           <element id="library" level="project" name="Maven: org.erlang.otp:jinterface:1.6.1" />
           <element id="library" level="project" name="Maven: clojang:erlang-jinterface:1.10-1" />
           <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.0" />
+          <element id="archive" name="interfaces-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="Interfaces" />
+          </element>
           <element id="library" level="project" name="Maven: commons-fileupload:commons-fileupload:1.4" />
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.2" />
         </element>
