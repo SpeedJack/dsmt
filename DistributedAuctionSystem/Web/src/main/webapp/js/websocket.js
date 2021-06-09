@@ -6,48 +6,13 @@ window.addEventListener('load', (event) => {
         (event) => {
             console.log(`[received message]: ${event.data}`);
             if(event.data === "CLOSE")
-                $().get(`/web/auction?action=detail&auctionID=${get_auction_id()}`)
+                $("html").load(`/web/auction?action=detail&auctionID=${get_auction_id()}`)
             else
                 $("#details")
                 .load(`/web/auction?action=detail&update=true&auctionID=${get_auction_id()}`);
         })
 });
 
-function updateAuctionStats(data){
-    let id = get_auction_id();
-
-}
-
-function updateAvailable(data){
-    if (!data || data === [])
-        return;
-    let sold = 0;
-    for (let bid in data){
-        sold += bid.quantity;
-    }
-    let sold_elem = document.getElementById("gain");
-    if(sold_elem.hasChildNodes()){
-        for(let child of sold_elem.childNodes)
-            sold_elem.removeChild();
-    }
-    sold_elem.appendChild(document.createTextNode(sold.toString()));
-}
-
-function updateWinner(data){
-    if (!data || data === [])
-        return;
-    let win = false
-    for (let bid in data){
-        if (bid.hasOwnProperty("user") && bid.user === document.getElementById("user_id").value)
-            win = true;
-    }
-    let win_elem = document.getElementById("winner");
-    if(win_elem.hasChildNodes()){
-        for(let child of win_elem.childNodes)
-            win_elem.removeChild(child);
-    }
-    win_elem.appendChild(document.createTextNode(win ? "Your bid is a winning one!" : "Your bid is not winning"));
-}
 
 function get_auction_id(){
     return document.getElementById("auction_id").value;

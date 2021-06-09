@@ -105,7 +105,6 @@ public class AuctionServlet extends HttpServlet {
     }
 
     private void getAuctionDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO: Se l'auction è finita vai alla pagina di risultato e setta il messaggio vinto/perso
         long auctionId = Long.parseLong(request.getParameter("auctionID"));
         boolean update = Boolean.parseBoolean(request.getParameter("update"));
         String destination = update ? "auctionDetail.jsp" : "detailed.jsp";

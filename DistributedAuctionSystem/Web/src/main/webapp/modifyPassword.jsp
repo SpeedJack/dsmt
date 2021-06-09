@@ -7,7 +7,7 @@
 		<form name="login" action="register" method="post">
 			<div class="form-group">
 				<label> Old Password
-					<input type="text" class="form-control" placeholder="Username" name="old_password" required autofocus>
+					<input type="password" class="form-control" placeholder="Username" name="old_password" required autofocus>
 				</label>
 			</div>
 			<div class="form-group">

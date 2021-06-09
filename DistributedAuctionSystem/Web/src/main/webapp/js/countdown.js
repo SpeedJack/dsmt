@@ -2,6 +2,7 @@ $(document).ready(endate_countdown);
 
 function endate_countdown() {
     var list = document.getElementsByClassName("end_date");
+    console.log(list);
     var dates = new Array();
     for (var i = 0; i < list.length; i++) {
         dates.push(new Date(Number(list.item(i).innerText)).getTime());
@@ -27,7 +28,9 @@ function endate_countdown() {
             if (distance < 0) {
                 clearInterval(x);
                 elem.innerHTML = "Auction closed";
-                document.getElementById("submit_button ").setAttribute("disabled", "true");
+                var submit = document.getElementById("submit_button ")
+                    if(submit !== null)
+                        submit.setAttribute("disabled", "true");
             }
         }
     }, 1000);

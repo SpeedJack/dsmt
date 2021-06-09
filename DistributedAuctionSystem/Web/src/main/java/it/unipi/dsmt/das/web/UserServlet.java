@@ -98,13 +98,12 @@ public class UserServlet extends HttpServlet {
                 User user = userManager.registration(username, password);
                 if (user != null) {
                     message = "You are registered!";
-                    destination = "login.jsp";
                 } else {
                     message = "Username already used. Please retry";
 
                 }
             }
-            request.setAttribute("target", "register");
+            request.setAttribute("target", "login");
             request.setAttribute("message", message);
             request.getRequestDispatcher(destination).forward(request, response);
 

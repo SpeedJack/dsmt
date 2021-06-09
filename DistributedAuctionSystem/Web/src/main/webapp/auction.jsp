@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<div class ="col-lg-3 col-md-6 col-sm-12">
+<div class ="col-lg-3 col-md-6 col-sm-12 mx-auto my-2">
   <div class="card">
     <div class="card-header">
       <h5 class="card-title">${auction.name}</h5>

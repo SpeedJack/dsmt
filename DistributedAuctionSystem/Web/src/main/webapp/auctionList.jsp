@@ -9,7 +9,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <section class="container my-4 mx-auto align-content-center ">
-    <div class="card-deck justify-content-center">
+    <div class="row align-content-center justify-content-center">
         <c:forEach items="${auctionList}" var="auction">
             <c:set var="auction" value="${auction}" scope="request" />
             <jsp:include page="auction.jsp">
