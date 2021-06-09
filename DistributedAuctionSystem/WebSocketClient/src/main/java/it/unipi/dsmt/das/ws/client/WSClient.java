@@ -76,6 +76,8 @@ public class WSClient {
     }
 
     public void close() {
+        if(this.session == null)
+            return;
         try{
             this.session.close();
         } catch (IOException ex){

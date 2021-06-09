@@ -25,13 +25,15 @@ public class AuctionManagerBean implements AuctionManager {
     @Resource
     private TimerService timerService;
 
-    public void scheduleCloseTask(Date expiration, long auction) {
+    public void scheduleCloseTask(long expiration, Auction auction) {
         this.timerService.createTimer(expiration, auction);
     }
 
     @Timeout
     public void close(Timer timer) {
-        publisher.closeAuction((long)timer.getInfo());
+        Auction auction = (Auction) timer.getInfo();
+        System.out.println("TIMER EXPIRED: auction -> " + auction.getName());
+        publisher.closeAuction(auction.getId());
     }
 
     public AuctionManagerBean() {
@@ -52,8 +54,12 @@ public class AuctionManagerBean implements AuctionManager {
             else {
                 OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
                 if (msgResponse.atomValue().equals("ok")){
-                    Date date = new Date(auction.getEndDate());
-                    scheduleCloseTask(date, auction.getId());
+                    long expiration = (auction.getEndDate() - Instant.now().getEpochSecond()) * 1000;
+
+                    System.out.println("TIMER EXPIRES IN: " + expiration + " ms");
+                    if(expiration > 0){
+                        scheduleCloseTask(expiration, auction);
+                    }
                     return "ok";
                 }
                 else{
@@ -84,7 +90,8 @@ public class AuctionManagerBean implements AuctionManager {
                 if (msgResponse.atomValue().equals("ok")) {
                     this.timerService.getTimers().forEach(
                             timer -> {
-                                if ((long)timer.getInfo() == id.longValue())
+                                Auction auction = (Auction) timer.getInfo();
+                                if (auction.getId() == id.longValue())
                                     timer.cancel();
                             });
                     return "ok";

@@ -26,9 +26,9 @@ public class AuctionBackendEndpoint {
     @OnMessage
     public void onMessage(Session session, AuctionSystemMessage message){
         if(message != null) {
-            if (message.getClass().isAssignableFrom(AuctionStateMessage.class)) {
+            if(message.getType().equals("STATE")) {
                 AuctionEndpoint.updateAuction(auction, ((AuctionStateMessage) message).getState());
-            } else if (message.getClass().isAssignableFrom(CloseAuctionMessage.class)) {
+            } else if (message.getType().equals("CLOSE")) {
                 AuctionEndpoint.closeAuction(((CloseAuctionMessage) message).getAuction());
             }
         }

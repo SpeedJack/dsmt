@@ -57,6 +57,6 @@ public class BidReceiverBean implements MessageListener {
 
         WSClient clientEndPoint = new WSClient(auction); //add listener
         // send message to websocket
-        clientEndPoint.close();
+        clientEndPoint.sendClose();
     }
 }

@@ -54,14 +54,15 @@ public class AuctionEndpoint {
     };
 
     public static void closeAuction(long id){
-        subscribers.get(id).forEach(session -> {
+        Queue<Session> subs = subscribers.getOrDefault(id, new ConcurrentLinkedQueue<>());
+        subs.forEach(session -> {
                 session.getAsyncRemote().sendText("CLOSE");
         });
     };
 
     public static void updateAuction(long id, AuctionState state){
-        System.out.println(state);
-        subscribers.get(id).forEach( session -> {
+        Queue<Session> subs = subscribers.getOrDefault(id, new ConcurrentLinkedQueue<>());
+        subs.forEach( session -> {
                 session.getAsyncRemote().sendObject(state);
         });
     };

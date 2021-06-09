@@ -17,7 +17,7 @@ public class AuctionDecoder implements Decoder.Text<AuctionSystemMessage> {
     public AuctionSystemMessage decode(String s) throws DecodeException {
         Gson gson = new Gson();
         try {
-            String type = ((AuctionSystemMessage)gson.fromJson(s, AuctionSystemMessage.class)).getType();
+            String type = gson.fromJson(s, AuctionSystemMessage.class).getType();
             if(type.equals("STATE"))
                 return gson.fromJson(s, AuctionStateMessage.class);
             else if(type.equals("CLOSE"))

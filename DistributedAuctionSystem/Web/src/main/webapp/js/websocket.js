@@ -5,10 +5,11 @@ window.addEventListener('load', (event) => {
     init_socket(socket,
         (event) => {
             console.log(`[received message]: ${event.data}`);
-            $("#details")
-                .load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`,
-                    {action: "detail",
-                        auctionID: get_auction_id()});
+            if(event.data === "CLOSE")
+                $().get(`/web/auction?action=detail&auctionID=${get_auction_id()}`)
+            else
+                $("#details")
+                .load(`/web/auction?action=detail&update=true&auctionID=${get_auction_id()}`);
         })
 });
 

@@ -18,10 +18,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @MultipartConfig()
 @WebServlet(name = "AuctionServlet", urlPatterns = {"/auction"} )
@@ -39,6 +36,7 @@ public class AuctionServlet extends HttpServlet {
         switch (action) {
             case "sell":
                 getCreateAuction(request,response);
+                break;
             case "detail":
                 getAuctionDetail(request, response);
                 break;
@@ -109,9 +107,10 @@ public class AuctionServlet extends HttpServlet {
     private void getAuctionDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: Se l'auction è finita vai alla pagina di risultato e setta il messaggio vinto/perso
         long auctionId = Long.parseLong(request.getParameter("auctionID"));
+        boolean update = Boolean.parseBoolean(request.getParameter("update"));
+        String destination = update ? "auctionDetail.jsp" : "detailed.jsp";
         HttpSession session = request.getSession(false);
         User sessionUser = (User)session.getAttribute("user");
-        String destination = "detailed.jsp";
         AuctionData data = auctionManager.selectAuction(auctionId, sessionUser.getId());
         AuctionState state = publisher.getState(auctionId);
         String target = "customer";
@@ -126,14 +125,26 @@ public class AuctionServlet extends HttpServlet {
                 bids = list.getList();
             }
             request.setAttribute("state", state);
-            request.setAttribute("target", target);
             request.setAttribute("auction", data.getAuction());
-            request.setAttribute("bids", bids);
-            request.setAttribute("date", date);
+           //If the auction is over
+            if(data.getAuction().getEndDate() <= Instant.now().getEpochSecond() &&
+            data.getAuction().getAgent() != sessionUser.getId())
+            {
+                destination = "auctionResult.jsp";
+                Set<Bid> winnings = state == null ? new HashSet<>() : state.getWinning(sessionUser);
+                boolean winner = (winnings.size() > 0);
+                request.setAttribute("status", winner ? "You win!" : "You Lose!");
+                request.setAttribute("bids", winnings);
+
+            } else { //Otherwise continue with auction details
+                request.setAttribute("target", target);
+                request.setAttribute("bids", bids);
+                request.setAttribute("date", date);
+            }
         } else {
+            destination = "result_page.jsp";
             request.setAttribute("status", "Auction Not Found!");
             request.setAttribute("message","This auction has been deleted and it's no more available");
-            request.getRequestDispatcher("result_page.jsp").forward(request, response);
         }
         request.getRequestDispatcher(destination).forward(request, response);
     }
@@ -153,7 +164,9 @@ public class AuctionServlet extends HttpServlet {
                 break;
             case "detail":
                 getAuctionDetail(request, response);
+                break;
             default:
+                request.setAttribute("state", "We are sorry!");
                 request.setAttribute("message", "your request cannot be served");
                 request.getRequestDispatcher("error_page").forward(request, response);
                 break;

@@ -16,9 +16,9 @@
 		</head>
 	<body>
 		<jsp:include page='menu.jsp' />
-		<div class="container">
-			<div class="row">
-				<div class="col">
+		<section class="container">
+			<div class="row justify-content-center align-content-center mx-auto my-4">
+				<div class="col justify-content-center align-content-center">
 					<div class = "card">
 						<div class = "card-body">
 							<form action="auction" method="POST" enctype="multipart/form-data">
@@ -49,6 +49,6 @@
 				</div>
 			</div>
 
-		</div>
+		</section>
 	</body>
 </html>
