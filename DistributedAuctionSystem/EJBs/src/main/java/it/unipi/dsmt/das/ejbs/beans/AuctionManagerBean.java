@@ -258,7 +258,7 @@ public class AuctionManagerBean implements AuctionManager {
             OtpErlangTuple response = sendRequest(obj);
             if (response == null){
                 System.out.println("TIME EXPIRED");
-                return null;
+                return status;
             }
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")){
@@ -268,7 +268,7 @@ public class AuctionManagerBean implements AuctionManager {
                 publisher.publishState(bid.getAuction(), state);
                 status = BidStatus.RECEIVED;
             } else if (msgResponse.atomValue().equals("err")){
-                status = BidStatus.EXPIRED;
+                status = BidStatus.ERROR;
             } else {
                 status = BidStatus.ERROR;
             }
@@ -291,7 +291,7 @@ public class AuctionManagerBean implements AuctionManager {
             OtpErlangTuple response = sendRequest(obj);
             if (response == null){
                 System.out.println("TIME EXPIRED");
-                return null;
+                return status;
             }
             OtpErlangAtom msgResponse = (OtpErlangAtom) response.elementAt(0);
             if (msgResponse.atomValue().equals("ok")){
@@ -301,7 +301,7 @@ public class AuctionManagerBean implements AuctionManager {
                 publisher.publishState(auctionId, state);
                 status = BidStatus.RECEIVED;
             } else if (msgResponse.atomValue().equals("err")){
-                status = BidStatus.EXPIRED;
+                status = BidStatus.ERROR;
             } else {
                 status = BidStatus.ERROR;
             }

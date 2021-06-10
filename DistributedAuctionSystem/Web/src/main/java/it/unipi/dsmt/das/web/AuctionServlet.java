@@ -106,8 +106,7 @@ public class AuctionServlet extends HttpServlet {
 
     private void getAuctionDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long auctionId = Long.parseLong(request.getParameter("auctionID"));
-        boolean update = Boolean.parseBoolean(request.getParameter("update"));
-        String destination = update ? "auctionDetail.jsp" : "detailed.jsp";
+        String destination = "detailed.jsp";
         HttpSession session = request.getSession(false);
         User sessionUser = (User)session.getAttribute("user");
         AuctionData data = auctionManager.selectAuction(auctionId, sessionUser.getId());
@@ -124,22 +123,26 @@ public class AuctionServlet extends HttpServlet {
                 bids = list.getList();
             }
             request.setAttribute("state", state);
+            Set<Bid> winnings = state == null ? new HashSet<>() : state.getWinningBids();
+
             request.setAttribute("auction", data.getAuction());
            //If the auction is over
             if(data.getAuction().getEndDate() <= Instant.now().getEpochSecond() &&
             data.getAuction().getAgent() != sessionUser.getId())
             {
-                destination = "auctionResult.jsp";
-                Set<Bid> winnings = state == null ? new HashSet<>() : state.getWinning(sessionUser);
+                winnings = state == null ? new HashSet<>() : state.getWinning(sessionUser);
+                destination ="auctionResult.jsp";
                 boolean winner = (winnings.size() > 0);
+                request.setAttribute("finished", true);
                 request.setAttribute("status", winner ? "You win!" : "You Lose!");
-                request.setAttribute("bids", winnings);
 
             } else { //Otherwise continue with auction details
+                request.setAttribute("finished", false);
                 request.setAttribute("target", target);
                 request.setAttribute("bids", bids);
                 request.setAttribute("date", date);
             }
+            request.setAttribute("winnings", winnings);
         } else {
             destination = "result_page.jsp";
             request.setAttribute("status", "Auction Not Found!");

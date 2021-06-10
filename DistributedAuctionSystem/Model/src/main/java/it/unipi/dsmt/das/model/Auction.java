@@ -98,6 +98,16 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
         this.saleQuantity = saleQuantity;
     }
 
+    public boolean isValidBid(Bid bid){
+        if(bid.getValue() < getMinPrice() + getMinRaise())
+            return false;
+        if(bid.getQuantity() > getSaleQuantity())
+            return false;
+        if(bid.getUser() == getAgent())
+            return false;
+        return true;
+    }
+
     public OtpErlangTuple erlangize(){
         return new OtpErlangTuple(
                 new OtpErlangObject[] {

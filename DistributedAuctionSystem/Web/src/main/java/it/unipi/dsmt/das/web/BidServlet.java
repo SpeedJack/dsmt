@@ -20,7 +20,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @WebServlet("/bid")
 public class BidServlet extends HttpServlet {
@@ -53,19 +55,20 @@ public class BidServlet extends HttpServlet {
         double value = Double.parseDouble(request.getParameter("value"));
         int quantity = Integer.parseInt(request.getParameter("quantity"));
         Bid bid = new Bid(auction_id, user_id, timestamp, value, quantity);
-        BidStatus status = manager.makeBid(bid);
         AuctionData data = manager.selectAuction(auction_id, user_id);
-        BidList bidList;
-        List<Bid> list = new ArrayList<>();
-        if(data!= null) {
-            bidList = data.getList();
-            if(bidList != null){
-                list = bidList.getList();
+        int returnCode = 500;
+        if(data != null){
+            Auction auction = data.getAuction();
+            if(auction != null){
+                boolean valid = auction.isValidBid(bid);
+                if (valid){
+                    BidStatus status = manager.makeBid(bid);
+                    if(status == BidStatus.RECEIVED)
+                        returnCode = 200;
+                }
             }
         }
-
-        request.setAttribute("bids", list);
-        request.getRequestDispatcher("bidTable.jsp").forward(request, response);
+         response.setStatus(returnCode);
     }
 
     private void doDeleteBid(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -73,19 +76,33 @@ public class BidServlet extends HttpServlet {
         long auctionID = Long.parseLong(request.getParameter("auctionID"));
         long bidID = Long.parseLong(request.getParameter("bidID"));
         User user = (User)request.getSession().getAttribute("user");
-
-        BidStatus status = manager.deleteBid(auctionID, bidID);
+        int returnCode = 500;
         AuctionData data = manager.selectAuction(auctionID, user.getId());
-        BidList bidList;
-        List<Bid> list = new ArrayList<>();
-        if(data!= null) {
-            bidList = data.getList();
-            if(bidList != null){
-                list = bidList.getList();
+        if(data != null) {
+            BidList list = data.getList();
+            if(list != null) {
+                List<Bid> bidlist = list.getList();
+                if(bidlist != null){
+                    boolean found = false;
+                    for (Bid bid : bidlist){
+                        if(bid.getId() == bidID)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(found){
+                        BidStatus status = manager.deleteBid(auctionID, bidID);
+                        if(status == BidStatus.RECEIVED)
+                            returnCode = 200;
+                    }
+                }
+
             }
+
         }
-        request.setAttribute("bids", list);
-        request.getRequestDispatcher("bidTable.jsp").forward(request, response);
+
+        response.setStatus(returnCode);
     }
 
 }

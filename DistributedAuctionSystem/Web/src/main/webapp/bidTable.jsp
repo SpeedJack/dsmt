@@ -1,3 +1,4 @@
+
 <%--
   Created by IntelliJ IDEA.
   User: nicola
@@ -17,26 +18,38 @@
         display: block;
     }
 </style>
+
 <c:choose>
-    <c:when test="${empty bids}">
-        <h2>You have not made any offer yet!</h2>
+    <c:when test="${empty toprint}">
+        <h4>No offers</h4>
     </c:when>
     <c:otherwise>
         <div class="table-wrapper-scroll-y my-custom-scrollbar">
         <table class="table table-bordered table-striped mb-0" id = "offers_bid_table">
-            <caption>Your offers</caption>
+        <c:choose>
+            <c:when test="${showWinnings eq false}">
+                <caption>All your offers</caption>
+            </c:when>
+            <c:otherwise>
+                <caption>Your winning offers</caption>
+            </c:otherwise>
+        </c:choose>
             <thead>
                 <th scope="col">Quantity</th>
                 <th scope="col">Offer</th>
-                <th scope="col"></th>
+                <c:if test="${showWinnings eq false}">
+                    <th scope="col"></th>
+                </c:if>
             </thead>
             <tbody id = "offers-bid-table-body">
-                <c:forEach items="${bids}" var="bid">
+                <c:forEach items="${toprint}" var="bid">
                     <tr scope="row" id="${bid.id}">
                         <td> ${bid.quantity}</td>
                         <td> ${bid.value} </td>
-                        <td> <input class="btn btn-danger delete-bid-button" type="button" value="Delete"/></td>
-                    </tr>
+                        <c:if test="${showWinnings eq false}">
+                            <td> <input class="btn btn-danger delete-bid-button" type="button" value="Delete"/></td>
+                        </c:if>
+                        </tr>
                 </c:forEach>
             </tbody>
         </table>

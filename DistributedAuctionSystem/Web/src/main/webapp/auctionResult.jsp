@@ -1,6 +1,4 @@
-<%@ page import="it.unipi.dsmt.das.model.Auction" %>
-<%@ page import="it.unipi.dsmt.das.model.AuctionState" %>
-<%@ page import="it.unipi.dsmt.das.model.User" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: nicola
   Date: 09/06/21
@@ -10,19 +8,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<!DOCTYPE HTML>
-
-<html lang = "it">
-<head>
-    <jsp:include page="meta.jsp"/>
-    <title> Login </title>
-</head>
-<body >
-<jsp:include page='menu.jsp' />
-<section class="my-4 mx-auto py-4 px-auto container align-content-center" >
-    <div class="row align-items-center align-content-center justify-content-center">
-        <div class="col align-content-center justify-content-center">
-            <h1>${status}</h1>
+<section class="my-4 mx-auto py-4 px-auto align-content-center" >
+          <h1>${status}</h1>
             <jsp:include page="auction.jsp">
                 <jsp:param name="auction" value="${auction}" />
             </jsp:include>
@@ -46,7 +33,4 @@
                     </table>
                 </c:otherwise>
             </c:choose>
-        </div>
-
-    </div>
 </section>
