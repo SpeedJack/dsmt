@@ -4,7 +4,7 @@
 	<h3> Modify Password </h3>
 	<img class="img-fluid rounded" src = "style/img/auction.png" alt = "Auctions">
 	<div class="col">
-		<form name="login" action="register" method="post">
+		<form name="login" action="modifyPassword" method="post">
 			<div class="form-group">
 				<label> Old Password
 					<input type="password" class="form-control" placeholder="Username" name="old_password" required autofocus>
