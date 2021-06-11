@@ -109,9 +109,12 @@ public class AuctionServlet extends HttpServlet {
         String destination = "detailed.jsp";
         HttpSession session = request.getSession(false);
         User sessionUser = (User)session.getAttribute("user");
+        Map<String, String[]> parameters = request.getParameterMap();
         AuctionData data = auctionManager.selectAuction(auctionId, sessionUser.getId());
         AuctionState state = publisher.getState(auctionId);
         String target = "customer";
+        if ( data == null || data.getList() == null)
+            System.out.println(parameters.toString());
         if(data != null && data.getAuction() != null){
             if(data.getAuction().getAgent() == sessionUser.getId()){
                 target = "seller";
@@ -136,7 +139,8 @@ public class AuctionServlet extends HttpServlet {
                 request.setAttribute("finished", true);
                 request.setAttribute("status", winner ? "You win!" : "You Lose!");
 
-            } else { //Otherwise continue with auction details
+            } else
+            { //Otherwise continue with auction details
                 request.setAttribute("finished", false);
                 request.setAttribute("target", target);
                 request.setAttribute("bids", bids);
@@ -146,7 +150,7 @@ public class AuctionServlet extends HttpServlet {
         } else {
             destination = "result_page.jsp";
             request.setAttribute("status", "Auction Not Found!");
-            request.setAttribute("message","This auction has been deleted and it's no more available");
+            request.setAttribute("message","This auction has been deleted and it's no longer available");
         }
         request.getRequestDispatcher(destination).forward(request, response);
     }

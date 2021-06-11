@@ -13,7 +13,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Stateless(name = "AuctionManagerEJB")
+import static java.lang.Thread.currentThread;
+import static java.lang.Thread.sleep;
+
+@Startup
+@Singleton(name = "AuctionManagerEJB")
 public class AuctionManagerBean implements AuctionManager {
 
     private final int numDispatcherNodes = 1;
@@ -24,6 +28,21 @@ public class AuctionManagerBean implements AuctionManager {
     AuctionStatePublisher publisher;
     @Resource
     private TimerService timerService;
+    private OtpSelf client;
+
+    public AuctionManagerBean() {
+        synchronized (this)
+        {
+            if(client == null){
+                try {
+                    client = new OtpSelf("client");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        //this.client = new OtpSelf("client" + currentThread().getName());
+    }
 
     public void scheduleCloseTask(long expiration, Auction auction) {
         this.timerService.createTimer(expiration, auction);
@@ -32,14 +51,9 @@ public class AuctionManagerBean implements AuctionManager {
     @Timeout
     public void close(Timer timer) {
         Auction auction = (Auction) timer.getInfo();
-        System.out.println("TIMER EXPIRED: auction -> " + auction.getName());
+        System.out.println("CLOSE AUCTION TIMER EXPIRED: auction -> " + auction.getName());
         publisher.closeAuction(auction.getId());
     }
-
-    public AuctionManagerBean() {
-
-    }
-
 
     @Override
     public String createAuction(Auction auction) {
@@ -318,7 +332,7 @@ public class AuctionManagerBean implements AuctionManager {
             try {
                 List<String> disp = selectDispatcher();
                 //System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA" + disp.get(0) + "  " + disp.get(1));
-                OtpSelf client = new OtpSelf("client");
+                //OtpSelf client = new OtpSelf("client" + Instant.now().toEpochMilli());
                 OtpPeer peer = new OtpPeer(disp.get(0));
                 OtpConnection conn = client.connect(peer);
                 conn.sendRPC("gen_server", "call",
@@ -335,7 +349,14 @@ public class AuctionManagerBean implements AuctionManager {
                 connectionAttempts = 0;
 
             }catch(IOException e){
+                e.printStackTrace();
                 connectionAttempts++;
+                try {
+                    sleep(1);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                    Thread.interrupted();
+                }
             }
         }
         return (OtpErlangTuple)resMsg;
@@ -348,7 +369,7 @@ public class AuctionManagerBean implements AuctionManager {
         String nodeName = "disp" + randomNode + "@localhost";
         String processName = "d_" + randomProcess + "_" + nodeName;
 
-        List<String> res = new ArrayList<String>();
+        List<String> res = new ArrayList<>();
         res.add(nodeName);
         res.add(processName);
 

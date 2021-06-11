@@ -103,7 +103,7 @@ public class UserServlet extends HttpServlet {
 
                 }
             }
-            request.setAttribute("target", "login");
+            request.setAttribute("target", "register");
             request.setAttribute("message", message);
             request.getRequestDispatcher(destination).forward(request, response);
 
