@@ -37,15 +37,18 @@ public class AuctionState implements Serializable, Erlangizable<OtpErlangList> {
         this.winningBids.removeIf(bid -> bid.user == user.id);
     }
 
-    public Set<Bid> getWinning(User user){
+    public Bid getWinning(User user){
              Iterator<Bid> iter = winningBids.iterator();
-             Set<Bid> winningUserSet = new HashSet<>();
+             Bid winning = new Bid();
              while(iter.hasNext()){
                  Bid bid = iter.next();
                  if (bid.user == user.id)
-                     winningUserSet.add(bid);
+                 {
+                     winning = bid;
+                     break;
+                 }
              }
-             return winningUserSet;
+             return winning;
     }
 
     public OtpErlangList erlangize(){

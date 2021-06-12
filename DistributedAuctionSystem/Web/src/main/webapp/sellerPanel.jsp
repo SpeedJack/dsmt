@@ -12,9 +12,7 @@
 <div>
     <jsp:include page="deleteAuctionForm.jsp" />
     <div id="offers_bid_table_container">
-        <h3>Winning Bids</h3>
-        <%pageContext.getRequest().setAttribute("showWinning", true); %>
-        <%pageContext.getRequest().setAttribute("toprint", winnings); %>
+        <h4>Winning Bids</h4>
         <jsp:include page="bidTable.jsp" />
     </div>
 </div>

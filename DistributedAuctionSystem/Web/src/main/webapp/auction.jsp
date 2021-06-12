@@ -29,9 +29,11 @@
       <p class = "card-text"> Starting bid: ${auction.minPrice}$ </p>
     </div>
     <div class="card-footer">
+      <c:if test="${not finished}" >
       <a class="btn btn-secondary" href="auction?action=detail&auctionID=${auction.id}" >
         Details
       </a>
+      </c:if>
     </div>
   </div>
 </div>

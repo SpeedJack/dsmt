@@ -109,44 +109,42 @@ public class AuctionServlet extends HttpServlet {
         String destination = "detailed.jsp";
         HttpSession session = request.getSession(false);
         User sessionUser = (User)session.getAttribute("user");
-        Map<String, String[]> parameters = request.getParameterMap();
         AuctionData data = auctionManager.selectAuction(auctionId, sessionUser.getId());
         AuctionState state = publisher.getState(auctionId);
+        Bid winning = state == null ? new Bid() : state.getWinning(sessionUser);
         String target = "customer";
-        if ( data == null || data.getList() == null)
-            System.out.println(parameters.toString());
+        Collection<Bid> bids = new ArrayList<>();
         if(data != null && data.getAuction() != null){
-            if(data.getAuction().getAgent() == sessionUser.getId()){
-                target = "seller";
-            }
             String date = Long.toString(data.getAuction().getEndDate() * 1000);
-            BidList list = data.getList();
-            List<Bid> bids = null;
-            if (list != null) {
-                bids = list.getList();
-            }
-            request.setAttribute("state", state);
-            Set<Bid> winnings = state == null ? new HashSet<>() : state.getWinningBids();
-
-            request.setAttribute("auction", data.getAuction());
-           //If the auction is over
-            if(data.getAuction().getEndDate() <= Instant.now().getEpochSecond() &&
-            data.getAuction().getAgent() != sessionUser.getId())
+            if(data.getAuction().getAgent() == sessionUser.getId())
             {
-                winnings = state == null ? new HashSet<>() : state.getWinning(sessionUser);
-                destination ="auctionResult.jsp";
-                boolean winner = (winnings.size() > 0);
+                target = "seller";
+                bids = state == null ? new HashSet<>() : state.getWinningBids();
+            } else
+            {
+                BidList list = data.getList();
+                if (list != null)
+                    bids = list.getList();
+            }
+            //If the auction is over
+            if(data.getAuction().getEndDate() <= Instant.now().getEpochSecond() &&
+                data.getAuction().getAgent() != sessionUser.getId())
+            {
+                winning = state == null ? new Bid() : state.getWinning(sessionUser) ;
                 request.setAttribute("finished", true);
-                request.setAttribute("status", winner ? "You win!" : "You Lose!");
+                request.setAttribute("status", winning.getId() != -1 ? "You win!" : "You Lose!");
 
             } else
             { //Otherwise continue with auction details
                 request.setAttribute("finished", false);
                 request.setAttribute("target", target);
                 request.setAttribute("bids", bids);
-                request.setAttribute("date", date);
             }
-            request.setAttribute("winnings", winnings);
+
+            request.setAttribute("auction", data.getAuction());
+            request.setAttribute("state", state);
+            request.setAttribute("date", date);
+            request.setAttribute("winning", winning);
         } else {
             destination = "result_page.jsp";
             request.setAttribute("status", "Auction Not Found!");

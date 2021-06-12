@@ -17,13 +17,7 @@
     <p id="errorMessage"></p>
     <jsp:include page="bidForm.jsp" />
     <div id="offers_bid_table_container">
-        <h3>Winning Bids</h3>
-            <%pageContext.getRequest().setAttribute("showWinning", true); %>
-            <%pageContext.getRequest().setAttribute("toprint", winnings); %>
-            <jsp:include page="bidTable.jsp" />
-        <h3>All bids</h3>
-            <%pageContext.getRequest().setAttribute("showWinnings", false); %>
-            <%pageContext.getRequest().setAttribute("toprint", bids); %>
-            <jsp:include page="bidTable.jsp" />
+        <h4>Your Bids</h4>
+        <jsp:include page="bidTable.jsp" />
     </div>
 </div>
