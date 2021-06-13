@@ -3,6 +3,7 @@ package it.unipi.dsmt.das.web;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.*;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.ejb.EJB;
 import javax.imageio.ImageIO;
@@ -11,8 +12,10 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -205,7 +208,10 @@ public class AuctionServlet extends HttpServlet {
 
     private void doCreateAuction(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        Map<String,String[]> map = request.getParameterMap();
+        String destPage = "result_page.jsp";
+        String status = "Error!";
+        String message = "An error occurred while inserting a new object";
+
         User sessionUser = (User)session.getAttribute("user");
         String day = request.getParameter("day");
         String hour = request.getParameter("hour");
@@ -217,6 +223,7 @@ public class AuctionServlet extends HttpServlet {
         catch (ParseException e) {
             timestamp = 0;
         }
+
         Auction auction = new Auction( sessionUser.getId(),
                 request.getParameter("name"),
                 "noImage.jpg",
@@ -225,32 +232,32 @@ public class AuctionServlet extends HttpServlet {
                 Double.parseDouble(request.getParameter("minimum_bid")),
                 Double.parseDouble(request.getParameter("minimum_raise")),
                 Long.parseLong(request.getParameter("object")));
+        if(auction.isValid()){
+            Part filePart = request.getPart("userfile");
+            Path filePath = Paths.get(filePart.getSubmittedFileName());
+            String fileName = filePath.getFileName().toString();
+            String extension = FilenameUtils.getExtension(fileName);
+            if(extension.endsWith("png") || extension.endsWith("jpg") || extension.endsWith("jpeg")){
+                InputStream fileContent = filePart.getInputStream();
+                // OutputStream outFile = new FileOutputStream(new File(new Path()))
+                BufferedImage sourceimage = ImageIO.read(fileContent);
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                ImageIO.write(sourceimage, extension, bytes);
+                String binaryImage = Base64.getEncoder().encodeToString(bytes.toByteArray());
+                auction.setImage(binaryImage);
 
-        Part filePart = request.getPart("userfile");
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        InputStream fileContent = filePart.getInputStream();
-
-        BufferedImage sourceimage = ImageIO.read(fileContent);
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        ImageIO.write(sourceimage, "png", bytes);
-        String binaryImage = Base64.getEncoder().encodeToString(bytes.toByteArray());
-
-        auction.setImage(binaryImage);
-
-        String destPage = "result_page.jsp";
-        String message;
-        String status;
-        String res = auctionManager.createAuction(auction);
-        if(res.equals("ok")){
-            status = "Done!";
-            message = "Object correctly inserted";
-        } else {
-            status = "Error!";
-            message = "An error occurred while inserting a new object";
+                String res = auctionManager.createAuction(auction);
+                if(res.equals("ok")){
+                    status = "Done!";
+                    message = "Object correctly inserted";
+                }
+            } else {
+                status = "Error!";
+                message = "The image you provided has a not supported extension";
+            }
         }
         request.setAttribute("status", status);
         request.setAttribute("message", message);
-
         request.getRequestDispatcher(destPage).forward(request, response);
     }
 }
