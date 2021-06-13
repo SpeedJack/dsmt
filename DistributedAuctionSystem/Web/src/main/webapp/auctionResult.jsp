@@ -14,7 +14,7 @@
                 <jsp:param name="auction" value="${auction}" />
             </jsp:include>
             <c:choose>
-                <c:when test="${empty bids}">
+                <c:when test="${winning.id==-1}">
 
                 </c:when>
                 <c:otherwise>
@@ -24,10 +24,8 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <c:forEach items="${bids}" var="bid">
-                                <td>${bid.quantity}</td>
-                                <td>${bid.value}</td>
-                            </c:forEach>
+                            <td>${winning.quantity}</td>
+                            <td>${winning.value}</td>
                         </tr>
                         </tbody>
                     </table>

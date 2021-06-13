@@ -20,33 +20,27 @@
 </style>
 
 <c:choose>
-    <c:when test="${empty toprint}">
-        <h4>No offers</h4>
+    <c:when test="${empty bids}">
+        <p>No offers</p>
     </c:when>
     <c:otherwise>
         <div class="table-wrapper-scroll-y my-custom-scrollbar">
         <table class="table table-bordered table-striped mb-0" id = "offers_bid_table">
-        <c:choose>
-            <c:when test="${showWinnings eq false}">
-                <caption>All your offers</caption>
-            </c:when>
-            <c:otherwise>
-                <caption>Your winning offers</caption>
-            </c:otherwise>
-        </c:choose>
             <thead>
                 <th scope="col">Quantity</th>
                 <th scope="col">Offer</th>
-                <c:if test="${showWinnings eq false}">
+                <c:if test="${target == 'customer'}">
+                    <th scope="col">Is Winning</th>
                     <th scope="col"></th>
                 </c:if>
             </thead>
             <tbody id = "offers-bid-table-body">
-                <c:forEach items="${toprint}" var="bid">
+                <c:forEach items="${bids}" var="bid">
                     <tr scope="row" id="${bid.id}">
                         <td> ${bid.quantity}</td>
                         <td> ${bid.value} </td>
-                        <c:if test="${showWinnings eq false}">
+                        <c:if test="${target == 'customer'}">
+                            <td> ${bid.id == winning.id}</td>
                             <td> <input class="btn btn-danger delete-bid-button" type="button" value="Delete"/></td>
                         </c:if>
                         </tr>

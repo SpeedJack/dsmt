@@ -3,6 +3,7 @@ package it.unipi.dsmt.das.web;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.*;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.ejb.EJB;
 import javax.imageio.ImageIO;
@@ -11,8 +12,10 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -109,44 +112,42 @@ public class AuctionServlet extends HttpServlet {
         String destination = "detailed.jsp";
         HttpSession session = request.getSession(false);
         User sessionUser = (User)session.getAttribute("user");
-        Map<String, String[]> parameters = request.getParameterMap();
         AuctionData data = auctionManager.selectAuction(auctionId, sessionUser.getId());
         AuctionState state = publisher.getState(auctionId);
+        Bid winning = state == null ? new Bid() : state.getWinning(sessionUser);
         String target = "customer";
-        if ( data == null || data.getList() == null)
-            System.out.println(parameters.toString());
+        Collection<Bid> bids = new ArrayList<>();
         if(data != null && data.getAuction() != null){
-            if(data.getAuction().getAgent() == sessionUser.getId()){
-                target = "seller";
-            }
             String date = Long.toString(data.getAuction().getEndDate() * 1000);
-            BidList list = data.getList();
-            List<Bid> bids = null;
-            if (list != null) {
-                bids = list.getList();
-            }
-            request.setAttribute("state", state);
-            Set<Bid> winnings = state == null ? new HashSet<>() : state.getWinningBids();
-
-            request.setAttribute("auction", data.getAuction());
-           //If the auction is over
-            if(data.getAuction().getEndDate() <= Instant.now().getEpochSecond() &&
-            data.getAuction().getAgent() != sessionUser.getId())
+            if(data.getAuction().getAgent() == sessionUser.getId())
             {
-                winnings = state == null ? new HashSet<>() : state.getWinning(sessionUser);
-                destination ="auctionResult.jsp";
-                boolean winner = (winnings.size() > 0);
+                target = "seller";
+                bids = state == null ? new HashSet<>() : state.getWinningBids();
+            } else
+            {
+                BidList list = data.getList();
+                if (list != null)
+                    bids = list.getList();
+            }
+            //If the auction is over
+            if(data.getAuction().getEndDate() <= Instant.now().getEpochSecond() &&
+                data.getAuction().getAgent() != sessionUser.getId())
+            {
+                winning = state == null ? new Bid() : state.getWinning(sessionUser) ;
                 request.setAttribute("finished", true);
-                request.setAttribute("status", winner ? "You win!" : "You Lose!");
+                request.setAttribute("status", winning.getId() != -1 ? "You win!" : "You Lose!");
 
             } else
             { //Otherwise continue with auction details
                 request.setAttribute("finished", false);
                 request.setAttribute("target", target);
                 request.setAttribute("bids", bids);
-                request.setAttribute("date", date);
             }
-            request.setAttribute("winnings", winnings);
+
+            request.setAttribute("auction", data.getAuction());
+            request.setAttribute("state", state);
+            request.setAttribute("date", date);
+            request.setAttribute("winning", winning);
         } else {
             destination = "result_page.jsp";
             request.setAttribute("status", "Auction Not Found!");
@@ -207,7 +208,10 @@ public class AuctionServlet extends HttpServlet {
 
     private void doCreateAuction(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        Map<String,String[]> map = request.getParameterMap();
+        String destPage = "result_page.jsp";
+        String status = "Error!";
+        String message = "An error occurred while inserting a new object";
+
         User sessionUser = (User)session.getAttribute("user");
         String day = request.getParameter("day");
         String hour = request.getParameter("hour");
@@ -219,6 +223,7 @@ public class AuctionServlet extends HttpServlet {
         catch (ParseException e) {
             timestamp = 0;
         }
+
         Auction auction = new Auction( sessionUser.getId(),
                 request.getParameter("name"),
                 "noImage.jpg",
@@ -227,32 +232,32 @@ public class AuctionServlet extends HttpServlet {
                 Double.parseDouble(request.getParameter("minimum_bid")),
                 Double.parseDouble(request.getParameter("minimum_raise")),
                 Long.parseLong(request.getParameter("object")));
+        if(auction.isValid()){
+            Part filePart = request.getPart("userfile");
+            Path filePath = Paths.get(filePart.getSubmittedFileName());
+            String fileName = filePath.getFileName().toString();
+            String extension = FilenameUtils.getExtension(fileName);
+            if(extension.endsWith("png") || extension.endsWith("jpg") || extension.endsWith("jpeg")){
+                InputStream fileContent = filePart.getInputStream();
+                // OutputStream outFile = new FileOutputStream(new File(new Path()))
+                BufferedImage sourceimage = ImageIO.read(fileContent);
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                ImageIO.write(sourceimage, extension, bytes);
+                String binaryImage = Base64.getEncoder().encodeToString(bytes.toByteArray());
+                auction.setImage(binaryImage);
 
-        Part filePart = request.getPart("userfile");
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        InputStream fileContent = filePart.getInputStream();
-
-        BufferedImage sourceimage = ImageIO.read(fileContent);
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        ImageIO.write(sourceimage, "png", bytes);
-        String binaryImage = Base64.getEncoder().encodeToString(bytes.toByteArray());
-
-        auction.setImage(binaryImage);
-
-        String destPage = "result_page.jsp";
-        String message;
-        String status;
-        String res = auctionManager.createAuction(auction);
-        if(res.equals("ok")){
-            status = "Done!";
-            message = "Object correctly inserted";
-        } else {
-            status = "Error!";
-            message = "An error occurred while inserting a new object";
+                String res = auctionManager.createAuction(auction);
+                if(res.equals("ok")){
+                    status = "Done!";
+                    message = "Object correctly inserted";
+                }
+            } else {
+                status = "Error!";
+                message = "The image you provided has a not supported extension";
+            }
         }
         request.setAttribute("status", status);
         request.setAttribute("message", message);
-
         request.getRequestDispatcher(destPage).forward(request, response);
     }
 }

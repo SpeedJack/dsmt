@@ -2,6 +2,7 @@ package it.unipi.dsmt.das.web;
 
 import com.google.gson.Gson;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
+import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.*;
 
 import javax.annotation.Resource;
@@ -28,6 +29,8 @@ import java.util.Set;
 public class BidServlet extends HttpServlet {
     @EJB
     AuctionManager manager;
+    @EJB
+    AuctionStatePublisher publisher;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -56,15 +59,19 @@ public class BidServlet extends HttpServlet {
         int quantity = Integer.parseInt(request.getParameter("quantity"));
         Bid bid = new Bid(auction_id, user_id, timestamp, value, quantity);
         AuctionData data = manager.selectAuction(auction_id, user_id);
+        AuctionState state = publisher.getState(auction_id);
         int returnCode = 500;
         if(data != null){
             Auction auction = data.getAuction();
             if(auction != null){
                 boolean valid = auction.isValidBid(bid);
-                if (valid){
-                    BidStatus status = manager.makeBid(bid);
-                    if(status == BidStatus.RECEIVED)
-                        returnCode = 200;
+                if(state!=null) {
+                    valid = valid && (bid.getValue() > state.getLowestBid(auction));
+                    if (valid) {
+                        BidStatus status = manager.makeBid(bid);
+                        if (status == BidStatus.RECEIVED)
+                            returnCode = 200;
+                    }
                 }
             }
         }

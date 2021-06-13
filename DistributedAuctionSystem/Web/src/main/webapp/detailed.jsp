@@ -11,8 +11,7 @@
 	<body>
 	<jsp:include page='menu.jsp' />
 	<div id="details" class="container">
-		<div class="row align-content-center mx-auto my-4">
-		<div class="align-content-center justify-content-center col-lg-6 col-md-12">
+
 			<c:choose>
 				<c:when test="${finished}">
 					<jsp:include page="auctionResult.jsp">
@@ -22,6 +21,8 @@
 					</jsp:include>
 				</c:when>
 				<c:otherwise>
+				<div class="row align-content-center mx-auto my-4">
+					<div class="align-content-center justify-content-center col-lg-6 col-md-12">
 					<jsp:include page="auctionDetail.jsp">
 						<jsp:param name="target" value="${target}" />
 						<jsp:param name="auction" value="${auction}" />
