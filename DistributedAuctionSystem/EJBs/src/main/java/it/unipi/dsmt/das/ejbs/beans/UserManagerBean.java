@@ -22,7 +22,7 @@ public class UserManagerBean implements UserManager {
         System.out.println(username + " " + password);
 
 
-        Connection connection = null;
+        Connection connection;
         User user = null;
         try {
             connection = ds.getConnection();
@@ -41,8 +41,7 @@ public class UserManagerBean implements UserManager {
             }
             connection.close();
 
-        } catch (
-                SQLException ex) {
+        } catch (SQLException ex) {
             return null;
         }
         return user;

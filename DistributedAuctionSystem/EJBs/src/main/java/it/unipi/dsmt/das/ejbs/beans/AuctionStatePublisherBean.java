@@ -73,7 +73,7 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
 
     Message message = session.createObjectMessage(state);
     message.setLongProperty("auction", id);
-    message.setBooleanProperty("close", close);
+    message.setBooleanProperty("closed", close);
     producer.send(message);
 
     connection.close();

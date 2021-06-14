@@ -2,7 +2,6 @@ $(document).ready(endate_countdown);
 
 function endate_countdown() {
     var list = document.getElementsByClassName("end_date");
-    console.log(list);
     var dates = new Array();
     for (var i = 0; i < list.length; i++) {
         dates.push(new Date(Number(list.item(i).innerText)).getTime());
