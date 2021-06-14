@@ -1,4 +1,7 @@
 let socket = null;
+let auction = null;
+let winningBids = null;
+let lowestBids = null;
 //$(document).ready(registerHandlers);
 
 function registerHandlers() {
@@ -15,16 +18,19 @@ function makeBidHandler(event){
     let data = new FormData(event.target);
     data = Object.fromEntries(data.entries());
     data.action = "make";
+    console.log(data);
     $.post("/web/bid", data)
-        .done(() => {
-                $("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
+        .done((response) => {
+            console.log(response);
+            //Response is the list of offers for the current user
+            //updateCustomerBidsTable(response);
+            //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
+            $("#errorMessage").text("Your bid has been sent!");
         })
         .fail( () =>  {
             console.log("ERROR!");
             $("#errorMessage").text("Your bid is not valid!");
         });
-    //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
-    //$("#offers_bid_table_container").load("/web/bid", data) //, registerHandlers);
 }
 
 
@@ -35,28 +41,125 @@ function deleteBidHandler(event){
         bidID: $(this).closest("tr").attr('id'),
         action: "delete"
     };
+    console.log(params);
     $.post("/web/bid", params)
-        .done(() => {
-                $("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
+        .done((response) => {
+            console.log(response);
+            //Response is the list of offers for the current user
+            //updateCustomerBidsTable(response);
+            //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`,registerHandlers);
+            $("#errorMessage").text("Your bid has been deleted!");
         })
-        .fail( () => $("#errorMessage").text("Your bid is not valid!"));
-    //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
-    //$("#offers_bid_table_container").load("/web/bid", params) //, registerHandlers);
+        .fail( () => {
+            $("#errorMessage").text("Your bid cannot be deleted!");
+        });
+}
+
+function updateLowestBidsTable(lowestBids){
+    /*
+    Update the table with the lowest bids
+     lowest bids is an object (a map) that has as keys a quantity and as values a the lowest bid
+     to buy at most that quantity of items
+     */
+
+    //The id of the body of the table is this one
+    let parent = document.getElementById("lowest-bid-table-body");
+    if(parent === null)
+        return;
+}
+
+function updateCustomerWinningBidsTable(winningBids){
+    //Update the table of user bids given new winning bids;
+};
+
+function updateCustomerBidsTable(bids){
+    //Update the table with the bids in servlet response
+
+    //The id of the body of the table is this one
+    let parent = document.getElementById("offers-bid-table-body-customer");
+    if (parent === null)
+        return;
+    if(bids.length === 0)
+        showMessage(false);
+    else {
+        hideMessage();
+    }
+}
+
+function showMessage(isSeller){
+    $("#no-bid-message").show();
+    $("#offers_bid_table").hide();
+    if(!isSeller)
+        $("#offers-bid-table-body-customer").empty();
+    else
+        $("#offers-bid-table-body-seller").empty();
+}
+
+function hideMessage(){
+    $("#no-bid-message").hide();
+    $("#offers_bid_table").show();
+}
+
+function updateSellerBidsTable(bids){
+    //Update the table with the winning bids (variable winningBids)
+
+    //The id of the body of the table is this one
+    let parent = document.getElementById("offers-bid-table-body-seller");
+    if(parent === null)
+        return;
+    if(bids.length === 0)
+        showMessage(true);
+    else {
+        hideMessage();
+    }
+}
+
+function createRow(id){
+    let elem = document.createElement("tr");
+    elem.setAttribute("id", id);
+    return elem;
+}
+
+function createCell(data){
+    let elem = document.createElement("td");
+    elem.innerText = data;
+    return elem//create a cell with given data displayed
+}
+
+function createDeleteButton(){
+    //<input className="btn btn-danger delete-bid-button" type="button" value="Delete"/>
+    let elem = document.createElement("input");
+    elem.className = "btn btn-danger delete-bid-button";
+    elem.setAttribute("type", "text");
+    elem.setAttribute("value", "Delete");
 }
 
 window.addEventListener('load', (event) => {
     registerHandlers();
-    console.log('opening socket');
     init_socket(socket,
         (event) => {
             console.log(`[received message]: ${event.data}`);
-            $("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
+            const dataString = event.data;
+            if(dataString.startsWith("CLOSE")){
+                $("#details").load(`/web/auction?action=detail&update=true&auctionID=${get_auction_id()}`)
+            }
+            else{
+                const data = JSON.parse(dataString)
+                console.log(data);
+                if(data.hasOwnProperty("winningBids")){
+                    winningBids = data.winningBids;
+                    updateSellerBidsTable(winningBids);
+                    //updateCustomerWinningBidsTable(winningBids);
 
-            //if(event.data === "CLOSE")
-              //  $("#details").load(`/web/auction?action=detail&update=true&auctionID=${get_auction_id()}`)
-            //else
-            //    $("#details")
-            //    .load(`/web/auction?action=detail&update=true&auctionID=${get_auction_id()} #details`);
+                    //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
+                } else if(data.hasOwnProperty("auction")){
+                    auction = data.auction;
+                } else if(data.hasOwnProperty("lowestBids")){
+                    lowestBids = data;
+                    updateLowestBidsTable();
+                }
+            }
+            registerHandlers();
         })
 });
 
@@ -71,7 +174,6 @@ function get_auction_id(){
 
 function init_socket(socket, onmessage) {
     let auction = get_auction_id();
-    console.log(auction);
 
     socket = new WebSocket(`ws://localhost:8080/ws/auction/${auction}`);
     socket.onopen = function(e) {
@@ -79,13 +181,10 @@ function init_socket(socket, onmessage) {
     };
 
     socket.onmessage = onmessage;
-
     socket.onclose = function(event) {
         if (event.wasClean) {
             console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
         } else {
-            // e.g. server process killed or network down
-            // event.code is usually 1006 in this case
             console.log('[close] Connection died');
         }
     };

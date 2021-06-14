@@ -66,7 +66,7 @@ public class BidServlet extends HttpServlet {
             if(auction != null){
                 boolean valid = auction.isValidBid(bid);
                 if(state!=null) {
-                    valid = valid && (bid.getValue() > state.getLowestBid(auction));
+                    //valid = valid && (bid.getValue() > state.getLowestBid(auction));
                     if (valid) {
                         BidStatus status = manager.makeBid(bid);
                         if (status == BidStatus.RECEIVED)
@@ -75,7 +75,10 @@ public class BidServlet extends HttpServlet {
                 }
             }
         }
+         data = manager.selectAuction(auction_id, user_id);
          response.setStatus(returnCode);
+         Gson gson = new Gson();
+         response.getWriter().println(gson.toJson(data.getList().getList()));
     }
 
     private void doDeleteBid(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -108,7 +111,10 @@ public class BidServlet extends HttpServlet {
             }
 
         }
-
+        data = manager.selectAuction(auctionID, user.getId());
+        response.setStatus(returnCode);
+        Gson gson = new Gson();
+        response.getWriter().println(gson.toJson(data.getList().getList()));
         response.setStatus(returnCode);
     }
 

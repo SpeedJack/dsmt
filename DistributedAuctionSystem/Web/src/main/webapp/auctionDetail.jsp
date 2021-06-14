@@ -24,7 +24,8 @@
             <p class="card-text">Vendor ID: ${auction.agent} </p>
             <p class="card-text">Starting Price: <span id="min-price">${auction.minPrice}</span>$</p>
             <p class="card-text">Minimum Raise: <span id="min-raise">${auction.minRaise}</span>$</p>
-            <p class="card-text">Lowest Bid: <span id="min-bid"><%=state.getLowestBid(auction)%></span>$</p>
+            <p class="card-text">Lowest Bids: </p>
+            <jsp:include page="lowestBidsTable.jsp" />
             <p class="card-text">Available Objects: <span id="sale-quantity">${auction.saleQuantity}</span></p>
             <p class="card-text">End time: <span hidden class="end_date">${date}</span></p>
         <c:if test='${target=="seller"}'>

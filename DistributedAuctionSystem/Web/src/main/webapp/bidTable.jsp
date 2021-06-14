@@ -19,13 +19,24 @@
     }
 </style>
 
+<div id = "bid-table-wrapper" class="table-wrapper-scroll-y my-custom-scrollbar">
 <c:choose>
     <c:when test="${empty bids}">
-        <p>No offers</p>
+        <p id="no-bid-message">No offers</p>
+        <table hidden class="table table-bordered table-striped mb-0" id = "offers_bid_table">
+            <thead>
+            <th scope="col">Quantity</th>
+            <th scope="col">Offer</th>
+            <c:if test="${target == 'customer'}">
+                <th scope="col">Is Winning</th>
+                <th scope="col"></th>
+            </c:if>
+            </thead>
+        </table>
     </c:when>
     <c:otherwise>
-        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-        <table class="table table-bordered table-striped mb-0" id = "offers_bid_table">
+        <p hidden id="no-bid-message">No offers</p>
+        <table class="table table-bordered table-striped mb-0" id="offers_bid_table">
             <thead>
                 <th scope="col">Quantity</th>
                 <th scope="col">Offer</th>
@@ -34,7 +45,7 @@
                     <th scope="col"></th>
                 </c:if>
             </thead>
-            <tbody id = "offers-bid-table-body">
+            <tbody id = "offers-bid-table-body-${target}">
                 <c:forEach items="${bids}" var="bid">
                     <tr scope="row" id="${bid.id}">
                         <td> ${bid.quantity}</td>
@@ -47,8 +58,9 @@
                 </c:forEach>
             </tbody>
         </table>
-        </div>
+
     </c:otherwise>
 </c:choose>
+</div>
 
 

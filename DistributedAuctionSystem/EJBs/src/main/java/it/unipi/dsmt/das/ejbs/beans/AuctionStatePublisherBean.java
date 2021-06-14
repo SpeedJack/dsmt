@@ -54,7 +54,7 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
       if(state != null)
         states.putIfAbsent(id, state);
     }
-    return states.getOrDefault(id, null);
+    return state;
   }
 
   public void closeAuction(long id){

@@ -74,6 +74,7 @@ public class AuctionManagerBean implements AuctionManager {
                     if(expiration > 0){
                         scheduleCloseTask(expiration, auction);
                     }
+                    publisher.publishState(auction.getId(), new AuctionState());
                     return "ok";
                 }
                 else{
@@ -137,7 +138,7 @@ public class AuctionManagerBean implements AuctionManager {
             if (msgResponse.atomValue().equals("ok")) {
                 OtpErlangList dataList = (OtpErlangList) response.elementAt(1);
                 if (dataList.arity() == 0)
-                    return null;
+                    new AuctionState();
                 /*if(((OtpErlangTuple)dataList.elementAt(0)).arity() == 0){
                     return null;
                 }*/

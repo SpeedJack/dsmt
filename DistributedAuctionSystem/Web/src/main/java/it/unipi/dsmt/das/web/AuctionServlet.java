@@ -143,7 +143,9 @@ public class AuctionServlet extends HttpServlet {
                 request.setAttribute("target", target);
                 request.setAttribute("bids", bids);
             }
-
+            LowestBids lb = state.getLowestBids(data.getAuction());
+            request.setAttribute("lb_keys", lb.getQuantities());
+            request.setAttribute("lb", lb.getMap());
             request.setAttribute("auction", data.getAuction());
             request.setAttribute("state", state);
             request.setAttribute("date", date);

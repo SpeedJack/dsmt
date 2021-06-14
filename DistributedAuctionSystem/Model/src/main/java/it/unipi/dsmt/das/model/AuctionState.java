@@ -6,10 +6,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import it.unipi.dsmt.das.model.behaviour.Erlangizable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class AuctionState implements Serializable, Erlangizable<OtpErlangList> {
     Set<Bid> winningBids;
@@ -35,6 +32,39 @@ public class AuctionState implements Serializable, Erlangizable<OtpErlangList> {
 
     public void removeBid(User user){
         this.winningBids.removeIf(bid -> bid.user == user.id);
+    }
+
+    public LowestBids getLowestBids(Auction auction){
+        Map<Integer, Double> lb = new HashMap<>();
+        int available = (int) auction.getSaleQuantity() - getSold();
+        if(available != 0)
+            lb.put(available, auction.getMinPrice());
+        double value = auction.getMinPrice();
+        Bid lower = getMinBidHigherThen(value);
+        int buyQuantity = available;
+        double buyPrice;
+        while(lower != null){
+             buyQuantity += lower.getQuantity();
+             buyPrice = lower.getValue() + auction.getMinRaise();
+             lb.put(buyQuantity, buyPrice);
+             lower = getMinBidHigherThen(buyPrice);
+        }
+        return new LowestBids(lb);
+    }
+
+    public Bid getMinBidHigherThen(double value){
+        Bid lower = null;
+        for(Bid bid: winningBids){
+            if (bid.value >= value){
+                if(lower == null)
+                    lower = bid;
+                else if(bid.getValue() < lower.getValue())
+                    lower = bid;
+                else if(bid.getValue() == lower.getValue())
+                    lower.setQuantity(lower.getQuantity() + bid.getQuantity());
+            }
+        }
+        return lower;
     }
 
     public Bid getWinning(User user){
@@ -74,25 +104,6 @@ public class AuctionState implements Serializable, Erlangizable<OtpErlangList> {
             sold += bid.quantity;
         }
         return sold;
-    }
-
-    public double getLowestBid(Auction auction){
-        //SE SONO FINITI GLI OGGETTI
-        double lowestBid = auction.getMinPrice();
-        int sold = getSold();
-        if (sold == auction.getSaleQuantity()){
-            lowestBid = 0;
-            Iterator<Bid> iter = winningBids.iterator();
-            if(iter.hasNext())
-                lowestBid = iter.next().getValue();
-            while(iter.hasNext()){
-                double value = iter.next().getValue();
-                if(lowestBid > value)
-                    lowestBid = value;
-            }
-        }
-        lowestBid += auction.getMinRaise();
-        return lowestBid;
     }
 
     public void derlangize(OtpErlangList tempList){
