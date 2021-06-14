@@ -34,16 +34,18 @@ select_winning_bids(_,_,[]) -> [];
 select_winning_bids(SaleQuantity, WinningUsers, [HeadSorted|T]) ->
     User = element(3,HeadSorted),
     Check = lists:member(User, WinningUsers),
-    if 
-        Check == false ->  NewWinningUsers = WinningUsers ++ [User];
-        true -> NewWinningUsers = WinningUsers, select_winning_bids(SaleQuantity, WinningUsers, T)
-    end,
-
     BidQuantity = element(6,HeadSorted),
     if 
-        SaleQuantity - BidQuantity > 0 -> [HeadSorted] ++ select_winning_bids(SaleQuantity-BidQuantity, NewWinningUsers, T);
-        SaleQuantity - BidQuantity == 0 -> [HeadSorted];
-        true -> [] ++ select_winning_bids(SaleQuantity, NewWinningUsers, T)
+         Check == true ->
+            select_winning_bids(SaleQuantity, WinningUsers, T);
+        SaleQuantity - BidQuantity > 0 -> 
+            NewWinningUsers = WinningUsers ++ [User],
+            [HeadSorted] ++ select_winning_bids(SaleQuantity-BidQuantity, NewWinningUsers, T);
+        SaleQuantity - BidQuantity == 0 -> 
+            [HeadSorted];
+        true -> 
+            NewWinningUsers = WinningUsers ++ [User], 
+            [] ++ select_winning_bids(SaleQuantity, NewWinningUsers, T)
     end.
 
 %Computes a new state for an auction. This is done whenever a bid for an auction is added or deleted.
