@@ -1,4 +1,7 @@
-
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.Set" %>
 <%--
   Created by IntelliJ IDEA.
   User: nicola
@@ -26,11 +29,16 @@
             <th scope="col">Offer</th>
         </thead>
         <tbody id = "lowest-bids-table-body">
+        <% List<Integer> keys = (List<Integer>) pageContext.getRequest().getAttribute("lb_keys"); %>
+        <% Map<Integer, Double> map = (Map<Integer, Double>) pageContext.getRequest().getAttribute("lb"); %>
+        <% int size = keys.size(); %>
+        <% int count = 0; %>
         <c:forEach items="${lb_keys}" var="key">
             <tr scope="row" >
-                <td> Less or equal to ${key} Items</td>
+                <td> <%=count == 0 ? "less or equal to " + keys.get(count) : "between " + keys.get(count -1) + " and " +  keys.get(count) %></td>
                 <td> ${lb[key]} $</td>
             </tr>
+            <% count++; %>
         </c:forEach>
         </tbody>
     </table>

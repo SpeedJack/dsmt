@@ -1,9 +1,6 @@
 package it.unipi.dsmt.das.model;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class LowestBids {
     private Map<Integer, Double> lowestBids = new HashMap<>();
@@ -13,8 +10,8 @@ public class LowestBids {
     public LowestBids(Map<Integer, Double> lb) {
         this.lowestBids = lb;
     }
-    public Set<Integer> getQuantities(){
-        return lowestBids.keySet();
+    public List<Integer> getQuantities(){
+        return new ArrayList<Integer>(lowestBids.keySet());
     }
 
     public Map<Integer, Double> getMap(){

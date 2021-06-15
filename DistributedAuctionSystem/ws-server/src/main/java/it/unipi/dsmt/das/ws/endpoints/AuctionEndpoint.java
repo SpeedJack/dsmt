@@ -72,6 +72,7 @@ public class AuctionEndpoint {
         subs.forEach(session -> {
                 session.getAsyncRemote().sendText("CLOSE");
         });
+
     };
 
     public static void updateAuction(long id, AuctionState state){

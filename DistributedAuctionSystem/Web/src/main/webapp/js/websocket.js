@@ -58,10 +58,22 @@ function updateLowestBidsTable(){
     let body = document.getElementById("lowest-bids-table-body");
     if(body === null)
         return;
-    clearTable("offers-bid-table-body-customer");
-    for(let item of lowestBids){
-        console.log("ITEM");
-        console.log(item);
+    clearTable("lowest-bids-table-body");
+    console.log("LOWEST");
+    console.log(lowestBids);
+    for(let i=0; i< Object.keys(lowestBids).length; i++){
+        let row = createRow();
+        let data;
+        if(i === 0){
+            data = `less or equal to ${Object.keys(lowestBids)[i]}`;
+        }
+        else{
+            data = `between ${Object.keys(lowestBids)[i-1]} and ${Object.keys(lowestBids)[i]}`;
+        }
+        let k = createCell(data);
+        let v = createCell(lowestBids[Object.keys(lowestBids)[i]]);
+        row.append(k,v);
+        body.appendChild(row);
     }
 }
 
@@ -162,9 +174,11 @@ function clearTable(id){
 }
 
 
-function createRow(id){
+function createRow(id = null){
     let elem = document.createElement("tr");
-    elem.setAttribute("id", id);
+    if(id !== null){
+        elem.setAttribute("id", id);
+    }
     return elem;
 }
 
@@ -193,8 +207,11 @@ window.addEventListener('load', (event) => {
     init_socket(socket,
         (event) => {
             const dataString = event.data;
+            console.log("dataString");
+            console.log(dataString);
             if(dataString.startsWith("CLOSE")){
-                $("#details").load(`/web/auction?action=detail&update=true&auctionID=${get_auction_id()}`)
+                window.location.reload(true);
+                //$("#details").load(`/web/auction?action=detail&update=true&auctionID=${get_auction_id()}`)
             }
             else{
                 const data = JSON.parse(dataString)
@@ -240,11 +257,13 @@ function init_socket(socket, onmessage) {
 
     socket.onmessage = onmessage;
     socket.onclose = function(event) {
+        window.location.reload(true);
         if (event.wasClean) {
             console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
         } else {
             console.log('[close] Connection died');
         }
+
     };
 
     socket.onerror = function(error) {

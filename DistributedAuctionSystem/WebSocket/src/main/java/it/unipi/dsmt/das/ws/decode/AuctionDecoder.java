@@ -16,6 +16,7 @@ public class AuctionDecoder implements Decoder.Text<AuctionSystemMessage> {
     @Override
     public AuctionSystemMessage decode(String s) throws DecodeException {
         Gson gson = new Gson();
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + s);
         try {
             String type = gson.fromJson(s, AuctionSystemMessage.class).getType();
             if(type.equals("STATE"))
