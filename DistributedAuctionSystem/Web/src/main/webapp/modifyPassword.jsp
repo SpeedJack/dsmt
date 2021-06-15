@@ -7,17 +7,17 @@
 		<form name="login" action="modifyPassword" method="post">
 			<div class="form-group">
 				<label> Old Password
-					<input type="password" class="form-control" placeholder="Username" name="old_password" required autofocus>
+					<input type="password" class="form-control" placeholder="Your old password" name="old_password" required autofocus>
 				</label>
 			</div>
 			<div class="form-group">
 				<label> Password
-					<input type="password" class="form-control" placeholder="Password" name="new_password" required>
+					<input type="password" class="form-control" placeholder="New password" name="new_password" required>
 				</label>
 			</div>
 			<div class="form-group">
 				<label> Confirm Password
-					<input type="password"  class="form-control" placeholder="Password" name="confirm_password" required>
+					<input type="password"  class="form-control" placeholder="Retype new password" name="confirm_password" required>
 				</label>
 			</div>
 			<p id = "wrong_login"> ${message} </p>

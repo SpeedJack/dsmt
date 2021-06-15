@@ -55,7 +55,6 @@
 	<c:if test="${not finished}">
 		<script src="js/websocket.js"></script>
 		<script src="js/countdown.js"></script>
-		<script src="js/bids.js"></script>
 	</c:if>
 	</body>
 </html>

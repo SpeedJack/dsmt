@@ -1,11 +1,8 @@
 package it.unipi.dsmt.das.ws.endpoints;
 
-import it.unipi.dsmt.das.model.AuctionState;
 import it.unipi.dsmt.das.ws.decode.AuctionDecoder;
 import it.unipi.dsmt.das.ws.encode.AuctionStateMessageEncoder;
 import it.unipi.dsmt.das.ws.messages.AuctionStateMessage;
-import it.unipi.dsmt.das.ws.messages.AuctionSystemMessage;
-import it.unipi.dsmt.das.ws.messages.CloseAuctionMessage;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
@@ -24,12 +21,12 @@ public class AuctionBackendEndpoint {
     }
 
     @OnMessage
-    public void onMessage(Session session, AuctionSystemMessage message){
+    public void onMessage(Session session, AuctionStateMessage message){
         if(message != null) {
             if(message.getType().equals("STATE")) {
-                AuctionEndpoint.updateAuction(auction, ((AuctionStateMessage) message).getState());
+                AuctionEndpoint.updateAuction(auction, message.getState());
             } else if (message.getType().equals("CLOSE")) {
-                AuctionEndpoint.closeAuction(((CloseAuctionMessage) message).getAuction());
+                AuctionEndpoint.closeAuction(message.getAuction());
             }
         }
     }

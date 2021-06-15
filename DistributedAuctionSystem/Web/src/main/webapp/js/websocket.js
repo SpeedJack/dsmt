@@ -77,6 +77,23 @@ function updateLowestBidsTable(){
     }
 }
 
+function updateSellerDetails(){
+
+    let sold = 0;
+    let gain = 0;
+    for(const bid of winningBids){
+        sold += bid.quantity;
+        gain += (bid.quantity * bid.value);
+    }
+    const gainElem = document.getElementById("gain");
+    if(gainElem !== null){
+        gainElem.innerText = gain;
+    }
+    const soldElem = document.getElementById("sold");
+    if(soldElem !== null){
+        soldElem.innerText = sold;
+    }
+}
 
 function updateCustomerBidsTable(bids){
     let body = document.getElementById("offers-bid-table-body-customer");
@@ -219,6 +236,7 @@ window.addEventListener('load', (event) => {
                     winningBids = data.winningBids;
                     if(Number(cookie["userId"]) === auction.agent){
                         updateSellerWinningBidsTable();
+                        updateSellerDetails();
                     }
                     else{
                         updateCustomerWinningBidsTable();
@@ -257,7 +275,6 @@ function init_socket(socket, onmessage) {
 
     socket.onmessage = onmessage;
     socket.onclose = function(event) {
-        window.location.reload(true);
         if (event.wasClean) {
             console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
         } else {

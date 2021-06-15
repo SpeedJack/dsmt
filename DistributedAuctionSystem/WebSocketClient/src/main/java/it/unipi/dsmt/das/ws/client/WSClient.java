@@ -3,9 +3,7 @@ package it.unipi.dsmt.das.ws.client;
 import it.unipi.dsmt.das.model.AuctionState;
 import it.unipi.dsmt.das.ws.encode.AuctionStateMessageEncoder;
 import it.unipi.dsmt.das.ws.messages.AuctionStateMessage;
-import it.unipi.dsmt.das.ws.messages.CloseAuctionMessage;
 
-import java.util.concurrent.Future;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
@@ -66,8 +64,10 @@ public class WSClient {
 
     public void sendClose(){
         try {
-            CloseAuctionMessage message = new CloseAuctionMessage();
+            AuctionStateMessage message = new AuctionStateMessage();
+            message.setType("CLOSE");
             message.setAuction(this.auction);
+            message.setState(null);
             this.session.getBasicRemote().sendObject(message);
         } catch (EncodeException | IOException e) {
             e.printStackTrace();

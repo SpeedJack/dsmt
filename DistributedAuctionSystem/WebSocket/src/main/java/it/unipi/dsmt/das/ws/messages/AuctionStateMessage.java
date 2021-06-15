@@ -4,9 +4,18 @@ import it.unipi.dsmt.das.model.AuctionState;
 
 import java.io.Serializable;
 
-public class AuctionStateMessage extends AuctionSystemMessage implements Serializable {
+public class AuctionStateMessage implements Serializable {
+    String type;
     long auction;
     AuctionState state;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public long getAuction() {
         return auction;
@@ -25,7 +34,7 @@ public class AuctionStateMessage extends AuctionSystemMessage implements Seriali
     }
 
     public AuctionStateMessage(){
-        super("STATE");
+        this.type = "STATE";
     }
 
 }
