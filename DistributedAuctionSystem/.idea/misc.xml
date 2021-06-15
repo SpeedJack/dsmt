@@ -9,14 +9,8 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/Model/pom.xml" />
-        <option value="$PROJECT_DIR$/Interfaces/pom.xml" />
-        <option value="$PROJECT_DIR$/Web/pom.xml" />
-        <option value="$PROJECT_DIR$/EJBs/pom.xml" />
         <option value="$PROJECT_DIR$/Endpoints/pom.xml" />
         <option value="$PROJECT_DIR$/wsclient/pom.xml" />
-        <option value="$PROJECT_DIR$/WebSocketClient/pom.xml" />
-        <option value="$PROJECT_DIR$/WebSocket/pom.xml" />
         <option value="$PROJECT_DIR$/WebSocketServer/pom.xml" />
         <option value="$PROJECT_DIR$/WebSocketServerOld/ws-server/pom.xml" />
       </list>
