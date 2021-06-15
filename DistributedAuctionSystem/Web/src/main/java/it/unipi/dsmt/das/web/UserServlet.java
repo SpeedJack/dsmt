@@ -32,6 +32,9 @@ public class UserServlet extends HttpServlet {
         session.removeAttribute("user");
         session.invalidate();
         response.sendRedirect(request.getContextPath() + "/login");
+        Cookie cookie = new Cookie("userId", "");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
 
@@ -120,6 +123,7 @@ public class UserServlet extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
+            response.addCookie(new Cookie("userId",String.valueOf(user.getId())));
             response.sendRedirect(request.getContextPath() + "/auction");
         } else {
             String message = "Credentials not valid. Please retry";

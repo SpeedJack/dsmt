@@ -32,6 +32,8 @@
                 <th scope="col"></th>
             </c:if>
             </thead>
+            <tbody id = "offers-bid-table-body-${target}">
+            </tbody>
         </table>
     </c:when>
     <c:otherwise>
@@ -54,7 +56,7 @@
                             <td> ${bid.id == winning.id}</td>
                             <td> <input class="btn btn-danger delete-bid-button" type="button" value="Delete"/></td>
                         </c:if>
-                        </tr>
+                    </tr>
                 </c:forEach>
             </tbody>
         </table>

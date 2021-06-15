@@ -25,7 +25,7 @@
             <th scope="col">Quantity</th>
             <th scope="col">Offer</th>
         </thead>
-        <tbody id = "lowest-bids-table-body-${target}">
+        <tbody id = "lowest-bids-table-body">
         <c:forEach items="${lb_keys}" var="key">
             <tr scope="row" >
                 <td> Less or equal to ${key} Items</td>

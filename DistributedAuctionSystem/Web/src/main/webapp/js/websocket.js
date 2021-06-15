@@ -2,6 +2,7 @@ let socket = null;
 let auction = null;
 let winningBids = null;
 let lowestBids = null;
+const cookie = parseCookie(document.cookie);
 //$(document).ready(registerHandlers);
 
 function registerHandlers() {
@@ -18,12 +19,10 @@ function makeBidHandler(event){
     let data = new FormData(event.target);
     data = Object.fromEntries(data.entries());
     data.action = "make";
-    console.log(data);
     $.post("/web/bid", data)
         .done((response) => {
-            console.log(response);
             //Response is the list of offers for the current user
-            //updateCustomerBidsTable(response);
+            updateCustomerBidsTable(JSON.parse(response));
             //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
             $("#errorMessage").text("Your bid has been sent!");
         })
@@ -41,12 +40,10 @@ function deleteBidHandler(event){
         bidID: $(this).closest("tr").attr('id'),
         action: "delete"
     };
-    console.log(params);
     $.post("/web/bid", params)
         .done((response) => {
-            console.log(response);
             //Response is the list of offers for the current user
-            //updateCustomerBidsTable(response);
+            updateCustomerBidsTable(JSON.parse(response));
             //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`,registerHandlers);
             $("#errorMessage").text("Your bid has been deleted!");
         })
@@ -55,64 +52,115 @@ function deleteBidHandler(event){
         });
 }
 
-function updateLowestBidsTable(lowestBids){
-    /*
-    Update the table with the lowest bids
-     lowest bids is an object (a map) that has as keys a quantity and as values a the lowest bid
-     to buy at most that quantity of items
-     */
 
-    //The id of the body of the table is this one
-    let parent = document.getElementById("lowest-bid-table-body");
-    if(parent === null)
+
+function updateLowestBidsTable(){
+    let body = document.getElementById("lowest-bids-table-body");
+    if(body === null)
         return;
-}
-
-function updateCustomerWinningBidsTable(winningBids){
-    //Update the table of user bids given new winning bids;
-};
-
-function updateCustomerBidsTable(bids){
-    //Update the table with the bids in servlet response
-
-    //The id of the body of the table is this one
-    let parent = document.getElementById("offers-bid-table-body-customer");
-    if (parent === null)
-        return;
-    if(bids.length === 0)
-        showMessage(false);
-    else {
-        hideMessage();
+    clearTable("offers-bid-table-body-customer");
+    for(let item of lowestBids){
+        console.log("ITEM");
+        console.log(item);
     }
 }
 
+
+function updateCustomerBidsTable(bids){
+    let body = document.getElementById("offers-bid-table-body-customer");
+    clearTable("offers-bid-table-body-customer");
+    if(bids.length === 0){
+        showMessage(false);
+    }
+    else{
+        hideMessage();
+        let winning = winningBids.find((bid) => bid.user === parseInt(cookie["userId"]));
+        for(let i=0; i<bids.length; i++){
+            let bid = bids[i];
+            let row = createRow(bid.id.toString());
+            let quantity = createCell(bid.quantity);
+            let value = createCell(bid.value);
+            let isWinning;
+            if(winning !== undefined && bid.id === winning.id){
+                isWinning = createCell("true");
+            }else{
+                isWinning = createCell("false");
+            }
+            let button = createDeleteButton();
+            row.append(quantity,value,isWinning,button);
+            body.appendChild(row);
+        }
+    }
+
+}
+
+function updateCustomerWinningBidsTable(){
+    let body = document.getElementById("offers-bid-table-body-customer");
+    let winning = winningBids.find(bid => bid.user === parseInt(cookie["userId"]));
+    let rows = body.getElementsByTagName("tr");
+    for(let i=0; i<rows.length; i++){
+        let row = rows[i];
+        let tds = row.getElementsByTagName("td");
+        if (parseInt(row.getAttribute("id")) === winning.id) {
+            tds[2].innerHTML = "true";
+        }else{
+            tds[2].innerHTML = "false";
+        }
+    }
+}
+
+function updateSellerWinningBidsTable(){
+    let body = document.getElementById("offers-bid-table-body-seller");
+    clearTable("offers-bid-table-body-seller");
+    if(winningBids.length === 0){
+        showMessage(true);
+    }
+    else{
+        hideMessage();
+        for(let i=0; i<winningBids.length; i++){
+            let bid = winningBids[i];
+            let row = createRow(bid.id.toString());
+            let quantity = createCell(bid.quantity);
+            let value = createCell(bid.value);
+            row.append(quantity,value);
+            body.appendChild(row);
+        }
+    }
+}
+
+
+function parseCookie(cookie){
+    let list = cookie.split(";");
+    let obj = {};
+    for(let c of list){
+        let entry = c.split("=");
+        if(entry.length !== 0){
+            obj[entry[0]] = entry[1];
+        }
+    }
+    return obj;
+}
+
+
 function showMessage(isSeller){
-    $("#no-bid-message").show();
-    $("#offers_bid_table").hide();
-    if(!isSeller)
-        $("#offers-bid-table-body-customer").empty();
-    else
-        $("#offers-bid-table-body-seller").empty();
+    //$("#no-bid-message").show();
+    //$("#offers_bid_table").hide();
+    document.getElementById("no-bid-message").hidden = false;
+    document.getElementById("offers_bid_table").hidden = true;
+
 }
 
 function hideMessage(){
-    $("#no-bid-message").hide();
-    $("#offers_bid_table").show();
+    //$("#no-bid-message").hide();
+    //$("#offers_bid_table").show();
+    document.getElementById("no-bid-message").hidden = true;
+    document.getElementById("offers_bid_table").hidden = false;
 }
 
-function updateSellerBidsTable(bids){
-    //Update the table with the winning bids (variable winningBids)
-
-    //The id of the body of the table is this one
-    let parent = document.getElementById("offers-bid-table-body-seller");
-    if(parent === null)
-        return;
-    if(bids.length === 0)
-        showMessage(true);
-    else {
-        hideMessage();
-    }
+function clearTable(id){
+        $(`#${id}`).empty();
 }
+
 
 function createRow(id){
     let elem = document.createElement("tr");
@@ -122,40 +170,50 @@ function createRow(id){
 
 function createCell(data){
     let elem = document.createElement("td");
-    elem.innerText = data;
+    if(data !== null){
+        elem.innerText = data;
+    }
     return elem//create a cell with given data displayed
 }
 
 function createDeleteButton(){
     //<input className="btn btn-danger delete-bid-button" type="button" value="Delete"/>
-    let elem = document.createElement("input");
-    elem.className = "btn btn-danger delete-bid-button";
-    elem.setAttribute("type", "text");
-    elem.setAttribute("value", "Delete");
+    let elem = createCell(null);
+    let button = document.createElement("input");
+    button.className = "btn btn-danger delete-bid-button";
+    button.setAttribute("type", "button");
+    button.setAttribute("value", "Delete");
+    elem.appendChild(button);
+    return elem;
 }
+
 
 window.addEventListener('load', (event) => {
     registerHandlers();
     init_socket(socket,
         (event) => {
-            console.log(`[received message]: ${event.data}`);
             const dataString = event.data;
             if(dataString.startsWith("CLOSE")){
                 $("#details").load(`/web/auction?action=detail&update=true&auctionID=${get_auction_id()}`)
             }
             else{
                 const data = JSON.parse(dataString)
-                console.log(data);
                 if(data.hasOwnProperty("winningBids")){
                     winningBids = data.winningBids;
-                    updateSellerBidsTable(winningBids);
+                    if(Number(cookie["userId"]) === auction.agent){
+                        updateSellerWinningBidsTable();
+                    }
+                    else{
+                        updateCustomerWinningBidsTable();
+                    }
+
                     //updateCustomerWinningBidsTable(winningBids);
 
                     //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
                 } else if(data.hasOwnProperty("auction")){
                     auction = data.auction;
                 } else if(data.hasOwnProperty("lowestBids")){
-                    lowestBids = data;
+                    lowestBids = data.lowestBids;
                     updateLowestBidsTable();
                 }
             }
