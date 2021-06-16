@@ -1,10 +1,33 @@
 #!/bin/bash
+set -e
+ERL=erl
+EXECUTORNAME=exec
+EXECUTORCOUNT=3
+DISPATCHERNAME=disp1
+INIT=start
+WORKDIR="$(realpath "$(dirname ".")")"
 
-erl -sname disp1@localhost -noshell -detached -s das startup start $(realpath .) frist
-echo 'disp started. waiting 10 secs...'
-sleep 10
-echo 'starting execs'
-erl -sname exec1@localhost -noshell -detached -s das startup start $(realpath .) disp1@localhost
-erl -sname exec2@localhost -noshell -detached -s das startup start $(realpath .) disp1@localhost
-erl -sname exec3@localhost -noshell -detached -s das startup start $(realpath .) disp1@localhost
-echo 'done! :)'
+while getopts n:e:d:p:i flag
+do
+	case "${flag}" in
+		n) EXECUTORCOUNT=${OPTARG};;
+		e) EXECUTORNAME=${OPTARG};;
+		d) DISPATCHERNAME=${OPTARG};;
+		p) WORKDIR=${OPTARG};;
+		i) INIT=init;;
+	esac
+done
+
+echo -n '* Starting dispatcher...'
+$ERL -sname $DISPATCHERNAME@localhost -noshell -detached -s das startup $INIT $WORKDIR frist
+echo 'done!'
+echo '* Waiting 5 secs...'
+sleep 5
+echo -n '* Starting executors...'
+for i in $(seq 1 $EXECUTORCOUNT)
+do
+	$ERL -sname $EXECUTORNAME$i@localhost -noshell -detached -s das startup $INIT $WORKDIR $DISPATCHERNAME@localhost
+	echo -n " $i..."
+done
+echo 'done!'
+echo '* All nodes started! Use the stop script to shutdown.'
