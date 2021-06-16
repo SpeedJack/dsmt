@@ -11,7 +11,10 @@
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="web" />
+          <element id="module-output" name="Web" />
+          <element id="jpa-descriptors" facet="Web/jpa/JPA" />
+          <element id="module-output" name="Model" />
+          <element id="module-output" name="Interfaces" />
         </element>
         <element id="directory" name="lib">
           <element id="archive" name="model-1.0-SNAPSHOT.jar">
@@ -33,7 +36,8 @@
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/Web/target/web/META-INF/MANIFEST.MF" />
       </element>
-      <element id="javaee-facet-resources" facet="web/web/Web" />
+      <element id="javaee-facet-resources" facet="Web/web/Web" />
+      <element id="javaee-facet-resources" facet="Interfaces/ejb/EJB" />
     </root>
   </artifact>
 </component>

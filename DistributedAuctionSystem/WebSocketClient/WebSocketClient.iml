@@ -17,7 +17,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-commons:1.7.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.7.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-engine:1.7.1" level="project" />
-    <orderEntry type="module" module-name="model" />
+    <orderEntry type="module" module-name="Model" />
     <orderEntry type="library" name="Maven: org.erlang.otp:jinterface:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: clojang:erlang-jinterface:1.10-1" level="project" />
     <orderEntry type="module" module-name="WebSocket" />
