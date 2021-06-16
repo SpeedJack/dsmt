@@ -116,7 +116,7 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
     public boolean isValidBid(Bid bid){
         if(bid.getValue() < getMinPrice())
             return false;
-        if(bid.getQuantity() > getSaleQuantity())
+        if(bid.getQuantity() > getSaleQuantity() || bid.getQuantity() <= 0)
             return false;
         if(bid.getUser() == getAgent())
             return false;

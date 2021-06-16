@@ -20,10 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @WebServlet("/bid")
 public class BidServlet extends HttpServlet {
@@ -66,7 +63,18 @@ public class BidServlet extends HttpServlet {
             if(auction != null){
                 boolean valid = auction.isValidBid(bid);
                 if(state!=null) {
-                    //valid = valid && (bid.getValue() > state.getLowestBid(auction));
+                    LowestBids lb = state.getLowestBids(auction);
+                    Integer[] keys = (Integer[]) lb.getMap().keySet().toArray();
+                    Arrays.sort(keys);
+                    for(int lbQuantity: keys ){
+                        if(lbQuantity <= bid.getQuantity()){
+                            if(bid.getValue() < lb.getMap().get(lbQuantity))
+                            {
+                                valid = false;
+                                break;
+                            }
+                        }
+                    }
                     if (valid) {
                         BidStatus status = manager.makeBid(bid);
                         if (status == BidStatus.RECEIVED)
