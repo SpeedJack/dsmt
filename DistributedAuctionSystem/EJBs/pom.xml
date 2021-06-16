@@ -5,38 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>it.unipi.dsmt.das</groupId>
-    <artifactId>ejbs</artifactId>
+    <artifactId>EJBs</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>EJBs</name>
-
+    <packaging>jar</packaging>
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <junit.version>5.7.0</junit.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>repo2-jinterface</id>
-            <name>repository2 for Erlang jinterface</name>
-            <url>https://clojars.org/repo/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
-
-    <dependency>
-        <groupId>org.erlang.otp</groupId>
-        <artifactId>jinterface</artifactId>
-        <version>1.6.1</version>
-        <scope>compile</scope>
-    </dependency>
-    <dependency>
-        <groupId>clojang</groupId>
-        <artifactId>erlang-jinterface</artifactId>
-        <version>1.10-1</version>
-        <scope>compile</scope>
-    </dependency>
         <dependency>
             <groupId>javax.ejb</groupId>
             <artifactId>javax.ejb-api</artifactId>
@@ -47,7 +26,7 @@
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>8.0.1</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -63,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>it.unipi.dsmt.das</groupId>
-            <artifactId>interfaces</artifactId>
+            <artifactId>Interfaces</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
@@ -75,14 +54,26 @@
         </dependency>
         <dependency>
             <groupId>it.unipi.dsmt.das</groupId>
-            <artifactId>model</artifactId>
+            <artifactId>Model</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
 
     <build>
+        <pluginManagement>
+
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ejb-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <ejbVersion>3.0</ejbVersion>
+                </configuration>
+            </plugin>
         </plugins>
+        </pluginManagement>
+
     </build>
 </project>

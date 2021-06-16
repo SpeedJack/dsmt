@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>it.unipi.dsmt.das</groupId>
-    <artifactId>web</artifactId>
+    <artifactId>Web</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>Web</name>
     <packaging>war</packaging>
@@ -37,13 +37,13 @@
         </dependency>
         <dependency>
             <groupId>it.unipi.dsmt.das</groupId>
-            <artifactId>model</artifactId>
+            <artifactId>Model</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>it.unipi.dsmt.das</groupId>
-            <artifactId>interfaces</artifactId>
+            <artifactId>Interfaces</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
@@ -51,7 +51,7 @@
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>8.0.1</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
