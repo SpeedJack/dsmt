@@ -1,0 +1,41 @@
+\documentclass[a4paper,12pt]{report}
+
+\usepackage{unipi}
+
+\class{Computer Engineering}
+\course{Distributed Systems and Middleware Technologies}
+\title{Distributed Auction System - DAS}
+\subtitle{Online auction application using an application server and the Erlang language}
+\authors{Cima Lorenzo, Ferrante Nicola, Pampaloni Simone, Scatena Niccolò}
+\academicyear{2020/2021}
+
+\includeonly{%
+	abstract,
+	chapters/specs,
+	chapters/requirements,
+	chapters/usecases,
+	chapters/datamodel,
+	chapters/arch,
+	%chapters/modules,
+	chapters/manual
+}
+
+\begin{document}
+
+\maketitle
+\include{abstract}
+
+\microtypesetup{protrusion=false}
+\tableofcontents
+\microtypesetup{protrusion=true}
+
+\include{chapters/specs}
+\include{chapters/requirements}
+\include{chapters/usecases}
+\include{chapters/datamodel}
+\include{chapters/arch}
+\include{chapters/modules}
+\include{chapters/manual}
+
+\end{document}
+

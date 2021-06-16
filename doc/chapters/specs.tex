@@ -1,0 +1,30 @@
+\chapter{Specifications}\label{ch:specs}
+
+The application developed for this workgroup task is a tool for \standout{online
+auctions}.
+
+The main purpose of the application is to allow people to put items up for sale
+through auctions and allow people to try to buy items by bidding in available
+auctions.
+
+An \textbf{auction} sells a number of items with a fixed minimum price for each
+item. Each \textbf{bid} defines the number of items you want to buy, and the
+price offered for each item. The auction system, for each bid made or deleted,
+will have to calculate the list of winning bids that maximize profit,
+considering as parameters the number of items for sale and the timestamp of the
+bids.  The auction system of this application is set to \underline{"all or
+nothing" semantics}, this means that winning bids will get the required quantity
+of items. If there are not enough items, the bid will not be placed among the
+winning ones.
+
+Before login, a user must register to the application specifying its username
+and password. When logged in, the user can see the list of the available
+auctions. A user can select an auction from the list and view all the
+information of that auction and, if he wishes, can place a bid. Once a bid has
+been made, the user can follow the progress of the auction in real time in this
+page (if his bid is among the winning ones) and the auction will be added to the
+list of followed auctions which you can view later in a special section.  Also,
+if you are no longer interested, the user can delete the bid.
+
+A user can see the list of auctions created in a special section and can select
+a specific auction to see its progress in real time or its result.
