@@ -1,7 +1,6 @@
 package it.unipi.dsmt.das.ejbs.beans;
 
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
-import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.model.AuctionState;
 import it.unipi.dsmt.das.ws.client.WSClient;
 
@@ -23,8 +22,6 @@ import javax.jms.MessageListener;
 })
 public class BidReceiverBean implements MessageListener {
     @EJB
-    AuctionManager manager;
-    @EJB
     AuctionStatePublisher publisher;
     public BidReceiverBean() {
 
@@ -37,7 +34,7 @@ public class BidReceiverBean implements MessageListener {
             long auction = message.getLongProperty("auction");
             boolean close = message.getBooleanProperty("closed");
             if (close)
-                handleCloseMessage(auction, state);
+                handleCloseMessage(auction);
             else
                 handleStateMessage(auction, state);
 
@@ -48,17 +45,13 @@ public class BidReceiverBean implements MessageListener {
 
     public void handleStateMessage(long auction, AuctionState state) {
 
-        WSClient clientEndPoint = new WSClient(auction); //add listener
-        clientEndPoint.addMessageHandler(System.out::println);
-        // send message to websocket
+        WSClient clientEndPoint = new WSClient(auction);
         clientEndPoint.sendState(state);
     }
 
-    public void handleCloseMessage(long auction, AuctionState state) {
+    public void handleCloseMessage(long auction) {
 
-        WSClient clientEndPoint = new WSClient(auction); //add listener
-        clientEndPoint.addMessageHandler(System.out::println);
-        // send message to websocket
+        WSClient clientEndPoint = new WSClient(auction);
         clientEndPoint.sendClose();
     }
 }

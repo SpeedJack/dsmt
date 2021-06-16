@@ -2,7 +2,7 @@
 
 -export([send_to_slaves/2]).
 -export([compute_auction_state/2, select_winning_bids/3, compare_bids/2]).
--export([create_auction/2, delete_auction/2, select_auction/2, auctions_list/1, auctions_agent_list/1, auctions_bidder_list/1, make_bid/2, delete_bid/2]).
+-export([create_auction/2, delete_auction/2, select_auction/2, get_auction_state/2, auctions_list/1, auctions_agent_list/1, auctions_bidder_list/1, make_bid/2, delete_bid/2]).
 
 -record(state, {cluster, bully_state, leader}).
 
@@ -34,16 +34,18 @@ select_winning_bids(_,_,[]) -> [];
 select_winning_bids(SaleQuantity, WinningUsers, [HeadSorted|T]) ->
     User = element(3,HeadSorted),
     Check = lists:member(User, WinningUsers),
-    if 
-        Check == false ->  NewWinningUsers = WinningUsers ++ [User];
-        true -> NewWinningUsers = WinningUsers, select_winning_bids(SaleQuantity, WinningUsers, T)
-    end,
-
     BidQuantity = element(6,HeadSorted),
     if 
-        SaleQuantity - BidQuantity > 0 -> [HeadSorted] ++ select_winning_bids(SaleQuantity-BidQuantity, NewWinningUsers, T);
-        SaleQuantity - BidQuantity == 0 -> [HeadSorted];
-        true -> [] ++ select_winning_bids(SaleQuantity, NewWinningUsers, T)
+         Check == true ->
+            select_winning_bids(SaleQuantity, WinningUsers, T);
+        SaleQuantity - BidQuantity > 0 -> 
+            NewWinningUsers = WinningUsers ++ [User],
+            [HeadSorted] ++ select_winning_bids(SaleQuantity-BidQuantity, NewWinningUsers, T);
+        SaleQuantity - BidQuantity == 0 -> 
+            [HeadSorted];
+        true -> 
+            NewWinningUsers = WinningUsers ++ [User], 
+            [] ++ select_winning_bids(SaleQuantity, NewWinningUsers, T)
     end.
 
 %Computes a new state for an auction. This is done whenever a bid for an auction is added or deleted.
@@ -73,7 +75,7 @@ create_auction(Message, {Data, State}) ->
 delete_auction(Message, {Data, State}) ->
     {_, Id, _} = Message,
     {Code,Res} = store:delete_auction(Id),
-    {atomic, Bids} = store:get_bid_list(AuctionId),
+    {atomic, Bids} = store:get_bid_list(Id),
     [store:delete_bid(element(1,Bid))|| Bid <- Bids],
     if
         (Code == atomic) and (self() == State#state.leader) ->  NewData = lists:keydelete(Id, 1, Data), 
@@ -94,6 +96,21 @@ select_auction(AuctionId, UserId) ->
         true -> {err, BidList}
     end.
 
+%Obtains the data of an auction state
+get_auction_state(AuctionId, {Data, _}) ->
+    Tuple = lists:keyfind(AuctionId, 1, Data),
+    if
+        Tuple == false -> 
+            {Code1,Auction} = store:get_auction(AuctionId),
+            {Code2, BidList} = store:get_bid_list(AuctionId),
+            if 
+                (Code1 == atomic) and (Code2 == atomic) -> AuctionState = compute_auction_state(Auction, BidList), {ok, AuctionState};
+                true -> {ok,[]}
+            end;
+
+        true -> {_, List} = Tuple, {ok,List} 
+    end.
+        
 %Inserts a new bid in Mnesia and calculates the auction's new AuctionState
 make_bid(Message, {Data, State}) ->
     {_, Id, NewBid} = Message,
@@ -103,13 +120,15 @@ make_bid(Message, {Data, State}) ->
             {Code2, Res} = store:insert_bid(NewBid, Id),
             {Code3, BidList} = store:get_bid_list(Id),
             if 
-                (Code2 == atomic) and (Code3 == atomic) ->  
-                    NewData = compute_auction_state(Auction, BidList),                                           
+                (Code2 == atomic) and (Code3 == atomic) -> 
+                    NewAuctionState = compute_auction_state(Auction, BidList),
+                    NewData = utility:modify_key_value_list(Data, {Id, NewAuctionState}),
+                    %io:format("AUCTIION STATE: ~p\n", [NewData]),                                   
                     if
                         self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
                         true -> null
                     end,
-                    {{ok,NewData}, NewData};
+                    {{ok,NewAuctionState}, NewData};
                 Code2 =/= atomic -> 
                     {{err,Res}, Data};
                 true -> 
@@ -132,12 +151,13 @@ delete_bid(Message, {Data, State}) ->
             {Code3, BidList} = store:get_bid_list(Id),
             if 
                 (Code2 == atomic) and (Code3 == atomic) ->    
-                    NewData = compute_auction_state(Auction, BidList), 
+                    NewAuctionState = compute_auction_state(Auction, BidList),
+                    NewData = utility:modify_key_value_list(Data, {Id, NewAuctionState}), 
                     if
                         self() == State#state.leader -> send_to_slaves(utility:pids_from_global_registry("e_" ++ integer_to_list(State#state.cluster)), NewData);
                         true -> null
                     end,
-                    {{ok,NewData}, NewData};
+                    {{ok,NewAuctionState}, NewData};
                 Code2 =/= atomic -> 
                     {{err,Res}, Data};
                 true =/= atomic -> 

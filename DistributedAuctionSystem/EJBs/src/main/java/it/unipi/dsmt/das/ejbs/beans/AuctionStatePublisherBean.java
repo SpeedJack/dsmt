@@ -1,11 +1,13 @@
 package it.unipi.dsmt.das.ejbs.beans;
 
+import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionManager;
 import it.unipi.dsmt.das.ejbs.beans.interfaces.AuctionStatePublisher;
 import it.unipi.dsmt.das.model.AuctionState;
 import it.unipi.dsmt.das.model.Bid;
 import it.unipi.dsmt.das.ws.client.WSClient;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.jms.*;
@@ -27,7 +29,8 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
   private ConnectionFactory connectionFactory;
   @Resource(lookup = "jms/bidsQueue")
   private Queue queue;
-
+  @EJB
+  AuctionManager manager;
 
 
 
@@ -42,6 +45,16 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
       ex.printStackTrace();
     }
 
+  }
+
+  public AuctionState getState(long id){
+    AuctionState state = states.getOrDefault(id, null);
+    if(state == null){
+      state = manager.getAuctionState(id);
+      if(state != null)
+        states.putIfAbsent(id, state);
+    }
+    return state;
   }
 
   public void closeAuction(long id){
@@ -60,7 +73,7 @@ public class AuctionStatePublisherBean implements AuctionStatePublisher {
 
     Message message = session.createObjectMessage(state);
     message.setLongProperty("auction", id);
-    message.setBooleanProperty("close", close);
+    message.setBooleanProperty("closed", close);
     producer.send(message);
 
     connection.close();

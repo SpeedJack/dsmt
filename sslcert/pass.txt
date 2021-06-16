@@ -1,0 +1,4 @@
+cacerts.jks store pass: changeit
+keystore.jks store pass: changeit
+rootCA.key pass: rootcapass
+localhost key inside keystore pass: changeit

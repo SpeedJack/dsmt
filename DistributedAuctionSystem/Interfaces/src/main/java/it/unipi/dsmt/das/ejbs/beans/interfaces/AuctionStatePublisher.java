@@ -10,4 +10,5 @@ import javax.ejb.Remote;
 public interface AuctionStatePublisher {
     void publishState(long id, AuctionState state);
     void closeAuction(long id);
+    AuctionState getState(long id);
 }

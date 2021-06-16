@@ -3,18 +3,18 @@ package it.unipi.dsmt.das.model;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    int id;
+    long id;
     String username;
     String password;
 
     public User() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

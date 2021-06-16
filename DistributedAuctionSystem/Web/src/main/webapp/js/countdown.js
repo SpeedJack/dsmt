@@ -1,6 +1,4 @@
-window.addEventListener('load', (event) => {
-    endate_countdown()
-});
+$(document).ready(endate_countdown);
 
 function endate_countdown() {
     var list = document.getElementsByClassName("end_date");
@@ -15,7 +13,6 @@ function endate_countdown() {
 
         for (var i = 0; i < list.length; i++) {
             elem = list.item(i);
-            console.log(elem);
             var countDownDate =  dates[i];
             var distance = countDownDate - now;
 
@@ -30,7 +27,9 @@ function endate_countdown() {
             if (distance < 0) {
                 clearInterval(x);
                 elem.innerHTML = "Auction closed";
-                document.getElementById("submit_button ").setAttribute("disabled", "true");
+                var submit = document.getElementById("submit_button ")
+                    if(submit !== null)
+                        submit.setAttribute("disabled", "true");
             }
         }
     }, 1000);

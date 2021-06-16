@@ -15,7 +15,7 @@ public interface AuctionManager {
     AuctionList auctionsList(int page);
     AuctionList auctionAgentList(long agentId);
     AuctionList auctionBidderList(long bidderId);
-
+    AuctionState getAuctionState(long auctionId);
     BidStatus makeBid(Bid bid);
     BidStatus deleteBid(long auctionId, long bidId);
 }

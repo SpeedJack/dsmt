@@ -1,0 +1,18 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-ejb" name="EJBs:ejb exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/EJBs_ejb_exploded</output-path>
+    <root id="root">
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/clojang/erlang-jinterface/1.10-1/erlang-jinterface-1.10-1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/erlang/otp/jinterface/1.6.1/jinterface-1.6.1.jar" path-in-jar="/" />
+      <element id="module-output" name="WebSocketClient" />
+      <element id="module-output" name="WebSocket" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar" path-in-jar="/" />
+      <element id="module-output" name="EJBs" />
+      <element id="javaee-facet-resources" facet="EJBs/ejb/EJB" />
+      <element id="jpa-descriptors" facet="EJBs/jpa/JPA" />
+      <element id="module-output" name="Interfaces" />
+      <element id="javaee-facet-resources" facet="Interfaces/ejb/EJB" />
+      <element id="module-output" name="Model" />
+    </root>
+  </artifact>
+</component>

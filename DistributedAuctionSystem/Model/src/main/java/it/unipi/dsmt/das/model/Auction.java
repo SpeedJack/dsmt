@@ -4,6 +4,7 @@ import com.ericsson.otp.erlang.*;
 import it.unipi.dsmt.das.model.behaviour.Erlangizable;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
     long id;
@@ -44,6 +45,20 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
 
     public void setAgent(long agent) {
         this.agent = agent;
+    }
+
+    public boolean isValid(){
+        if(this.getEndDate() <= Instant.now().getEpochSecond())
+            return false;
+        if(this.getMinPrice() <= 0)
+            return false;
+        if(this.getName() == null || this.getName().isEmpty())
+            return false;
+        if(this.getMinRaise() <= 0)
+            return false;
+        if(this.getSaleQuantity() <= 0)
+            return false;
+        return true;
     }
 
     public String getName() {
@@ -98,6 +113,16 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
         this.saleQuantity = saleQuantity;
     }
 
+    public boolean isValidBid(Bid bid){
+        if(bid.getValue() < getMinPrice())
+            return false;
+        if(bid.getQuantity() > getSaleQuantity())
+            return false;
+        if(bid.getUser() == getAgent())
+            return false;
+        return true;
+    }
+
     public OtpErlangTuple erlangize(){
         return new OtpErlangTuple(
                 new OtpErlangObject[] {
@@ -124,7 +149,6 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
             setImage(((OtpErlangList)tuple.elementAt(3)).stringValue());
         } catch (OtpErlangException | ClassCastException e) {
             setImage(((OtpErlangString)tuple.elementAt(3)).stringValue());
-            e.printStackTrace();
         }
         setDescription(((OtpErlangString)tuple.elementAt(4)).stringValue());
         setEndDate(((OtpErlangLong)tuple.elementAt(5)).longValue());

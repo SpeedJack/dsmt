@@ -14,6 +14,7 @@ public class Bid implements Serializable, Erlangizable<OtpErlangTuple> {
     long quantity;
 
     public Bid() {
+        this.id = -1;
     }
 
     public Bid(long auction, long user, long timestamp, double value, long quantity) {
