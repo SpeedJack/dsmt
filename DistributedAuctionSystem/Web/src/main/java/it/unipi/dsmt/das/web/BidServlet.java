@@ -64,7 +64,7 @@ public class BidServlet extends HttpServlet {
                 boolean valid = auction.isValidBid(bid);
                 if(state!=null) {
                     LowestBids lb = state.getLowestBids(auction);
-                    Integer[] keys = (Integer[]) lb.getMap().keySet().toArray();
+                    Integer[] keys = lb.getMap().keySet().toArray(new Integer[lb.getMap().keySet().size()]);
                     Arrays.sort(keys);
                     for(int lbQuantity: keys ){
                         if(lbQuantity <= bid.getQuantity()){
