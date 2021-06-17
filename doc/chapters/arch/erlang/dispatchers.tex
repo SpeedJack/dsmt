@@ -1,0 +1,15 @@
+\subsection{Dispatchers}\label{subsec:archdispatchers}
+
+Dispatchers are a set of Erlang processes which have the task of interfacing
+with the application server. The task of a dispatcher is to assign the
+management of an auction to a cluster executor when an auction creation request
+arrives from the application server and subsequently forward the requests for
+that auction to the same executor cluster. The assignment of the auction to the
+cluster is done through a calculation between the id of the auction and the id
+of the cluster, for this reason every dispatcher knows where to forward the
+requests without the need for any kind of communication between them. Whenever
+the application server has a request for the Erlang subsystem, it sends it to a
+dispatcher which will forward the request to the cluster executor managing that
+auction. Once the response from the cluster executor is received, the dispatcher
+will forward the response to the application server. Dispatchers are implemented
+through the \code{gen\_server} behavior.

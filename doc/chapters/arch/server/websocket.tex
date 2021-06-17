@@ -1,0 +1,10 @@
+\subsection{Websocket}\label{subsec:archwebsocket}
+
+It be used as communication protocol among JEE beans and web clients. The web
+server acts as a relay, providing two endpoints: one from the application server
+towards the web server, and the other from the web server towards the clients.
+
+This protocol allows us to implement a real time notification broadcasting
+service for all the clients interested in an auction in a clean way (no polling
+is needed), giving us the possibility to initiate the communication from the
+backend.

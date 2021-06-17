@@ -1,0 +1,52 @@
+\subsection{Data persistance with Mnesia}\label{subsec:archmnesia}
+
+The persistence of data (auctions and bids) is managed by Mnesia, a distributed
+telecommunications DBMS that allows persistence, data replication, atomic
+transactions, and location transparency.
+
+For the persistence of auctions and bids, two tables of type \textit{set} have
+been created on Mnesia. To define the attributes of the tables, the following
+records been defined.
+
+\begin{lstlisting}[language=Erlang, caption=Mnesia Record]
+    -record(auction,{
+        id_auction,
+        id_agent,
+        name,
+        image,
+        description,
+        end_date,
+        min_price,
+        min_raise,
+        sale_quantity
+    }).
+
+    -record(bid, {
+        id_bid,
+        id_auction,
+        id_user,
+        timestamp,
+        bid_value,
+        quantity
+    }).
+\end{lstlisting}
+
+Through a specific Erlang module the following methods have been defined to
+interact with Mnesia. All the operations inside the methods have been
+implemented through \code{mnesia:transaction} which allows to perform
+transactional operations on Mnesia.
+
+\begin{description}
+	\item[insert\_auction] insert the auction passed as value.
+	\item[insert\_bid] insert the bid passed as value.
+	\item[delete\_auction] delete the auction with the id passed as value.
+	\item[delete\_bid] delete the bid with the id passed as value.
+	\item[get\_auction] returns a specific auction.
+	\item[get\_bid\_list] returns the list of bids for an auction (and
+		optionally, of a given user).
+	\item[get\_auction\_list] returns the list of auctions available.
+	\item[get\_bidder\_auctions] returns the list of auctions in which the
+		user has made at least 1 bid.
+	\item[get\_agent\_auctions] returns the list of auctions created by an
+		agent.
+\end{description}

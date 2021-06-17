@@ -1,0 +1,15 @@
+\subsection{JMS and message driven beans}\label{subsec:archjms}
+
+JMS and message driven beans provide the messaging framework for bids
+dispatching from Erlang subsystem for notifying changes in auctions’ state to
+clients. It is composed of the following components:
+
+\begin{description}
+	\item[JMS queue] a queue is used in order to asynchronously notify
+		clients of changes in the auction state.
+	\item[BidReceiver] Is a message-driven bean that receives the new state
+		of the auctions from the queue and using Websocket
+		ClientEndpoint API initiates the communication towards a
+		Websocket ServerEndpoint. Then the ServerEndpoint communicate to
+		the clients the updates.
+\end{description}

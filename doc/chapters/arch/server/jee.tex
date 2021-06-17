@@ -1,0 +1,24 @@
+\subsection{JEE beans}\label{subsec:archjee}
+
+JEE beans provide business logic interfaces implementation. They implement the
+interface between MySQL database (for user data) and Erlang subsystem towards
+servlets. It is composed of the following components:
+
+\begin{description}
+	\item[AuctionManager] A stateless session bean that manages the
+		communication with the Erlang subsystem, exposing the interfaces
+		between the former and servlets. This bean is also in charge of
+		communicating changes in the auctions’ state from the Erlang
+		subsystem to the \code{AuctionStatePublisher}.
+	\item[UserManager] A stateless session bean that manages the
+		communication with the MySQL database (that manages user
+		informations), exposing the interfaces between the former and
+		servlets.
+	\item[AuctionStatePublisher] A singleton session bean that act as a
+		proxy for the actual state of all the bids in the Erlang
+		subsystem, whenever the state changes (because a bid has been
+		made or deleted, or an auction is closed) this bean is informed
+		from the \code{AuctionManager}. Furthermore, it acts as a
+		producer for a JMS queue, to promptly notify clients on changes
+		in the auction
+\end{description}
