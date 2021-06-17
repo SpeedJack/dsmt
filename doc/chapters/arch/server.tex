@@ -5,8 +5,8 @@ client thanks to the use of servlets that exploit the JSP technology, and it
 manages the business logic using the JakartaEE framework that allows it to
 communicate with the Erlang subsystem. Furthermore, given the purpose of the
 application, the application server implements an asynchronous communication
-system with the web clients, which allows users to receive real-time updates on
-the status of the auctions, using the WebSocket communication protocol.
+system with the web clients, which allows users to receive real time updates on
+the status of the auctions, using the Websocket communication protocol.
 
 \figref{fig:application-server-arch} shows the application server's
 architecture.
@@ -18,9 +18,9 @@ architecture.
 	architecture.}\label{fig:application-server-arch}
 \end{figure}
 
-\subsection{JEE Beans}
+\subsection{JEE beans}
 
-JEE Beans provide business logic interfaces implementation. They implement the
+JEE beans provide business logic interfaces implementation. They implement the
 interface between MySQL database (for user data) and Erlang subsystem towards
 servlets. It is composed of the following components:
 
@@ -43,19 +43,19 @@ servlets. It is composed of the following components:
 		in the auction
 \end{description}
 
-\subsection{JMS and Message Driven Beans}
+\subsection{JMS and message driven beans}
 
-JMS and Message Driver Beans provide the messaging framework for bids
+JMS and message driven beans provide the messaging framework for bids
 dispatching from Erlang subsystem for notifying changes in auctions’ state to
 clients. It is composed of the following components:
 
 \begin{description}
-	\item[JMS Queue] a queue is used in order to asynchronously notify
+	\item[JMS queue] a queue is used in order to asynchronously notify
 		clients of changes in the auction state.
 	\item[BidReceiver] Is a message-driven bean that receives the new state
-		of the auctions from the queue and using WebSocket
+		of the auctions from the queue and using Websocket
 		ClientEndpoint API initiates the communication towards a
-		WebSocket ServerEndpoint. Then the ServerEndpoint communicate to
+		Websocket ServerEndpoint. Then the ServerEndpoint communicate to
 		the clients the updates.
 \end{description}
 
