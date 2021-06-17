@@ -3,15 +3,11 @@ let auction = null;
 let winningBids = null;
 let lowestBids = null;
 const cookie = parseCookie(document.cookie);
-//$(document).ready(registerHandlers);
 
 function registerHandlers() {
-    console.log("setting submission ajax handler");
+    console.log("registering hanlders");
     $("#bid_form").off("submit").on("submit", makeBidHandler);
-    console.log("submission ajax handler set succesfully")
-    console.log("setting delete bid ajax handler")
     $('.delete-bid-button').off('click').on("click", deleteBidHandler);
-    console.log("delete bid ajax handler set succesfully")
 }
 
 function makeBidHandler(event){
@@ -21,13 +17,11 @@ function makeBidHandler(event){
     data.action = "make";
     $.post("/web/bid", data)
         .done((response) => {
-            //Response is the list of offers for the current user
             updateCustomerBidsTable(JSON.parse(response));
-            //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
+            registerHandlers();
             $("#errorMessage").text("Your bid has been sent!");
         })
         .fail( () =>  {
-            console.log("ERROR!");
             $("#errorMessage").text("Your bid is not valid!");
         });
 }
@@ -44,7 +38,7 @@ function deleteBidHandler(event){
         .done((response) => {
             //Response is the list of offers for the current user
             updateCustomerBidsTable(JSON.parse(response));
-            //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`,registerHandlers);
+            registerHandlers();
             $("#errorMessage").text("Your bid has been deleted!");
         })
         .fail( () => {
@@ -59,8 +53,6 @@ function updateLowestBidsTable(){
     if(body === null)
         return;
     clearTable("lowest-bids-table-body");
-    console.log("LOWEST");
-    console.log(lowestBids);
     for(let i=0; i< Object.keys(lowestBids).length; i++){
         let row = createRow();
         let data;
@@ -126,6 +118,11 @@ function updateCustomerBidsTable(bids){
 function updateCustomerWinningBidsTable(){
     let body = document.getElementById("offers-bid-table-body-customer");
     let winning = winningBids.find(bid => bid.user === parseInt(cookie["userId"]));
+    if(!winning)
+    {
+        winning = {};
+        winning["id"] = -1;
+    }
     let rows = body.getElementsByTagName("tr");
     for(let i=0; i<rows.length; i++){
         let row = rows[i];
@@ -224,11 +221,8 @@ window.addEventListener('load', (event) => {
     init_socket(socket,
         (event) => {
             const dataString = event.data;
-            console.log("dataString");
-            console.log(dataString);
             if(dataString.startsWith("CLOSE")){
                 window.location.reload(true);
-                //$("#details").load(`/web/auction?action=detail&update=true&auctionID=${get_auction_id()}`)
             }
             else{
                 const data = JSON.parse(dataString)
@@ -241,10 +235,6 @@ window.addEventListener('load', (event) => {
                     else{
                         updateCustomerWinningBidsTable();
                     }
-
-                    //updateCustomerWinningBidsTable(winningBids);
-
-                    //$("#details").load(`/web/auction?action=detail&auctionID=${get_auction_id()} #details`, registerHandlers);
                 } else if(data.hasOwnProperty("auction")){
                     auction = data.auction;
                 } else if(data.hasOwnProperty("lowestBids")){

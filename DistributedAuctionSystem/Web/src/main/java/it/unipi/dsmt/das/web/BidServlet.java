@@ -123,7 +123,6 @@ public class BidServlet extends HttpServlet {
         response.setStatus(returnCode);
         Gson gson = new Gson();
         response.getWriter().println(gson.toJson(data.getList().getList()));
-        response.setStatus(returnCode);
     }
 
 }
