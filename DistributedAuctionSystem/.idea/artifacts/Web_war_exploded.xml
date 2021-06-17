@@ -1,0 +1,36 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Web:war exploded">
+    <output-path>$PROJECT_DIR$/Web/target/web</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <exploded>true</exploded>
+        <module>Web</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Web" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="archive" name="Model-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="Model" />
+          </element>
+          <element id="library" level="project" name="Maven: org.erlang.otp:jinterface:1.6.1" />
+          <element id="library" level="project" name="Maven: clojang:erlang-jinterface:1.10-1" />
+          <element id="archive" name="Interfaces-1.0-SNAPSHOT.jar">
+            <element id="module-output" name="Interfaces" />
+          </element>
+          <element id="library" level="project" name="Maven: commons-fileupload:commons-fileupload:1.4" />
+          <element id="library" level="project" name="Maven: commons-io:commons-io:2.2" />
+          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.0" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/Web/target/web/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="Web/web/Web" />
+    </root>
+  </artifact>
+</component>

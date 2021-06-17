@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-ejb" name="EJBs:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/EJBs_war_exploded</output-path>
+    <root id="root">
+      <element id="module-output" name="EJBs" />
+      <element id="jpa-descriptors" facet="EJBs/jpa/JPA" />
+      <element id="module-output" name="Interfaces" />
+      <element id="module-output" name="Model" />
+      <element id="module-output" name="WebSocketClient" />
+      <element id="module-output" name="WebSocket" />
+    </root>
+  </artifact>
+</component>
