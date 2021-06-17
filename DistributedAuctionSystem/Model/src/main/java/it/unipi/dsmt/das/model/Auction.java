@@ -122,7 +122,7 @@ public class Auction implements Serializable, Erlangizable<OtpErlangTuple> {
             return false;
         return true;
     }
-
+    //aa
     public OtpErlangTuple erlangize(){
         return new OtpErlangTuple(
                 new OtpErlangObject[] {
