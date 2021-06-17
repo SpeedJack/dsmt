@@ -1,4 +1,4 @@
-\section{Erlang Subsystem}\label{sec:archerlang}
+\section{Erlang subsystem}\label{sec:archerlang}
 
 The Erlang subsystem manages the persistence of auctions and bids data and is
 responsible for the calculation is responsible for calculating the auction
@@ -35,19 +35,18 @@ through the \code{gen\_server} behavior.
 
 The executor clusters are a set of cluster and each cluster is composed of a set
 of Erlang processes. The choice for which it was decided to implement a cluster
-structure will be described in the section Fault Tollerance Techiques. Each
-%TODO ref
-executor cluster manages a subset of auctions of the system (the assignment of
-an auction to a cluster is decided, as previously mentioned, by the
-dispatchers). Each cluster communicates with Mnesia (we will see later) for the
-data persistence and manages the progress of the auctions for which it is
-responsible. In particular, for each auction, the cluster must calculate the
-so-called \textbf{AuctionState}, \idest*{produce the list of current winning
-bids each time a bid is added or deleted}.
+structure will be described in \secref{subsec:tolerancetechs}. Each executor
+cluster manages a subset of auctions of the system (the assignment of an auction
+to a cluster is decided, as previously mentioned, by the dispatchers). Each
+cluster communicates with Mnesia (we will see later) for the data persistence
+and manages the progress of the auctions for which it is responsible. In
+particular, for each auction, the cluster must calculate the so-called
+\textbf{AuctionState}, \idest*{produce the list of current winning bids each
+time a bid is added or deleted}.
 
 
 Following the \underline{all-or-nothing} semantics described in the
-specifications, the \textbf{AuctionState} is calculated by taking the bids with
+specifications, the \code{AuctionState} is calculated by taking the bids with
 the highest value (for the same value, the oldest bid is considered as the best)
 and that the sum of the quantities of items requested by these is less than or
 equal to the quantity of items for sale. Furthermore, it is ensured that only
@@ -61,15 +60,16 @@ example.
 \begin{figure}[htb]
 	\centering
 	%\includegraphics[width=\textwidth]{auction-state-example}
-	\caption{AuctionState Computation}\label{fig:auction-state-example}
+	\caption{\code{AuctionState}
+	Computation}\label{fig:auction-state-example}
 \end{figure}
 
-The AuctionState is kept in memory in order to be sent upon request by the
-application server and is recalculated (and subsequently sent) every time an
+The \code{AuctionState} is kept in memory in order to be sent upon request by
+the application server and is recalculated (and subsequently sent) every time an
 offer is added or deleted. Executor processes are implemented through the
 \textit{gen\_server} behavior.
 
-\subsection{Data Persistance --- Mnesia}
+\subsection{Data persistance with Mnesia}
 
 The persistence of data (auctions and bids) is managed by Mnesia, a distributed
 telecommunications DBMS that allows persistence, data replication, atomic
@@ -80,7 +80,7 @@ been created on Mnesia. To define the attributes of the tables, the following
 records been defined.
 
 \begin{lstlisting}[language=Erlang, caption=Mnesia Record]
-    -record(auction,{%
+    -record(auction,{
         id_auction,
         id_agent,
         name,
@@ -92,7 +92,7 @@ records been defined.
         sale_quantity
     }).
 
-    -record(bid, {%
+    -record(bid, {
         id_bid,
         id_auction,
         id_user,
@@ -104,7 +104,7 @@ records been defined.
 
 Through a specific Erlang module the following methods have been defined to
 interact with Mnesia. All the operations inside the methods have been
-implemented through \textit{mnesia:transaction} which allows to perform
+implemented through \code{mnesia:transaction} which allows to perform
 transactional operations on Mnesia.
 
 \begin{description}
@@ -122,7 +122,8 @@ transactional operations on Mnesia.
 		agent.
 \end{description}
 
-\subsection{Fault Tollerance Techinques}
+\subsection{Fault tolerance techinques}\label{subsec:tolerancetechs}
+
 For each module of the Erlang subsystem some techniques have been implemented to
 ensure a good degree of availability and tolerance to tastes.
 
@@ -138,14 +139,14 @@ ensure a good degree of availability and tolerance to tastes.
 
 As can be seen from the architecture, multiple dispatcher instances are executed
 on different dispatcher Erlang nodes to allow the application server to always
-find an available dispatcher in case a dispatcher process / dispatcher node
-fails. Furthermore, the presence of multiple dispatcher instances allows the
+find an available dispatcher in case a dispatcher process/node fails.
+Furthermore, the presence of multiple dispatcher instances allows the
 application server to implement load-balancing techniques to balance the load of
 requests between the dispatchers available;
 
-\subsubsection{Executor Clusters}
+\subsubsection{Executor clusters}
 
-Each Executor Cluster is organized according to a \textbf{leader-slaves
+Each executor cluster is organized according to a \textbf{leader-slaves
 structure}. The leader manages the requests coming from the dispatchers,
 communicate (if needed) to the Mnesia for the persistence of data, and calculate
 the current \code{AuctionState} of the auctions and then sends it to the slaves.
@@ -163,8 +164,8 @@ this application.
 	\caption{Bully Algorithm State Machine}\label{fig:bully-state}
 \end{figure}
 
-Furthermore, as is visible from the architecture, the processes of each Executor
-Cluster are executed in different executor erlang nodes (even if it is possible
+Furthermore, as is visible from the architecture, the processes of each executor
+cluster are executed in different executor Erlang nodes (even if it is possible
 that the same node executes more processes of the same cluster) so that the
-clusters continue their operation even in case of failure of an executor erlang
+clusters continue their operation even in case of failure of an executor Erlang
 node.
