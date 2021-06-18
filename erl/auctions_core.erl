@@ -44,8 +44,7 @@ select_winning_bids(SaleQuantity, WinningUsers, [HeadSorted|T]) ->
         SaleQuantity - BidQuantity == 0 -> 
             [HeadSorted];
         true -> 
-            NewWinningUsers = WinningUsers ++ [User], 
-            [] ++ select_winning_bids(SaleQuantity, NewWinningUsers, T)
+            [] ++ select_winning_bids(SaleQuantity,WinningUsers, T)
     end.
 
 %Computes a new state for an auction. This is done whenever a bid for an auction is added or deleted.
