@@ -56,10 +56,8 @@ public class AuctionState implements Serializable, Erlangizable<OtpErlangList> {
         Bid lower = null;
         for(Bid bid: winningBids){
             if (bid.value >= value){
-                if(lower == null)
-                    lower = bid;
-                else if(bid.getValue() < lower.getValue())
-                    lower = bid;
+                if(lower == null || (bid.getValue() < lower.getValue()))
+                    lower = new Bid(bid);
                 else if(bid.getValue() == lower.getValue())
                     lower.setQuantity(lower.getQuantity() + bid.getQuantity());
             }
