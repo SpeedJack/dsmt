@@ -13,20 +13,19 @@ time a bid is added or deleted}.
 
 
 Following the \underline{all-or-nothing} semantics described in the
-specifications, the \code{AuctionState} is calculated by taking the bids with
-the highest value (for the same value, the oldest bid is considered as the best)
-and that the sum of the quantities of items requested by these is less than or
-equal to the quantity of items for sale. Furthermore, it is ensured that only
-one bid per user is among the winning ones.
+specifications, the \code{AuctionState} is calculated,trying to maximize the profit 
+for the Agent, by taking the bids with the highest value (for the same value, 
+the oldest bid is considered as the best) and that the sum of the quantities of items 
+requested by these is less than or equal to the quantity of items for sale. 
+Furthermore, it is ensured that only one bid per user is among the winning ones.
 
-\figref{fig:auction-state-example} shows an \code{AuctionState} computation
+\figref{fig:auction_state_example} shows an \code{AuctionState} computation
 example.
 
 \begin{figure}[htb]
 	\centering
-	%\includegraphics[width=\textwidth]{auction-state-example}
-	\caption{\code{AuctionState}
-	Computation}\label{fig:auction-state-example}
+	\includegraphics[width=\textwidth]{auction_state_example}
+	\caption{AuctionState Computation}\label{fig:auction_state_example}
 \end{figure}
 
 The \code{AuctionState} is kept in memory in order to be sent upon request by
