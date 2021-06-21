@@ -5,7 +5,7 @@ interface between MySQL database (for user data) and Erlang subsystem towards
 servlets. It is composed of the following components:
 
 \begin{description}
-	\item[AuctionManager] A stateless session bean that manages the
+	\item[AuctionManager] A singleton session bean that manages the
 		communication with the Erlang subsystem, exposing the interfaces
 		between the former and servlets. This bean is also in charge of
 		communicating changes in the auctions’ state from the Erlang
